@@ -112,9 +112,21 @@ struct BottleDetailView: View {
                     get: { bottle.graphics },
                     set: { backend in Task { await wine.setGraphics(backend, for: bottle) } }
                 )) {
-                    ForEach(GraphicsBackend.allCases, id: \.self) { Text($0.title).tag($0) }
+                    ForEach(wine.graphicsBackends, id: \.self) { Text($0.title).tag($0) }
                 }
-                .help("DXVK costuma ser mais rápido em jogos Direct3D 10/11. É baixado na primeira vez (2,8 MB).")
+                .help("DXVK e DXMT costumam ser mais rápidos em jogos Direct3D 10/11. O DXVK é baixado na primeira vez (2,8 MB); o DXMT vem com o motor do WinHub.")
+                if wine.supportsMSync {
+                    Toggle("Sincronização rápida (MSync)", isOn: Binding(
+                        get: { bottle.msync },
+                        set: { wine.setMSync($0, for: bottle) }
+                    ))
+                    .help("Reduz o custo de sincronização do Wine em jogos. Vale na próxima vez que um programa abrir.")
+                }
+                Toggle("Mostrar desempenho (FPS) nos jogos", isOn: Binding(
+                    get: { bottle.performanceHUD },
+                    set: { wine.setPerformanceHUD($0, for: bottle) }
+                ))
+                .help("Mostra o painel de desempenho do Metal (e o do DXVK, se ele estiver em uso).")
                 LabeledContent("Motor", value: wine.runtime?.manifest.version ?? bottle.runtimeID)
                 LabeledContent("Em execução", value: wine.activeBottles.contains(bottle.id) ? "Sim" : "Não")
             }
@@ -132,7 +144,9 @@ struct BottleDetailView: View {
             } header: {
                 Text("Componentes do Windows")
             } footer: {
-                Text("Instalados com o winetricks (baixado na primeira vez). Alguns componentes exigem o cabextract.")
+                Text(wine.hasCabextract
+                     ? "Instalados com o winetricks (baixado na primeira vez, com o cabextract)."
+                     : "Instalados com o winetricks (baixado na primeira vez). Alguns componentes exigem o cabextract.")
                     .font(.caption)
                     .foregroundStyle(.secondary)
             }
@@ -288,7 +302,7 @@ struct RuntimeSetupView: View {
                     GridRow { Text("Versão").foregroundStyle(.secondary); Text("\(manifest.name) \(manifest.version)") }
                     GridRow {
                         Text("Tamanho").foregroundStyle(.secondary)
-                        Text(ByteCountFormatter.string(fromByteCount: manifest.size, countStyle: .file))
+                        Text(ByteCountFormatter.string(fromByteCount: manifest.downloadSize, countStyle: .file))
                     }
                     GridRow { Text("Licença").foregroundStyle(.secondary); Text(manifest.license) }
                     GridRow {
@@ -299,9 +313,16 @@ struct RuntimeSetupView: View {
             }
 
             if !wine.isRosettaAvailable {
-                Label("Este Mac precisa do Rosetta 2. No Terminal, rode: softwareupdate --install-rosetta --agree-to-license",
-                      systemImage: "exclamationmark.triangle")
-                    .foregroundStyle(.orange)
+                VStack(alignment: .leading, spacing: 8) {
+                    Label("Este Mac precisa do Rosetta 2, da Apple, para rodar o Wine.", systemImage: "exclamationmark.triangle")
+                        .foregroundStyle(.orange)
+                    Button(wine.isInstallingRosetta ? "Instalando o Rosetta…" : "Instalar o Rosetta") {
+                        Task { await wine.installRosetta() }
+                    }
+                    .disabled(wine.isInstallingRosetta)
+                    Text("O macOS pede a senha de administrador.")
+                        .font(.caption).foregroundStyle(.secondary)
+                }
             }
 
             if let progress = wine.runtimeProgress {

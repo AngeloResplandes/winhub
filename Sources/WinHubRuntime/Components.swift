@@ -116,53 +116,84 @@ public enum GraphicsBackend: String, Codable, Sendable, CaseIterable {
     case wined3d
     /// DXVK-macOS: Direct3D 10/11 over Vulkan (MoltenVK). Often faster in games.
     case dxvk
+    /// DXMT: Direct3D 10/11 straight over Metal. Needs a runtime built for it.
+    case dxmt
 
     public var title: String {
         switch self {
         case .wined3d: "Wine (padrão)"
         case .dxvk: "DXVK (Direct3D 10/11 via Vulkan)"
+        case .dxmt: "DXMT (Direct3D 10/11 via Metal)"
         }
     }
 
     /// DLLs DXVK-macOS replaces.
     static let dxvkDLLs = ["d3d10core", "d3d11"]
+    /// DLLs DXMT replaces; `winemetal` is its bridge to the Mac side and is only copied.
+    static let dxmtDLLs = ["d3d10core", "d3d11", "dxgi"]
+    static let dxmtFiles = dxmtDLLs + ["winemetal"]
 }
 
 extension WineLauncher {
-    /// Switches the bottle's Direct3D. For DXVK the DLLs are copied into the
+    /// Switches the bottle's Direct3D. For DXVK and DXMT the DLLs are copied into the
     /// prefix and loaded "native, then builtin"; Wine's own DLLs are forced back otherwise.
     public func applyGraphics(_ backend: GraphicsBackend, to bottle: Bottle, dxvk: InstalledComponent?) throws -> Bottle {
         var updated = bottle
+        // Only DXMT replaces dxgi; whoever leaves it gets Wine's back.
+        if updated.dllOverrides["dxgi"] != nil { updated.dllOverrides["dxgi"] = "b" }
         switch backend {
         case .wined3d:
             for dll in GraphicsBackend.dxvkDLLs { updated.dllOverrides[dll] = "b" }
         case .dxvk:
             guard let dxvk else { throw RuntimeError.missingBinary(URL(fileURLWithPath: "dxvk")) }
-            let windows = bottle.driveC.appending(path: "windows", directoryHint: .isDirectory)
-            for (arch, folder) in [("x64", "system32"), ("x32", "syswow64")] {
-                let source = dxvk.payload.appending(path: arch, directoryHint: .isDirectory)
-                let target = windows.appending(path: folder, directoryHint: .isDirectory)
-                guard FileManager.default.fileExists(atPath: target.path) else { continue }
-                for dll in GraphicsBackend.dxvkDLLs {
-                    let file = source.appending(path: "\(dll).dll")
-                    guard FileManager.default.fileExists(atPath: file.path) else { continue }
-                    let destination = target.appending(path: "\(dll).dll")
-                    try? FileManager.default.removeItem(at: destination)
-                    try FileManager.default.copyItem(at: file, to: destination)
-                }
-            }
+            try copyDLLs(GraphicsBackend.dxvkDLLs, from: dxvk.payload, into: bottle)
             for dll in GraphicsBackend.dxvkDLLs { updated.dllOverrides[dll] = "n,b" }
+        case .dxmt:
+            let source = runtime.dxmtDirectory
+            guard runtime.manifest.supports(.dxmt), FileManager.default.fileExists(atPath: source.path) else {
+                throw RuntimeError.missingBinary(source)
+            }
+            try copyDLLs(GraphicsBackend.dxmtFiles, from: source, into: bottle)
+            for dll in GraphicsBackend.dxmtDLLs { updated.dllOverrides[dll] = "n,b" }
         }
         updated.graphics = backend
         return updated
     }
 
-    /// Runs winetricks verbs (e.g. `vcrun2022`) unattended in the bottle.
-    public func runWinetricks(_ verbs: [String], in bottle: Bottle, winetricks: InstalledComponent) async throws {
+    /// Copies `<source>/x64/<dll>.dll` into `system32` and `x32` into `syswow64`.
+    private func copyDLLs(_ dlls: [String], from source: URL, into bottle: Bottle) throws {
+        let windows = bottle.driveC.appending(path: "windows", directoryHint: .isDirectory)
+        for (arch, folder) in [("x64", "system32"), ("x32", "syswow64")] {
+            let from = source.appending(path: arch, directoryHint: .isDirectory)
+            let target = windows.appending(path: folder, directoryHint: .isDirectory)
+            guard FileManager.default.fileExists(atPath: target.path) else { continue }
+            for dll in dlls {
+                let file = from.appending(path: "\(dll).dll")
+                guard FileManager.default.fileExists(atPath: file.path) else { continue }
+                let destination = target.appending(path: "\(dll).dll")
+                try? FileManager.default.removeItem(at: destination)
+                try FileManager.default.copyItem(at: file, to: destination)
+            }
+        }
+    }
+
+    /// Environment for winetricks: the bottle's, plus the Wine binaries and,
+    /// when installed, the folder with `cabextract` (needed by some verbs).
+    public func winetricksEnvironment(for bottle: Bottle, cabextract: InstalledComponent?) -> [String: String] {
         var env = environment(for: bottle)
         env["WINE"] = runtime.wine.path
         env["WINESERVER"] = runtime.wineserver.path
         env["WINETRICKS_LATEST_VERSION_CHECK"] = "disabled"
+        if let cabextract, let path = env["PATH"] {
+            env["PATH"] = "\(cabextract.payload.path):\(path)"
+        }
+        return env
+    }
+
+    /// Runs winetricks verbs (e.g. `vcrun2022`) unattended in the bottle.
+    public func runWinetricks(_ verbs: [String], in bottle: Bottle, winetricks: InstalledComponent,
+                              cabextract: InstalledComponent? = nil) async throws {
+        let env = winetricksEnvironment(for: bottle, cabextract: cabextract)
         let log = logURL(bottle, "winetricks")
         let status = try await ProcessRunner.run(URL(fileURLWithPath: "/bin/sh"),
                                                  arguments: [winetricks.payload.path, "-q", "--unattended"] + verbs,

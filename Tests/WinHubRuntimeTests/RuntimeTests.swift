@@ -64,6 +64,43 @@ func makeFakeRuntimeArchive(in dir: URL) throws -> (archive: URL, manifest: Runt
         #expect(throws: RuntimeError.self) { try manager.installArchive(at: archive, manifest: manifest) }
     }
 
+    @Test func installsOverlayOverTheWineFolder() throws {
+        let dir = try makeTempDirectory()
+        defer { try? FileManager.default.removeItem(at: dir) }
+        var (archive, manifest) = try makeFakeRuntimeArchive(in: dir)
+        let content = dir.appending(path: "overlay/lib/dxmt/x64", directoryHint: .isDirectory)
+        try FileManager.default.createDirectory(at: content, withIntermediateDirectories: true)
+        try "dxmt".write(to: content.appending(path: "d3d11.dll"), atomically: true, encoding: .utf8)
+        let overlayArchive = dir.appending(path: "overlay.tar.xz")
+        let tar = try ProcessRunner.run(URL(fileURLWithPath: "/usr/bin/tar"),
+                                        arguments: ["-cJf", overlayArchive.path, "-C", dir.appending(path: "overlay").path, "lib"])
+        #expect(tar.status == 0)
+        manifest.overlay = .init(url: URL(string: "https://example.invalid/o.tar.xz")!,
+                                 sha256: try RuntimeManager.sha256(of: overlayArchive), size: 1)
+        manifest.features = ["dxmt"]
+        let manager = RuntimeManager(root: dir.appending(path: "runtimes"))
+
+        #expect(throws: RuntimeError.self) { try manager.installArchive(at: archive, manifest: manifest) }
+        var tampered = manifest
+        tampered.overlay?.sha256 = String(repeating: "0", count: 64)
+        #expect(throws: RuntimeError.self) {
+            try manager.installArchive(at: archive, overlay: overlayArchive, manifest: tampered)
+        }
+
+        let runtime = try manager.installArchive(at: archive, overlay: overlayArchive, manifest: manifest)
+        // binPath is "Fake.app/bin", so the overlay lands in "Fake.app/".
+        let dll = runtime.root.appending(path: "Fake.app/lib/dxmt/x64/d3d11.dll")
+        #expect(try String(contentsOf: dll, encoding: .utf8) == "dxmt")
+        #expect(runtime.dxmtDirectory.path == runtime.root.appending(path: "Fake.app/lib/dxmt").path)
+        #expect(manager.installed(manifest) != nil)
+
+        var newerOverlay = manifest
+        newerOverlay.overlay?.sha256 = String(repeating: "a", count: 64)
+        #expect(manager.installed(newerOverlay) == nil)
+        #expect(!manifest.isSameBuild(as: newerOverlay))
+        #expect(manifest.downloadSize == manifest.size + 1)
+    }
+
     @Test func decodesManifestList() throws {
         let json = """
         [{"id": "w", "name": "Wine", "version": "11", "url": "https://example.invalid/w.tar.xz",
@@ -76,6 +113,21 @@ func makeFakeRuntimeArchive(in dir: URL) throws -> (archive: URL, manifest: Runt
         try json.write(to: file, atomically: true, encoding: .utf8)
         let manifests = try RuntimeManifest.loadAll(from: file)
         #expect(manifests.map(\.id) == ["w"])
+        #expect(manifests[0].features.isEmpty)
+        #expect(manifests[0].sha256 == "abc")
+    }
+
+    @Test func decodesRuntimeFeatures() throws {
+        let json = """
+        {"id": "w", "name": "Wine", "version": "11", "url": "https://example.invalid/w.tar.xz",
+         "sha256": "abc", "size": 10, "license": "LGPL-2.1", "sourceURL": "https://example.invalid",
+         "binPath": "Wine.app/wine/bin", "features": ["dxmt", "msync", "future"]}
+        """
+        let manifest = try JSONDecoder().decode(RuntimeManifest.self, from: Data(json.utf8))
+        #expect(manifest.supports(.dxmt))
+        #expect(manifest.supports(.msync))
+        let runtime = InstalledRuntime(manifest: manifest, root: URL(fileURLWithPath: "/R"))
+        #expect(runtime.dxmtDirectory.path == "/R/Wine.app/wine/lib/dxmt")
     }
 }
 
@@ -146,6 +198,28 @@ func makeFakeRuntimeArchive(in dir: URL) throws -> (archive: URL, manifest: Runt
         #expect(env["WINEPREFIX"] == "/Bottles/B/prefix")
         #expect(env["PATH"]?.hasPrefix("/R/Wine.app/bin:") == true)
         #expect(env["ROSETTA_ADVERTISE_AVX"] == "1")
+    }
+
+    @Test func msyncNeedsRuntimeAndBottle() {
+        var bottle = bottle()
+        bottle.msync = true
+        #expect(WineEnvironment.make(for: bottle, runtime: runtime, base: [:])["WINEMSYNC"] == nil)
+
+        var capable = runtime
+        capable.manifest.features = ["msync"]
+        #expect(WineEnvironment.make(for: bottle, runtime: capable, base: [:])["WINEMSYNC"] == "1")
+        bottle.msync = false
+        #expect(WineEnvironment.make(for: bottle, runtime: capable, base: [:])["WINEMSYNC"] == nil)
+    }
+
+    @Test func performanceHUDFollowsBackend() {
+        var bottle = bottle()
+        #expect(WineEnvironment.make(for: bottle, runtime: runtime, base: [:])["MTL_HUD_ENABLED"] == nil)
+        bottle.performanceHUD = true
+        #expect(WineEnvironment.make(for: bottle, runtime: runtime, base: [:])["MTL_HUD_ENABLED"] == "1")
+        #expect(WineEnvironment.make(for: bottle, runtime: runtime, base: [:])["DXVK_HUD"] == nil)
+        bottle.graphics = .dxvk
+        #expect(WineEnvironment.make(for: bottle, runtime: runtime, base: [:])["DXVK_HUD"] == "fps,devinfo")
     }
 
     @Test func bottleSettingsWin() {
@@ -321,12 +395,77 @@ struct WineIntegrationTests {
         #expect(throws: RuntimeError.self) { try launcher.applyGraphics(.dxvk, to: bottle, dxvk: nil) }
     }
 
+    @Test func switchesToDXMTAndBack() throws {
+        let dir = try makeTempDirectory()
+        defer { try? FileManager.default.removeItem(at: dir) }
+        var bottle = Bottle(name: "G", runtimeID: "w")
+        bottle.folder = dir.appending(path: "bottle")
+        for folder in ["system32", "syswow64"] {
+            try FileManager.default.createDirectory(at: bottle.driveC.appending(path: "windows/\(folder)"), withIntermediateDirectories: true)
+        }
+        var manifest = RuntimeManifest(id: "w", name: "W", version: "1", url: URL(string: "https://example.invalid")!,
+                                       sha256: "", size: 0, license: "", sourceURL: URL(string: "https://example.invalid")!,
+                                       binPath: "wine/bin")
+        let runtime = InstalledRuntime(manifest: manifest, root: dir)
+        for arch in ["x64", "x32"] {
+            let folder = runtime.dxmtDirectory.appending(path: arch)
+            try FileManager.default.createDirectory(at: folder, withIntermediateDirectories: true)
+            for dll in ["d3d10core", "d3d11", "dxgi", "winemetal"] {
+                try "\(arch)-\(dll)".write(to: folder.appending(path: "\(dll).dll"), atomically: true, encoding: .utf8)
+            }
+        }
+
+        // A runtime without the feature refuses DXMT even if the files exist.
+        #expect(throws: RuntimeError.self) { try WineLauncher(runtime: runtime).applyGraphics(.dxmt, to: bottle, dxvk: nil) }
+
+        manifest.features = ["dxmt"]
+        let launcher = WineLauncher(runtime: InstalledRuntime(manifest: manifest, root: dir))
+        let withDXMT = try launcher.applyGraphics(.dxmt, to: bottle, dxvk: nil)
+        #expect(withDXMT.graphics == .dxmt)
+        #expect(withDXMT.dllOverrides == ["d3d10core": "n,b", "d3d11": "n,b", "dxgi": "n,b"])
+        let system32 = bottle.driveC.appending(path: "windows/system32")
+        #expect(try String(contentsOf: system32.appending(path: "dxgi.dll"), encoding: .utf8) == "x64-dxgi")
+        #expect(try String(contentsOf: system32.appending(path: "winemetal.dll"), encoding: .utf8) == "x64-winemetal")
+
+        let back = try launcher.applyGraphics(.wined3d, to: withDXMT, dxvk: nil)
+        #expect(back.dllOverrides == ["d3d10core": "b", "d3d11": "b", "dxgi": "b"])
+    }
+
+    @Test func winetricksFindsCabextract() throws {
+        var bottle = Bottle(name: "G", runtimeID: "w")
+        bottle.folder = URL(fileURLWithPath: "/Bottles/G")
+        let launcher = WineLauncher(runtime: InstalledRuntime(
+            manifest: RuntimeManifest(id: "w", name: "W", version: "1", url: URL(string: "https://example.invalid")!,
+                                      sha256: "", size: 0, license: "", sourceURL: URL(string: "https://example.invalid")!,
+                                      binPath: "bin"),
+            root: URL(fileURLWithPath: "/R")))
+        let without = launcher.winetricksEnvironment(for: bottle, cabextract: nil)
+        #expect(without["PATH"]?.hasPrefix("/R/bin:") == true)
+        #expect(without["WINESERVER"] == "/R/bin/wineserver")
+
+        let cab = ComponentManifest(id: "cab", name: "cabextract", version: "1", kind: .archive,
+                                    url: URL(string: "https://example.invalid")!, sha256: "", size: 0, license: "GPL-3.0",
+                                    sourceURL: URL(string: "https://example.invalid")!, path: "cabextract")
+        let with = launcher.winetricksEnvironment(
+            for: bottle, cabextract: InstalledComponent(manifest: cab, root: URL(fileURLWithPath: "/C/cab")))
+        #expect(with["PATH"]?.hasPrefix("/C/cab/cabextract:/R/bin:") == true)
+    }
+
+    @Test func unknownBackendFallsBackToWine() throws {
+        let json = #"{"id": "12345678-0000-0000-0000-000000000000", "name": "Nova", "runtimeID": "w", "graphics": "vulkan9", "msync": true}"#
+        let bottle = try JSONDecoder().decode(Bottle.self, from: Data(json.utf8))
+        #expect(bottle.graphics == .wined3d)
+        #expect(bottle.msync)
+    }
+
     @Test func decodesOlderBottleFiles() throws {
         let json = #"{"id": "12345678-0000-0000-0000-000000000000", "name": "Velha", "runtimeID": "w"}"#
         let bottle = try JSONDecoder().decode(Bottle.self, from: Data(json.utf8))
         #expect(bottle.graphics == .wined3d)
         #expect(bottle.windowsVersion == .win10)
         #expect(bottle.dllOverrides.isEmpty)
+        #expect(!bottle.msync)
+        #expect(!bottle.performanceHUD)
     }
 }
 

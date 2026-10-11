@@ -26,13 +26,17 @@ public struct Bottle: Codable, Sendable, Identifiable, Hashable {
     /// `WINEDLLOVERRIDES` entries, e.g. `["d3d11": "n,b"]`.
     public var dllOverrides: [String: String]
     public var graphics: GraphicsBackend
+    /// Use msync for Wine's synchronization (only with a runtime built with it).
+    public var msync: Bool
+    /// Show Metal's performance HUD (and DXVK's, with DXVK) in games.
+    public var performanceHUD: Bool
     public var createdAt: Date
 
     /// Folder of this bottle; set when it is loaded, not stored in the JSON.
     public internal(set) var folder: URL = URL(fileURLWithPath: "/")
 
     enum CodingKeys: String, CodingKey {
-        case id, name, runtimeID, windowsVersion, environment, dllOverrides, graphics, createdAt
+        case id, name, runtimeID, windowsVersion, environment, dllOverrides, graphics, msync, performanceHUD, createdAt
     }
 
     public init(from decoder: Decoder) throws {
@@ -43,13 +47,17 @@ public struct Bottle: Codable, Sendable, Identifiable, Hashable {
         windowsVersion = try c.decodeIfPresent(WindowsVersion.self, forKey: .windowsVersion) ?? .win10
         environment = try c.decodeIfPresent([String: String].self, forKey: .environment) ?? [:]
         dllOverrides = try c.decodeIfPresent([String: String].self, forKey: .dllOverrides) ?? [:]
-        graphics = try c.decodeIfPresent(GraphicsBackend.self, forKey: .graphics) ?? .wined3d
+        // A backend from a newer WinHub must not make the bottle unreadable.
+        graphics = (try? c.decodeIfPresent(GraphicsBackend.self, forKey: .graphics)) ?? .wined3d
+        msync = try c.decodeIfPresent(Bool.self, forKey: .msync) ?? false
+        performanceHUD = try c.decodeIfPresent(Bool.self, forKey: .performanceHUD) ?? false
         createdAt = try c.decodeIfPresent(Date.self, forKey: .createdAt) ?? .now
     }
 
     public init(id: UUID = UUID(), name: String, runtimeID: String, windowsVersion: WindowsVersion = .win10,
                 environment: [String: String] = [:], dllOverrides: [String: String] = [:],
-                graphics: GraphicsBackend = .wined3d, createdAt: Date = .now) {
+                graphics: GraphicsBackend = .wined3d, msync: Bool = false, performanceHUD: Bool = false,
+                createdAt: Date = .now) {
         self.id = id
         self.name = name
         self.runtimeID = runtimeID
@@ -57,6 +65,8 @@ public struct Bottle: Codable, Sendable, Identifiable, Hashable {
         self.environment = environment
         self.dllOverrides = dllOverrides
         self.graphics = graphics
+        self.msync = msync
+        self.performanceHUD = performanceHUD
         self.createdAt = createdAt
     }
 

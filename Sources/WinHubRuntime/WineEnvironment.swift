@@ -35,6 +35,14 @@ public enum WineEnvironment {
         // .NET 7+ JIT under Rosetta needs W^X disabled.
         env["DOTNET_EnableWriteXorExecute"] = "0"
 
+        if bottle.msync && runtime.manifest.supports(.msync) {
+            env["WINEMSYNC"] = "1"
+        }
+        if bottle.performanceHUD {
+            env["MTL_HUD_ENABLED"] = "1"
+            if bottle.graphics == .dxvk { env["DXVK_HUD"] = "fps,devinfo" }
+        }
+
         let overrides = bottle.dllOverrides.merging(extraOverrides) { _, new in new }
         if !overrides.isEmpty {
             env["WINEDLLOVERRIDES"] = overrides.sorted { $0.key < $1.key }

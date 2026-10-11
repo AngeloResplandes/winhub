@@ -57,11 +57,32 @@ final class WineStore {
     }
 
     var manifest: RuntimeManifest? { manifests.first }
-    var isRosettaAvailable: Bool { RuntimeManager.isRosettaAvailable }
+    private(set) var isRosettaAvailable = RuntimeManager.isRosettaAvailable
+    private(set) var isInstallingRosetta = false
+
+    /// Backends the installed runtime can use (DXMT needs a build made for it).
+    var graphicsBackends: [GraphicsBackend] {
+        GraphicsBackend.allCases.filter { $0 != .dxmt || runtime?.manifest.supports(.dxmt) == true }
+    }
+    var supportsMSync: Bool { runtime?.manifest.supports(.msync) == true }
+    /// winetricks finds `cabextract` only when the manifests offer it.
+    var hasCabextract: Bool { component(named: "cabextract") != nil }
+
+    func installRosetta() async {
+        guard !isInstallingRosetta else { return }
+        isInstallingRosetta = true
+        defer { isInstallingRosetta = false }
+        do {
+            try await Task.detached(priority: .userInitiated) { try RuntimeManager.installRosetta() }.value
+        } catch {
+            errorMessage = error.localizedDescription
+        }
+        isRosettaAvailable = RuntimeManager.isRosettaAvailable
+    }
 
     /// A newer Wine than the installed one (the manifests follow the repository).
     var runtimeUpgrade: RuntimeManifest? {
-        guard let runtime, let manifest, runtime.manifest.sha256 != manifest.sha256 else { return nil }
+        guard let runtime, let manifest, !runtime.manifest.isSameBuild(as: manifest) else { return nil }
         return manifest
     }
 
@@ -207,13 +228,37 @@ final class WineStore {
         }
     }
 
+    func setMSync(_ enabled: Bool, for bottle: Bottle) {
+        var updated = bottle
+        updated.msync = enabled
+        save(updated)
+    }
+
+    func setPerformanceHUD(_ enabled: Bool, for bottle: Bottle) {
+        var updated = bottle
+        updated.performanceHUD = enabled
+        save(updated)
+    }
+
+    /// Settings that only change the environment apply the next time a program opens.
+    private func save(_ bottle: Bottle) {
+        do {
+            try bottleStore.save(bottle)
+        } catch {
+            errorMessage = error.localizedDescription
+        }
+        refresh()
+    }
+
     /// Installs winetricks verbs such as `vcrun2022` or `corefonts` into a bottle.
     func installDependencies(_ verbs: [String], in bottle: Bottle, key: String? = nil) async throws {
         guard !verbs.isEmpty, let runtime = requireRuntime() else { return }
         let key = key ?? bottle.id.uuidString
         let winetricks = try await ensureComponent(named: "winetricks", key: key)
+        let cabextract = hasCabextract ? try await ensureComponent(named: "cabextract", key: key) : nil
         try await perform(key: key, "Instalando \(verbs.joined(separator: ", "))…") {
-            try await WineLauncher(runtime: runtime).runWinetricks(verbs, in: bottle, winetricks: winetricks)
+            try await WineLauncher(runtime: runtime).runWinetricks(verbs, in: bottle, winetricks: winetricks,
+                                                                   cabextract: cabextract)
         }
     }
 

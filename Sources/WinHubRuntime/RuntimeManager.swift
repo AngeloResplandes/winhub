@@ -6,6 +6,7 @@ public enum RuntimeError: Error, LocalizedError, Equatable {
     case extractionFailed(status: Int32, output: String)
     case missingBinary(URL)
     case rosettaUnavailable
+    case rosettaInstallFailed(String)
 
     public var errorDescription: String? {
         switch self {
@@ -17,6 +18,8 @@ public enum RuntimeError: Error, LocalizedError, Equatable {
             "O motor não contém \(url.lastPathComponent) no local esperado."
         case .rosettaUnavailable:
             "Este Mac precisa do Rosetta 2. Instale com: softwareupdate --install-rosetta --agree-to-license"
+        case .rosettaInstallFailed(let output):
+            "Não foi possível instalar o Rosetta 2. \(output)"
         }
     }
 }
@@ -45,7 +48,7 @@ public struct RuntimeManager: Sendable {
         let marker = dir.appending(path: Self.markerName)
         guard let data = try? Data(contentsOf: marker),
               let recorded = try? JSONDecoder().decode(RuntimeManifest.self, from: data),
-              recorded.sha256 == manifest.sha256 else { return nil }
+              recorded.isSameBuild(as: manifest) else { return nil }
         let runtime = InstalledRuntime(manifest: manifest, root: dir)
         return FileManager.default.isExecutableFile(atPath: runtime.wine.path) ? runtime : nil
     }
@@ -61,23 +64,40 @@ public struct RuntimeManager: Sendable {
         }
     }
 
-    /// Downloads `manifest.url`, checks its SHA-256 and unpacks it. Progress is 0…1.
+    /// Downloads `manifest.url` (and the overlay), checks the SHA-256s and unpacks them. Progress is 0…1.
     public func install(_ manifest: RuntimeManifest,
                         progress: @escaping @Sendable (Double) -> Void = { _ in }) async throws -> InstalledRuntime {
         try Self.requireRosetta()
         try FileManager.default.createDirectory(at: root, withIntermediateDirectories: true)
 
-        let delegate = DownloadProgressDelegate(expectedSize: manifest.size, onProgress: progress)
+        let total = Double(max(manifest.downloadSize, 1))
+        let mainShare = Double(manifest.size) / total
+        let delegate = DownloadProgressDelegate(expectedSize: manifest.size) { progress($0 * mainShare) }
         let (download, _) = try await URLSession.shared.download(from: manifest.url, delegate: delegate)
         defer { try? FileManager.default.removeItem(at: download) }
-        return try installArchive(at: download, manifest: manifest)
+
+        var overlayFile: URL?
+        defer { if let overlayFile { try? FileManager.default.removeItem(at: overlayFile) } }
+        if let overlay = manifest.overlay {
+            let delegate = DownloadProgressDelegate(expectedSize: overlay.size) { progress(mainShare + $0 * (1 - mainShare)) }
+            overlayFile = try await URLSession.shared.download(from: overlay.url, delegate: delegate).0
+        }
+        return try installArchive(at: download, overlay: overlayFile, manifest: manifest)
     }
 
-    /// Verifies and unpacks an archive that is already on disk.
-    public func installArchive(at archive: URL, manifest: RuntimeManifest) throws -> InstalledRuntime {
+    /// Verifies and unpacks archives that are already on disk.
+    public func installArchive(at archive: URL, overlay overlayArchive: URL? = nil,
+                               manifest: RuntimeManifest) throws -> InstalledRuntime {
         let actual = try Self.sha256(of: archive)
         guard actual == manifest.sha256 else {
             throw RuntimeError.checksumMismatch(expected: manifest.sha256, actual: actual)
+        }
+        if let overlay = manifest.overlay {
+            guard let overlayArchive else { throw RuntimeError.missingBinary(overlay.url) }
+            let actual = try Self.sha256(of: overlayArchive)
+            guard actual == overlay.sha256 else {
+                throw RuntimeError.checksumMismatch(expected: overlay.sha256, actual: actual)
+            }
         }
 
         let staging = root.appending(path: ".staging-\(UUID().uuidString)", directoryHint: .isDirectory)
@@ -93,6 +113,13 @@ public struct RuntimeManager: Sendable {
         let runtime = InstalledRuntime(manifest: manifest, root: staging)
         guard FileManager.default.isExecutableFile(atPath: runtime.wine.path) else {
             throw RuntimeError.missingBinary(runtime.wine)
+        }
+        if manifest.overlay != nil, let overlayArchive {
+            let result = try ProcessRunner.run(URL(fileURLWithPath: "/usr/bin/tar"),
+                                               arguments: ["-xf", overlayArchive.path, "-C", runtime.wineDirectory.path])
+            guard result.status == 0 else {
+                throw RuntimeError.extractionFailed(status: result.status, output: result.output)
+            }
         }
 
         let destination = directory(for: manifest.id)
@@ -126,6 +153,16 @@ public struct RuntimeManager: Sendable {
         #else
         true
         #endif
+    }
+
+    /// Installs Rosetta 2 with Apple's `softwareupdate`; macOS asks for an administrator password.
+    /// Blocks until it finishes, so call it off the main thread.
+    public static func installRosetta() throws {
+        let script = #"do shell script "/usr/sbin/softwareupdate --install-rosetta --agree-to-license" with administrator privileges"#
+        let result = try ProcessRunner.run(URL(fileURLWithPath: "/usr/bin/osascript"), arguments: ["-e", script])
+        guard result.status == 0, isRosettaAvailable else {
+            throw RuntimeError.rosettaInstallFailed(result.output.trimmingCharacters(in: .whitespacesAndNewlines))
+        }
     }
 
     static func requireRosetta() throws {
