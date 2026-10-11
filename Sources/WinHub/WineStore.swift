@@ -369,7 +369,7 @@ final class WineStore {
 
     /// Shows `message` under `key` while `work` runs.
     @discardableResult
-    private func perform<T>(key: String, _ message: String, _ work: () async throws -> T) async throws -> T {
+    private func perform<T>(key: String, _ message: String, _ work: @MainActor () async throws -> T) async throws -> T {
         activity[key] = message
         defer { activity[key] = nil }
         return try await work()
