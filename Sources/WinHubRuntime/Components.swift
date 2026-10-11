@@ -132,49 +132,199 @@ public enum GraphicsBackend: String, Codable, Sendable, CaseIterable {
     /// DLLs DXMT replaces; `winemetal` is its bridge to the Mac side and is only copied.
     static let dxmtDLLs = ["d3d10core", "d3d11", "dxgi"]
     static let dxmtFiles = dxmtDLLs + ["winemetal"]
+    /// Every DLL any backend puts in place of Wine's.
+    static let replacedDLLs = ["d3d10core", "d3d11", "dxgi"]
+
+    /// DLLs to copy and to load "native, then builtin"; empty for Wine's own Direct3D.
+    var files: [String] {
+        switch self {
+        case .wined3d: []
+        case .dxvk: Self.dxvkDLLs
+        case .dxmt: Self.dxmtFiles
+        }
+    }
+
+    var overriddenDLLs: [String] {
+        switch self {
+        case .wined3d: []
+        case .dxvk: Self.dxvkDLLs
+        case .dxmt: Self.dxmtDLLs
+        }
+    }
+}
+
+/// Machine type of a Windows executable, read from its PE header.
+public enum PEArchitecture: Sendable {
+    case x64, x86
+
+    /// Folder name used by DXVK and DXMT for this architecture's DLLs.
+    var dllFolder: String { self == .x64 ? "x64" : "x32" }
+
+    public static func of(_ file: URL) -> PEArchitecture? {
+        guard let handle = try? FileHandle(forReadingFrom: file) else { return nil }
+        defer { try? handle.close() }
+        guard let header = try? handle.read(upToCount: 4096), header.count >= 0x40,
+              header[0] == 0x4D, header[1] == 0x5A else { return nil }
+        let peOffset = Int(header[0x3C]) | Int(header[0x3D]) << 8 | Int(header[0x3E]) << 16 | Int(header[0x3F]) << 24
+        guard peOffset + 6 <= header.count,
+              header[peOffset] == 0x50, header[peOffset + 1] == 0x45,
+              header[peOffset + 2] == 0, header[peOffset + 3] == 0 else { return nil }
+        switch UInt16(header[peOffset + 4]) | UInt16(header[peOffset + 5]) << 8 {
+        case 0x8664: return .x64
+        case 0x014C: return .x86
+        default: return nil
+        }
+    }
+}
+
+public enum GraphicsError: Error, LocalizedError, Equatable {
+    case programNotFound(String)
+    case unknownArchitecture(String)
+    case programShipsDLL(String)
+
+    public var errorDescription: String? {
+        switch self {
+        case .programNotFound(let path): "O programa \(path) não foi encontrado na garrafa."
+        case .unknownArchitecture(let name): "Não foi possível saber se \(name) é de 32 ou 64 bits."
+        case .programShipsDLL(let dll): "O programa já traz o próprio \(dll).dll; o WinHub não vai substituí-lo."
+        }
+    }
 }
 
 extension WineLauncher {
     /// Switches the bottle's Direct3D. For DXVK and DXMT the DLLs are copied into the
-    /// prefix and loaded "native, then builtin"; Wine's own DLLs are forced back otherwise.
+    /// prefix and loaded "native, then builtin"; for Wine's own, its DLLs are put back.
     public func applyGraphics(_ backend: GraphicsBackend, to bottle: Bottle, dxvk: InstalledComponent?) throws -> Bottle {
         var updated = bottle
-        // Only DXMT replaces dxgi; whoever leaves it gets Wine's back.
-        if updated.dllOverrides["dxgi"] != nil { updated.dllOverrides["dxgi"] = "b" }
-        switch backend {
-        case .wined3d:
-            for dll in GraphicsBackend.dxvkDLLs { updated.dllOverrides[dll] = "b" }
-        case .dxvk:
-            guard let dxvk else { throw RuntimeError.missingBinary(URL(fileURLWithPath: "dxvk")) }
-            try copyDLLs(GraphicsBackend.dxvkDLLs, from: dxvk.payload, into: bottle)
-            for dll in GraphicsBackend.dxvkDLLs { updated.dllOverrides[dll] = "n,b" }
-        case .dxmt:
-            let source = runtime.dxmtDirectory
-            guard runtime.manifest.supports(.dxmt), FileManager.default.fileExists(atPath: source.path) else {
-                throw RuntimeError.missingBinary(source)
+        let source = try graphicsSource(backend, dxvk: dxvk)
+        restoreWineDLLs(GraphicsBackend.replacedDLLs.filter { !backend.overriddenDLLs.contains($0) }, in: &updated)
+        if let source {
+            for (arch, folder) in [(PEArchitecture.x64, "system32"), (.x86, "syswow64")] {
+                let target = bottle.driveC.appending(path: "windows/\(folder)", directoryHint: .isDirectory)
+                guard FileManager.default.fileExists(atPath: target.path) else { continue }
+                try copyDLLs(backend.files, from: source.appending(path: arch.dllFolder, directoryHint: .isDirectory),
+                             into: target)
             }
-            try copyDLLs(GraphicsBackend.dxmtFiles, from: source, into: bottle)
-            for dll in GraphicsBackend.dxmtDLLs { updated.dllOverrides[dll] = "n,b" }
+            for dll in backend.overriddenDLLs { updated.dllOverrides[dll] = "n,b" }
         }
         updated.graphics = backend
         return updated
     }
 
-    /// Copies `<source>/x64/<dll>.dll` into `system32` and `x32` into `syswow64`.
-    private func copyDLLs(_ dlls: [String], from source: URL, into bottle: Bottle) throws {
-        let windows = bottle.driveC.appending(path: "windows", directoryHint: .isDirectory)
-        for (arch, folder) in [("x64", "system32"), ("x32", "syswow64")] {
-            let from = source.appending(path: arch, directoryHint: .isDirectory)
-            let target = windows.appending(path: folder, directoryHint: .isDirectory)
-            guard FileManager.default.fileExists(atPath: target.path) else { continue }
-            for dll in dlls {
-                let file = from.appending(path: "\(dll).dll")
-                guard FileManager.default.fileExists(atPath: file.path) else { continue }
-                let destination = target.appending(path: "\(dll).dll")
-                try? FileManager.default.removeItem(at: destination)
-                try FileManager.default.copyItem(at: file, to: destination)
+    /// Folder with the backend's `x64/` and `x32/` DLLs; `nil` for Wine's own Direct3D.
+    private func graphicsSource(_ backend: GraphicsBackend, dxvk: InstalledComponent?) throws -> URL? {
+        switch backend {
+        case .wined3d:
+            return nil
+        case .dxvk:
+            guard let dxvk else { throw RuntimeError.missingBinary(URL(fileURLWithPath: "dxvk")) }
+            return dxvk.payload
+        case .dxmt:
+            let source = runtime.dxmtDirectory
+            guard runtime.manifest.supports(.dxmt), FileManager.default.fileExists(atPath: source.path) else {
+                throw RuntimeError.missingBinary(source)
+            }
+            return source
+        }
+    }
+
+    /// Puts Wine's own DLLs back into the prefix and drops their overrides, so per-program
+    /// settings in the registry are not shadowed by `WINEDLLOVERRIDES`. Runtimes without
+    /// the DLLs on disk get "builtin" overrides instead, as before.
+    private func restoreWineDLLs(_ dlls: [String], in bottle: inout Bottle) {
+        for dll in dlls {
+            var restored = true
+            for (folder, wineFolder) in [("system32", "x86_64-windows"), ("syswow64", "i386-windows")] {
+                let target = bottle.driveC.appending(path: "windows/\(folder)", directoryHint: .isDirectory)
+                guard FileManager.default.fileExists(atPath: target.path) else { continue }
+                let original = runtime.wineDirectory.appending(path: "lib/wine/\(wineFolder)/\(dll).dll")
+                guard FileManager.default.fileExists(atPath: original.path),
+                      (try? copyDLLs([dll], from: original.deletingLastPathComponent(), into: target)) != nil else {
+                    restored = false
+                    continue
+                }
+            }
+            if restored {
+                bottle.dllOverrides[dll] = nil
+            } else if bottle.dllOverrides[dll] != nil || GraphicsBackend.dxvkDLLs.contains(dll) {
+                bottle.dllOverrides[dll] = "b"
             }
         }
+    }
+
+    /// Copies `<source>/<dll>.dll` into `target` for each DLL that exists in the source.
+    private func copyDLLs(_ dlls: [String], from source: URL, into target: URL) throws {
+        for dll in dlls {
+            let file = source.appending(path: "\(dll).dll")
+            guard FileManager.default.fileExists(atPath: file.path) else { continue }
+            let destination = target.appending(path: "\(dll).dll")
+            try? FileManager.default.removeItem(at: destination)
+            try FileManager.default.copyItem(at: file, to: destination)
+        }
+    }
+
+    /// Registry key with one program's DLL overrides; it wins over the prefix-wide ones.
+    static func appDefaultsKey(for program: String) -> String {
+        #"HKCU\Software\Wine\AppDefaults\"# + program + #"\DllOverrides"#
+    }
+
+    /// Gives one program its own Direct3D (`nil`: the bottle's). The DLLs go next to the
+    /// `.exe` and the program gets "native, then builtin" overrides in the registry, so the
+    /// rest of the bottle (the Steam client, say) keeps the bottle's setting.
+    public func applyProgramGraphics(_ backend: GraphicsBackend?, program windowsPath: String, in bottle: Bottle,
+                                     dxvk: InstalledComponent?) async throws -> Bottle {
+        guard let exe = bottle.unixPath(forWindowsPath: windowsPath),
+              FileManager.default.fileExists(atPath: exe.path) else {
+            throw GraphicsError.programNotFound(windowsPath)
+        }
+        guard let arch = PEArchitecture.of(exe) else { throw GraphicsError.unknownArchitecture(exe.lastPathComponent) }
+        let folder = exe.deletingLastPathComponent()
+        let source = try backend.flatMap { try graphicsSource($0, dxvk: dxvk) }
+
+        var updated = bottle
+        // `WINEDLLOVERRIDES` beats the registry; a bottle forcing Wine's DLLs would hide these.
+        if updated.graphics == .wined3d { restoreWineDLLs(GraphicsBackend.replacedDLLs, in: &updated) }
+
+        let ours = knownGraphicsDLLs(arch: arch, dxvk: dxvk)
+        let wanted = backend?.files ?? []
+        for dll in GraphicsBackend.replacedDLLs + ["winemetal"] {
+            let file = folder.appending(path: "\(dll).dll")
+            guard let data = try? Data(contentsOf: file) else { continue }
+            if ours.contains(data) {
+                try FileManager.default.removeItem(at: file)
+            } else if wanted.contains(dll) {
+                throw GraphicsError.programShipsDLL(dll)
+            }
+        }
+
+        let key = Self.appDefaultsKey(for: exe.lastPathComponent)
+        _ = try await run(updated, ["reg", "delete", key, "/f"], logName: "reg")
+        if let backend, let source {
+            try copyDLLs(backend.files, from: source.appending(path: arch.dllFolder, directoryHint: .isDirectory), into: folder)
+            for dll in backend.overriddenDLLs {
+                let status = try await run(updated, ["reg", "add", key, "/v", dll, "/d", "native,builtin", "/f"], logName: "reg")
+                guard status == 0 else {
+                    throw WineLauncherError.failed(step: "Registrar \(dll) para \(exe.lastPathComponent)", status: status,
+                                                   log: logURL(updated, "reg"))
+                }
+            }
+        }
+        updated.programGraphics[windowsPath] = backend
+        return updated
+    }
+
+    /// Contents of every DLL the WinHub may have put next to a program, to recognize them later.
+    private func knownGraphicsDLLs(arch: PEArchitecture, dxvk: InstalledComponent?) -> Set<Data> {
+        var sources = [runtime.dxmtDirectory]
+        if let dxvk { sources.append(dxvk.payload) }
+        var known = Set<Data>()
+        for source in sources {
+            for dll in GraphicsBackend.replacedDLLs + ["winemetal"] {
+                let file = source.appending(path: "\(arch.dllFolder)/\(dll).dll")
+                if let data = try? Data(contentsOf: file) { known.insert(data) }
+            }
+        }
+        return known
     }
 
     /// Environment for winetricks: the bottle's, plus the Wine binaries and,

@@ -228,6 +228,39 @@ final class WineStore {
         }
     }
 
+    /// Gives one program its own Direct3D (`nil`: back to the bottle's setting).
+    func setProgramGraphics(_ backend: GraphicsBackend?, program: String, in bottle: Bottle) async {
+        guard let runtime = requireRuntime() else { return }
+        let key = bottle.id.uuidString
+        do {
+            let dxvk = backend == .dxvk ? try await ensureComponent(named: "DXVK-macOS", key: key)
+                : component(named: "DXVK-macOS").flatMap(componentManager.installed)
+            let updated = try await perform(key: key, "Aplicando os gráficos do programa…") {
+                try await WineLauncher(runtime: runtime).applyProgramGraphics(backend, program: program, in: bottle, dxvk: dxvk)
+            }
+            try bottleStore.save(updated)
+        } catch {
+            errorMessage = error.localizedDescription
+        }
+        refresh()
+    }
+
+    /// Asks for a `.exe` inside the bottle (Steam's game folder first) and gives it the
+    /// fastest Direct3D available.
+    func chooseProgramForGraphics(in bottle: Bottle) async {
+        let panel = NSOpenPanel()
+        panel.allowedContentTypes = [.exe].compactMap { $0 }
+        panel.message = "Escolha o .exe do programa ou do jogo"
+        let steamGames = bottle.driveC.appending(path: "Program Files (x86)/Steam/steamapps/common", directoryHint: .isDirectory)
+        panel.directoryURL = FileManager.default.fileExists(atPath: steamGames.path) ? steamGames : bottle.driveC
+        guard panel.runModal() == .OK, let url = panel.url else { return }
+        guard let program = bottle.windowsPath(forUnixPath: url) else {
+            errorMessage = "Escolha um programa que esteja dentro do disco C: da garrafa “\(bottle.name)”."
+            return
+        }
+        await setProgramGraphics(graphicsBackends.contains(.dxmt) ? .dxmt : .dxvk, program: program, in: bottle)
+    }
+
     func setMSync(_ enabled: Bool, for bottle: Bottle) {
         var updated = bottle
         updated.msync = enabled

@@ -26,6 +26,8 @@ public struct Bottle: Codable, Sendable, Identifiable, Hashable {
     /// `WINEDLLOVERRIDES` entries, e.g. `["d3d11": "n,b"]`.
     public var dllOverrides: [String: String]
     public var graphics: GraphicsBackend
+    /// Programs with their own Direct3D, by Windows path of the `.exe` (e.g. a Steam game).
+    public var programGraphics: [String: GraphicsBackend]
     /// Use msync for Wine's synchronization (only with a runtime built with it).
     public var msync: Bool
     /// Show Metal's performance HUD (and DXVK's, with DXVK) in games.
@@ -36,7 +38,7 @@ public struct Bottle: Codable, Sendable, Identifiable, Hashable {
     public internal(set) var folder: URL = URL(fileURLWithPath: "/")
 
     enum CodingKeys: String, CodingKey {
-        case id, name, runtimeID, windowsVersion, environment, dllOverrides, graphics, msync, performanceHUD, createdAt
+        case id, name, runtimeID, windowsVersion, environment, dllOverrides, graphics, programGraphics, msync, performanceHUD, createdAt
     }
 
     public init(from decoder: Decoder) throws {
@@ -49,6 +51,8 @@ public struct Bottle: Codable, Sendable, Identifiable, Hashable {
         dllOverrides = try c.decodeIfPresent([String: String].self, forKey: .dllOverrides) ?? [:]
         // A backend from a newer WinHub must not make the bottle unreadable.
         graphics = (try? c.decodeIfPresent(GraphicsBackend.self, forKey: .graphics)) ?? .wined3d
+        let programs = (try? c.decodeIfPresent([String: String].self, forKey: .programGraphics)) ?? [:]
+        programGraphics = programs.compactMapValues(GraphicsBackend.init(rawValue:))
         msync = try c.decodeIfPresent(Bool.self, forKey: .msync) ?? false
         performanceHUD = try c.decodeIfPresent(Bool.self, forKey: .performanceHUD) ?? false
         createdAt = try c.decodeIfPresent(Date.self, forKey: .createdAt) ?? .now
@@ -65,6 +69,7 @@ public struct Bottle: Codable, Sendable, Identifiable, Hashable {
         self.environment = environment
         self.dllOverrides = dllOverrides
         self.graphics = graphics
+        self.programGraphics = [:]
         self.msync = msync
         self.performanceHUD = performanceHUD
         self.createdAt = createdAt
@@ -75,6 +80,14 @@ public struct Bottle: Codable, Sendable, Identifiable, Hashable {
     public var logs: URL { folder.appending(path: "logs", directoryHint: .isDirectory) }
     /// `wineboot --init` has completed for this prefix.
     public var isInitialized: Bool { FileManager.default.fileExists(atPath: prefix.appending(path: "system.reg").path) }
+
+    /// `C:\…` path of a file inside this bottle's C: drive, or `nil` for files elsewhere.
+    public func windowsPath(forUnixPath url: URL) -> String? {
+        let root = driveC.standardizedFileURL.path
+        let path = url.standardizedFileURL.path
+        guard path.hasPrefix(root + "/") else { return nil }
+        return "C:\\" + path.dropFirst(root.count + 1).replacingOccurrences(of: "/", with: "\\")
+    }
 
     /// Mac location of a `C:\…` path inside this bottle, or `nil` for other drives.
     public func unixPath(forWindowsPath path: String) -> URL? {

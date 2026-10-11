@@ -451,6 +451,97 @@ struct WineIntegrationTests {
         #expect(with["PATH"]?.hasPrefix("/C/cab/cabextract:/R/bin:") == true)
     }
 
+    /// A minimal PE file: "MZ", the PE header offset and the machine type.
+    func writeFakeExe(_ url: URL, machine: UInt16) throws {
+        var bytes = [UInt8](repeating: 0, count: 0x100)
+        bytes[0] = 0x4D; bytes[1] = 0x5A
+        bytes[0x3C] = 0x80
+        bytes[0x80] = 0x50; bytes[0x81] = 0x45
+        bytes[0x84] = UInt8(machine & 0xFF); bytes[0x85] = UInt8(machine >> 8)
+        try FileManager.default.createDirectory(at: url.deletingLastPathComponent(), withIntermediateDirectories: true)
+        try Data(bytes).write(to: url)
+    }
+
+    @Test func readsExecutableArchitecture() throws {
+        let dir = try makeTempDirectory()
+        defer { try? FileManager.default.removeItem(at: dir) }
+        try writeFakeExe(dir.appending(path: "a.exe"), machine: 0x8664)
+        try writeFakeExe(dir.appending(path: "b.exe"), machine: 0x014C)
+        try writeFakeExe(dir.appending(path: "c.exe"), machine: 0xAA64)
+        try "not a PE".write(to: dir.appending(path: "d.exe"), atomically: true, encoding: .utf8)
+        #expect(PEArchitecture.of(dir.appending(path: "a.exe")) == .x64)
+        #expect(PEArchitecture.of(dir.appending(path: "b.exe")) == .x86)
+        #expect(PEArchitecture.of(dir.appending(path: "c.exe")) == nil)
+        #expect(PEArchitecture.of(dir.appending(path: "d.exe")) == nil)
+    }
+
+    @Test func mapsMacPathsBackToWindows() {
+        var bottle = Bottle(name: "G", runtimeID: "w")
+        bottle.folder = URL(fileURLWithPath: "/Bottles/G")
+        #expect(bottle.windowsPath(forUnixPath: URL(fileURLWithPath: "/Bottles/G/prefix/drive_c/Games/A B/a.exe"))
+                == #"C:\Games\A B\a.exe"#)
+        #expect(bottle.windowsPath(forUnixPath: URL(fileURLWithPath: "/Users/x/a.exe")) == nil)
+    }
+
+    @Test func givesOneProgramItsOwnDirect3D() async throws {
+        let dir = try makeTempDirectory()
+        defer { try? FileManager.default.removeItem(at: dir) }
+        // Runtime: a `wine` that logs its arguments, Wine's own DLLs and DXMT's.
+        let wineDir = dir.appending(path: "R/wine", directoryHint: .isDirectory)
+        let bin = wineDir.appending(path: "bin", directoryHint: .isDirectory)
+        try FileManager.default.createDirectory(at: bin, withIntermediateDirectories: true)
+        let calls = dir.appending(path: "calls.txt")
+        try "#!/bin/sh\necho \"$*\" >> '\(calls.path)'\nexit 0\n".write(to: bin.appending(path: "wine"), atomically: true, encoding: .utf8)
+        try FileManager.default.setAttributes([.posixPermissions: 0o755], ofItemAtPath: bin.appending(path: "wine").path)
+        for (folder, tag) in [("lib/wine/x86_64-windows", "wine64"), ("lib/wine/i386-windows", "wine32"),
+                              ("lib/dxmt/x64", "dxmt64"), ("lib/dxmt/x32", "dxmt32")] {
+            let target = wineDir.appending(path: folder, directoryHint: .isDirectory)
+            try FileManager.default.createDirectory(at: target, withIntermediateDirectories: true)
+            for dll in ["d3d11", "dxgi", "d3d10core", "winemetal"] {
+                try "\(tag)-\(dll)".write(to: target.appending(path: "\(dll).dll"), atomically: true, encoding: .utf8)
+            }
+        }
+        let manifest = RuntimeManifest(id: "w", name: "W", version: "1", url: URL(string: "https://example.invalid")!,
+                                       sha256: "", size: 0, license: "", sourceURL: URL(string: "https://example.invalid")!,
+                                       binPath: "wine/bin", features: ["dxmt"])
+        let launcher = WineLauncher(runtime: InstalledRuntime(manifest: manifest, root: dir.appending(path: "R")))
+
+        var bottle = Bottle(name: "Steam", runtimeID: "w", dllOverrides: ["d3d11": "b", "d3d10core": "b"])
+        bottle.folder = dir.appending(path: "bottle")
+        for folder in ["system32", "syswow64"] {
+            try FileManager.default.createDirectory(at: bottle.driveC.appending(path: "windows/\(folder)"), withIntermediateDirectories: true)
+        }
+        let program = #"C:\Games\Knight\knight.exe"#
+        let game = bottle.driveC.appending(path: "Games/Knight", directoryHint: .isDirectory)
+        try writeFakeExe(game.appending(path: "knight.exe"), machine: 0x8664)
+
+        let withDXMT = try await launcher.applyProgramGraphics(.dxmt, program: program, in: bottle, dxvk: nil)
+        #expect(withDXMT.programGraphics == [program: .dxmt])
+        // The bottle no longer forces Wine's DLLs through the environment; its files are Wine's.
+        #expect(withDXMT.dllOverrides.isEmpty)
+        #expect(try String(contentsOf: bottle.driveC.appending(path: "windows/system32/d3d11.dll"), encoding: .utf8) == "wine64-d3d11")
+        for dll in ["d3d11", "dxgi", "d3d10core", "winemetal"] {
+            #expect(try String(contentsOf: game.appending(path: "\(dll).dll"), encoding: .utf8) == "dxmt64-\(dll)")
+        }
+        let log = try String(contentsOf: calls, encoding: .utf8)
+        #expect(log.contains(#"reg add HKCU\Software\Wine\AppDefaults\knight.exe\DllOverrides /v dxgi /d native,builtin /f"#))
+
+        let back = try await launcher.applyProgramGraphics(nil, program: program, in: withDXMT, dxvk: nil)
+        #expect(back.programGraphics.isEmpty)
+        #expect(!FileManager.default.fileExists(atPath: game.appending(path: "d3d11.dll").path))
+        #expect(FileManager.default.fileExists(atPath: game.appending(path: "knight.exe").path))
+
+        // A DLL the game ships itself is never replaced or deleted.
+        try "the game's own".write(to: game.appending(path: "dxgi.dll"), atomically: true, encoding: .utf8)
+        await #expect(throws: GraphicsError.programShipsDLL("dxgi")) {
+            try await launcher.applyProgramGraphics(.dxmt, program: program, in: back, dxvk: nil)
+        }
+        #expect(try String(contentsOf: game.appending(path: "dxgi.dll"), encoding: .utf8) == "the game's own")
+        await #expect(throws: GraphicsError.self) {
+            try await launcher.applyProgramGraphics(.dxmt, program: #"C:\Games\missing.exe"#, in: back, dxvk: nil)
+        }
+    }
+
     @Test func unknownBackendFallsBackToWine() throws {
         let json = #"{"id": "12345678-0000-0000-0000-000000000000", "name": "Nova", "runtimeID": "w", "graphics": "vulkan9", "msync": true}"#
         let bottle = try JSONDecoder().decode(Bottle.self, from: Data(json.utf8))

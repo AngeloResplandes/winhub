@@ -132,6 +132,39 @@ struct BottleDetailView: View {
             }
 
             Section {
+                let choices = wine.graphicsBackends.filter { $0 != .wined3d }
+                ForEach(bottle.programGraphics.keys.sorted(), id: \.self) { program in
+                    HStack {
+                        Label(program.split(separator: "\\").last.map(String.init) ?? program, systemImage: "gamecontroller")
+                            .help(program)
+                        Spacer()
+                        Picker("Gráficos", selection: Binding(
+                            get: { bottle.programGraphics[program] ?? .dxvk },
+                            set: { backend in Task { await wine.setProgramGraphics(backend, program: program, in: bottle) } }
+                        )) {
+                            ForEach(choices, id: \.self) { Text($0.title).tag($0) }
+                        }
+                        .labelsHidden()
+                        .fixedSize()
+                        Button { Task { await wine.setProgramGraphics(nil, program: program, in: bottle) } } label: {
+                            Image(systemName: "xmark.circle")
+                        }
+                        .buttonStyle(.borderless)
+                        .help("Voltar aos gráficos da garrafa")
+                    }
+                }
+                Button { Task { await wine.chooseProgramForGraphics(in: bottle) } } label: {
+                    Label("Escolher programa…", systemImage: "plus")
+                }
+            } header: {
+                Text("Gráficos por programa")
+            } footer: {
+                Text("Vale só para o .exe escolhido, como um jogo da Steam. O resto da garrafa (a própria Steam, por exemplo) continua com a opção acima.")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
+
+            Section {
                 HStack {
                     TextField("Componentes", text: $verbs, prompt: Text("ex.: vcrun2022 corefonts"))
                     Button("Instalar") {
