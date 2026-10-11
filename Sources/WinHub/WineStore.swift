@@ -359,7 +359,10 @@ final class WineStore {
         activeBottles.insert(bottle.id)
         Task {
             do {
-                _ = try await body(WineLauncher(runtime: runtime))
+                let launcher = WineLauncher(runtime: runtime)
+                // A new wineserver reuses the prefix's folder; clear what an earlier one left behind.
+                await launcher.reapOrphans(bottle)
+                _ = try await body(launcher)
             } catch {
                 errorMessage = error.localizedDescription
             }

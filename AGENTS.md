@@ -21,7 +21,7 @@ Wine. Projeto **público e independente** (MIT). Leia este arquivo inteiro antes
 
 ```bash
 swift build                 # compilar
-swift test                  # 45 testes (unitários; os com Wine real ficam desligados)
+swift test                  # 51 testes (unitários; os com Wine real ficam desligados)
 swift run WinHub            # rodar sem empacotar (atalhos .app e links winhub:// não funcionam assim)
 ./scripts/package-app.sh    # gera dist/WinHub.app (universal) e dist/WinHub.zip, assinatura ad-hoc
 open Package.swift          # abrir no Xcode
@@ -46,7 +46,8 @@ Sources/WinHubRuntime/   tudo que toca disco, rede e processos do Wine
   WineEnvironment                   monta o ambiente dos processos Wine (função pura)
   WineLauncher                      wineboot, winecfg, instaladores, start /unix, wineserver -k
   ProgramScanner                    encontra .lnk no Menu Iniciar/Área de Trabalho da garrafa
-  WineServerStatus                  "garrafa em execução" = socket do wineserver existe
+  WineServerStatus                  "garrafa em execução" = alguém segura o `lock` do wineserver
+  WineOrphanReaper                  encerra processos órfãos de um wineserver que morreu
   Components                        DXVK e winetricks (ComponentManager) + GraphicsBackend
   AppLauncherBuilder                atalhos ~/Applications/WinHub/<garrafa>/<programa>.app
   Downloader, ProcessRunner         utilitários
@@ -83,6 +84,12 @@ Dados do usuário: `~/Library/Application Support/WinHub/{Runtimes,Components,Bo
   no wineserver e funciona. Não volte para um motor sem essa correção.
 - **Nunca rode o Wine de dentro do processo de um atalho `.app`.** Programas iniciados assim travam (a
   Steam fica parada em "Verifying…"). Por isso os atalhos delegam ao WinHub via `winhub://`.
+- **Processos órfãos de wineserver morto.** Se o wineserver morre sem encerrar os clientes (ex.: SIGKILL),
+  o `winedevice.exe` do `winebus.sys` fica vivo para sempre (laço do IOHID que nunca fala com o servidor;
+  o Wine trata SIGTERM encerrando só uma thread). O próximo wineserver reusa a pasta
+  `/tmp/.wine-<uid>/server-<dev>-<inode>/` e o `-k` dele não alcança os órfãos. O `WineOrphanReaper` os
+  encerra (SIGKILL) quando ninguém segura o `lock` da pasta; roda após `shutdown` e antes de cada `launch`.
+  Use o `lock`, não o `socket`, para saber se o servidor vive: um servidor morto com SIGKILL deixa o socket.
 - **`WINEDEBUG` padrão é `fixme-all`** (`err` não esconde os "fixme" e enche os logs).
 - **Ambiente isolado:** `WineEnvironment` só herda `HOME, USER, LOGNAME, LANG, LC_ALL, TMPDIR, SHELL`;
   sempre define `ROSETTA_ADVERTISE_AVX=1` e `DOTNET_EnableWriteXorExecute=0`. Configurações da garrafa vencem.
