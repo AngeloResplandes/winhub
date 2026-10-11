@@ -21,7 +21,7 @@ Wine. Projeto **público e independente** (MIT). Leia este arquivo inteiro antes
 
 ```bash
 swift build                 # compilar
-swift test                  # 77 testes (unitários; os com Wine real ficam desligados)
+swift test                  # 84 testes (unitários; os com Wine real ficam desligados)
 swift run WinHub            # rodar sem empacotar (atalhos .app e links winhub:// não funcionam assim)
 ./scripts/package-app.sh    # gera dist/WinHub.app (universal) e dist/WinHub.zip, assinatura ad-hoc;
                             # compila o wrapper da Steam (precisa de: brew install mingw-w64)
@@ -140,8 +140,18 @@ Dados do usuário: `~/Library/Application Support/WinHub/{Runtimes,Components,Bo
   sempre define `ROSETTA_ADVERTISE_AVX=1` e `DOTNET_EnableWriteXorExecute=0`. Configurações da garrafa vencem.
 - **DXVK-macOS** só tem `d3d10core` e `d3d11` (o `dxgi` é do Wine). DXVK → overrides `n,b`; voltar ao
   Wine → `b` (não precisa restaurar arquivos).
-- **MSync** é exclusivo do Wine da CodeWeavers; o Wine oficial não tem.
-- **winetricks:** alguns verbos exigem `cabextract`, que não vem no macOS.
+- **wined3d no macOS só chega ao D3D feature level 9_3** (OpenGL 4.1). Jogos Unity 6 em D3D11 (ex.:
+  Hollow Knight) falham ao criar o dispositivo. Precisam de DXVK ou DXMT (`docs/compat/`).
+- **DXMT (motor `winhub-engine`):** o Wine 11 não exporta o que o DXMT procura no `winemac.so`, e a
+  `macdrv_win_data` mudou de formato. O patch do `winhub-engine` exporta `macdrv_functions` no formato
+  antigo e cria uma client surface quando a janela não tem `client_view`. O motor é o pacote oficial do
+  WineHQ mais um **overlay** (`RuntimeManifest.overlay`, desempacotado na pasta `wine`); o DXMT vem como
+  DLLs nativas em `lib/dxmt/{x64,x32}`, copiadas por `applyGraphics(.dxmt)`. O build "builtin" do DXMT
+  não serve: posto na garrafa ou na pasta do jogo, o Wine carrega a própria DLL no lugar dele.
+- **MSync** não existe no Wine oficial. Os patches abertos (marzent/wine-msync, LGPL) param no Wine 9.15;
+  o app já tem o ajuste por garrafa (`Bottle.msync`, só com motor que declare `msync` em `features`).
+- **winetricks:** alguns verbos exigem `cabextract`, que não vem no macOS. Se `components.json` tiver um
+  componente `cabextract`, ele entra no `PATH` do winetricks.
 - **Compatibilidade com Swift 6.1 (Xcode 16.4, usado no CI):** closures `async` passados a métodos de
   classes `@MainActor` precisam ser marcados `@MainActor` (ou ter resultado `Sendable`). O Swift local
   pode ser mais novo e não acusar; o CI acusa.
@@ -170,5 +180,9 @@ Dados do usuário: `~/Library/Application Support/WinHub/{Runtimes,Components,Bo
 
 - Ícones reais dos programas (extrair do `.exe`) nos cards e atalhos.
 - Mais receitas testadas no catálogo; catálogo comunitário versionado.
-- Motor alternativo compilado do código LGPL da CodeWeavers (traria MSync e permitiria avaliar D3DMetal).
-- Instalação/edição de dependências por receita com `cabextract` embutido (licença compatível).
+- Publicar a primeira release do `winhub-engine` e trocar o `runtimes.json` para ela.
+- Gráficos por jogo na garrafa da Steam (`AppDefaults` no registro + DLLs na pasta do jogo), sem afetar a
+  interface da Steam.
+- Portar o msync para o Wine 11 no `winhub-engine`.
+- Wine ARM64 nativo quando o suporte do upstream para macOS chegar (o Rosetta 2 perde o suporte geral no
+  macOS 28).

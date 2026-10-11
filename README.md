@@ -35,12 +35,19 @@ instaladas com um clique.
 
 ### Limitações conhecidas
 
-- **D3DMetal (Game Porting Toolkit da Apple)** não é suportado: ele exige o Wine modificado pela Apple ou
-  pela CodeWeavers, e não funciona com o Wine oficial do WineHQ. A licença da Apple também não permite
-  redistribuí-lo. Fica para um motor alternativo futuro.
-- Sem **MSync** (otimização exclusiva do Wine da CodeWeavers).
-- Alguns verbos do winetricks exigem o `cabextract`, que não vem no macOS.
-- O Wine para macOS é x86_64: em Macs com Apple Silicon é preciso o **Rosetta 2**.
+- **D3DMetal (Game Porting Toolkit da Apple)** não é suportado: a licença da Apple não permite
+  redistribuí-lo, e ele não funciona com o Wine oficial do WineHQ. No lugar dele, o motor do WinHub
+  ([winhub-engine](https://github.com/AngeloResplandes/winhub-engine), em preparação) traz o
+  [DXMT](https://github.com/3Shain/dxmt), aberto, que leva o Direct3D 10/11 direto ao Metal.
+- O Direct3D do próprio Wine (wined3d) chega só ao feature level 9_3 no macOS. Jogos que exigem
+  Direct3D 11 (como os feitos em Unity 6) precisam de DXVK ou DXMT. Veja
+  [docs/compat/hollow-knight.md](docs/compat/hollow-knight.md).
+- Sem **MSync**: os patches abertos ([wine-msync](https://github.com/marzent/wine-msync)) param no
+  Wine 9.15, e o porte para o Wine 11 ainda não foi feito.
+- Alguns verbos do winetricks exigem o `cabextract`, que não vem no macOS. Ele virá como componente do
+  winhub-engine.
+- O Wine para macOS é x86_64: em Macs com Apple Silicon é preciso o **Rosetta 2**, que a Apple mantém de
+  forma geral até o macOS 27.
 
 ## Instalar
 
