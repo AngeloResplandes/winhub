@@ -137,9 +137,14 @@
     "name": "Hollow Knight",
     "category": "Games/Action Games",
     "summary": "Metroidvania em um reino de insetos.",
-    "rating": 0,
+    "rating": 4,
     "isFeatured": false,
-    "steamID": 367520
+    "steamID": 367520,
+    "steamGame": {
+      "installDir": "Hollow Knight",
+      "executable": "hollow_knight.exe",
+      "graphics": "dxmt"
+    }
   },
   {
     "id": "winhub.sample.17",

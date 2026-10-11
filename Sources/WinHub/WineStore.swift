@@ -448,6 +448,27 @@ final class WineStore {
         }
     }
 
+    /// Recommended Direct3D for a Steam game, if this runtime has it.
+    func recommendedGraphics(for game: CatalogEntry.SteamGame) -> GraphicsBackend? {
+        game.graphics.flatMap(GraphicsBackend.init(rawValue:)).flatMap { graphicsBackends.contains($0) ? $0 : nil }
+    }
+
+    /// The game is installed in the Steam bottle.
+    func isInstalled(_ game: CatalogEntry.SteamGame) -> Bool {
+        guard let bottle = bottle(named: SteamClient.bottleName),
+              let exe = bottle.unixPath(forWindowsPath: game.windowsPath) else { return false }
+        return FileManager.default.fileExists(atPath: exe.path)
+    }
+
+    func graphics(for game: CatalogEntry.SteamGame) -> GraphicsBackend? {
+        bottle(named: SteamClient.bottleName)?.programGraphics[game.windowsPath]
+    }
+
+    func applyRecommendedGraphics(_ game: CatalogEntry.SteamGame) async {
+        guard let bottle = bottle(named: SteamClient.bottleName), let backend = recommendedGraphics(for: game) else { return }
+        await setProgramGraphics(backend, program: game.windowsPath, in: bottle)
+    }
+
     var isSteamInstalled: Bool {
         guard let bottle = bottle(named: SteamClient.bottleName),
               let steam = bottle.unixPath(forWindowsPath: SteamClient.windowsPath) else { return false }

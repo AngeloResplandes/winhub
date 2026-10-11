@@ -13,6 +13,8 @@ public struct CatalogEntry: Identifiable, Hashable, Codable, Sendable {
     /// Shown in the "Destaques" list when the search field is empty.
     public var isFeatured: Bool
     public var steamID: Int?
+    /// Where Steam puts the game and the Direct3D that worked best for it in WinHub's tests.
+    public var steamGame: SteamGame?
     /// How to install and open the title, when WinHub knows it.
     public var recipe: Recipe?
 
@@ -25,6 +27,7 @@ public struct CatalogEntry: Identifiable, Hashable, Codable, Sendable {
         rating: Rating = .untested,
         isFeatured: Bool = false,
         steamID: Int? = nil,
+        steamGame: SteamGame? = nil,
         recipe: Recipe? = nil
     ) {
         self.id = id
@@ -35,11 +38,12 @@ public struct CatalogEntry: Identifiable, Hashable, Codable, Sendable {
         self.rating = rating
         self.isFeatured = isFeatured
         self.steamID = steamID
+        self.steamGame = steamGame
         self.recipe = recipe
     }
 
     enum CodingKeys: String, CodingKey {
-        case id, name, localizedNames, category, summary, rating, isFeatured, steamID, recipe
+        case id, name, localizedNames, category, summary, rating, isFeatured, steamID, steamGame, recipe
     }
 
     public init(from decoder: Decoder) throws {
@@ -52,7 +56,30 @@ public struct CatalogEntry: Identifiable, Hashable, Codable, Sendable {
         rating = try c.decodeIfPresent(Rating.self, forKey: .rating) ?? .untested
         isFeatured = try c.decodeIfPresent(Bool.self, forKey: .isFeatured) ?? false
         steamID = try c.decodeIfPresent(Int.self, forKey: .steamID)
+        steamGame = try? c.decodeIfPresent(SteamGame.self, forKey: .steamGame)
         recipe = try c.decodeIfPresent(Recipe.self, forKey: .recipe)
+    }
+
+    /// A Steam game as installed in the Steam client's bottle.
+    public struct SteamGame: Codable, Sendable, Hashable {
+        /// Folder under `steamapps\common`.
+        public var installDir: String
+        /// The game's `.exe`, relative to `installDir`.
+        public var executable: String
+        /// Recommended Direct3D for this game alone (`"dxmt"`, `"dxvk"`), when tested.
+        public var graphics: String?
+
+        public init(installDir: String, executable: String, graphics: String? = nil) {
+            self.installDir = installDir
+            self.executable = executable
+            self.graphics = graphics
+        }
+
+        /// Windows path of the executable in the Steam client's default library.
+        public var windowsPath: String {
+            #"C:\Program Files (x86)\Steam\steamapps\common\"# + installDir + #"\"#
+                + executable.replacingOccurrences(of: "/", with: #"\"#)
+        }
     }
 
     public var categoryPath: [String] { category.split(separator: "/").map(String.init) }

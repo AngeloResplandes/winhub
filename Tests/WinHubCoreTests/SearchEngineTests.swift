@@ -138,6 +138,17 @@ import Testing
         #expect(entries[0].rating == .untested)
         #expect(!entries[0].isFeatured)
         #expect(entries[0].steamID == nil)
+        #expect(entries[0].steamGame == nil)
+    }
+
+    @Test func decodesSteamGame() throws {
+        let json = #"[{"id": "a", "name": "G", "steamID": 1, "steamGame": {"installDir": "My Game", "executable": "bin/game.exe", "graphics": "dxmt"}}, {"id": "b", "name": "Bad", "steamGame": {"installDir": 3}}]"#
+        let entries = try JSONDecoder().decode([CatalogEntry].self, from: Data(json.utf8))
+        let game = try #require(entries[0].steamGame)
+        #expect(game.graphics == "dxmt")
+        #expect(game.windowsPath == #"C:\Program Files (x86)\Steam\steamapps\common\My Game\bin\game.exe"#)
+        // A malformed block is ignored instead of hiding the title.
+        #expect(entries[1].steamGame == nil)
     }
 }
 
@@ -183,6 +194,16 @@ import Testing
         #expect(steam.recipe?.bottleName == SteamClient.bottleName)
         #expect(steam.recipe?.launch.windowsPath == SteamClient.windowsPath)
         #expect(steam.recipe?.installer.url.host() == "cdn.cloudflare.steamstatic.com")
+    }
+
+    @Test func sampleCatalogRecommendsDXMTForHollowKnight() throws {
+        let url = URL(fileURLWithPath: #filePath)
+            .deletingLastPathComponent().deletingLastPathComponent().deletingLastPathComponent()
+            .appending(path: "Sources/WinHub/Resources/catalog.json")
+        let knight = try #require(try JSONCatalog.load(from: url).first { $0.steamID == 367520 })
+        #expect(knight.steamGame?.executable == "hollow_knight.exe")
+        #expect(knight.steamGame?.graphics == "dxmt")
+        #expect(knight.rating == .good)
     }
 
     @Test func steamRunArguments() {

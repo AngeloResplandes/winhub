@@ -176,6 +176,16 @@ struct EntryActions: View {
                 .controlSize(.large)
                 Text("A Steam instala o jogo se ainda não estiver instalado.")
                     .font(.caption).foregroundStyle(.secondary)
+                if let game = entry.steamGame, let backend = wine.recommendedGraphics(for: game),
+                   wine.isInstalled(game), wine.graphics(for: game) != backend {
+                    Button { Task { await wine.applyRecommendedGraphics(game) } } label: {
+                        Label("Usar \(backend.shortTitle) neste jogo (recomendado)", systemImage: "sparkles")
+                            .frame(maxWidth: .infinity)
+                    }
+                    .controlSize(.large)
+                    Text("Testado pelo WinHub. Vale só para este jogo; a Steam continua como está.")
+                        .font(.caption).foregroundStyle(.secondary)
+                }
             } else {
                 Label("Instale a Steam pelo catálogo para jogar este título.", systemImage: "info.circle")
                     .font(.callout).foregroundStyle(.secondary)

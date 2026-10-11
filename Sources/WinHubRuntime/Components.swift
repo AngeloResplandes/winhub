@@ -127,6 +127,15 @@ public enum GraphicsBackend: String, Codable, Sendable, CaseIterable {
         }
     }
 
+    /// Short name for buttons and lists.
+    public var shortTitle: String {
+        switch self {
+        case .wined3d: "Wine"
+        case .dxvk: "DXVK"
+        case .dxmt: "DXMT"
+        }
+    }
+
     /// DLLs DXVK-macOS replaces.
     static let dxvkDLLs = ["d3d10core", "d3d11"]
     /// DLLs DXMT replaces; `winemetal` is its bridge to the Mac side and is only copied.
