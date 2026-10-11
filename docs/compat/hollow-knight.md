@@ -22,6 +22,8 @@ O jogo também tem versão nativa para Mac.
 | DXVK-macOS 1.10.3 | **Sim** | Metal HUD: 60 FPS estáveis (vsync), GPU 1,0–2,1 ms por quadro, 1,47 GB de memória do app | D3D11 "level 11.0". Chega à tela de idioma. O HUD do DXVK mostra cerca de 120 apresentações/s (modo `IMMEDIATE`); o Metal entrega 60 na tela. |
 | DXMT v0.80 (motor de teste) | **Sim** | Metal HUD: 60 FPS estáveis (vsync) em 6 amostras ao longo de 12 s, GPU 0,64–1,22 ms por quadro, memória Metal 430–530 MB, app 1,13–1,22 GB | D3D11 "level 11.1", renderer "Apple M5". Overlay da Steam funciona. Aviso inofensivo do Unity: `Failed to create ID3D11Fence`. |
 
+| DXMT, motor `winhub-wine-11.18-r1` (release), **só no jogo** | **Sim** | Metal HUD: 60 FPS em 4 amostras ao longo de 12 s, GPU 0,66–0,67 ms por quadro, memória Metal 427 MB, app 1,14 GB | Fluxo final: o WinHub instala o Wine oficial e o overlay, e `applyProgramGraphics(.dxmt)` põe o DXMT na pasta do jogo, com `AppDefaults\hollow_knight.exe`. A interface da Steam continua no Wine (o processo dela não carrega o `winemetal`) e funciona normalmente. |
+
 Comparado ao DXVK, o DXMT usou cerca de metade da memória Metal (≈480 MB contra 890 MB) e um pouco
 menos de GPU por quadro. Os dois ficam presos em 60 FPS pelo vsync, com muita folga.
 
@@ -61,7 +63,7 @@ jogando.
 - O wined3d não serve para jogos Unity 6 em D3D11 no macOS. Jogos assim precisam de DXVK ou DXMT.
 - O DXMT funciona com o Wine oficial 11.18 e o nosso patch no `winemac.drv`. É o melhor resultado
   medido até agora.
-- Falta verificar a interface da Steam aberta já com o DXMT no motor. Neste teste, o processo principal
-  da Steam tinha começado antes da troca das DLLs.
+- Com os gráficos por programa, a Steam nunca usa o DXMT. Só o jogo usa, então o risco da janela da Steam
+  com DXMT deixa de existir.
 - O backend precisa poder ser escolhido **por jogo** dentro da garrafa da Steam (`AppDefaults` no
   registro), porque trocar a garrafa inteira para DXVK afeta a interface da Steam.

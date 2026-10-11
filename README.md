@@ -30,7 +30,10 @@ instaladas com um clique.
 - **Programas**: lista os atalhos instalados em todas as garrafas.
 - **Atalhos no Finder e no Dock**: "Criar atalho" gera `~/Applications/WinHub/<garrafa>/<programa>.app`,
   que abre o programa pelo Finder, Spotlight ou Dock (arraste para o Dock).
-- **Gráficos**: Wine (padrão) ou **DXVK** (Direct3D 10/11 via Vulkan/MoltenVK), por garrafa.
+- **Gráficos**: Wine (padrão), **DXVK** (Direct3D 10/11 via Vulkan/MoltenVK) ou, com o motor do WinHub,
+  **DXMT** (Direct3D 10/11 direto no Metal), por garrafa ou **por programa**. No caso de um jogo da Steam,
+  só o jogo muda e a interface da Steam continua com o Wine.
+- **Desempenho**: chave por garrafa que mostra o painel de FPS do Metal (e o do DXVK).
 - **Componentes do Windows** via **winetricks** (`vcrun2022`, `corefonts`…), por garrafa ou nas receitas.
 
 ### Limitações conhecidas

@@ -21,7 +21,7 @@ Wine. Projeto **público e independente** (MIT). Leia este arquivo inteiro antes
 
 ```bash
 swift build                 # compilar
-swift test                  # 84 testes (unitários; os com Wine real ficam desligados)
+swift test                  # 87 testes (unitários; os com Wine real ficam desligados)
 swift run WinHub            # rodar sem empacotar (atalhos .app e links winhub:// não funcionam assim)
 ./scripts/package-app.sh    # gera dist/WinHub.app (universal) e dist/WinHub.zip, assinatura ad-hoc;
                             # compila o wrapper da Steam (precisa de: brew install mingw-w64)
@@ -37,6 +37,8 @@ Testes com o Wine de verdade (precisam do Wine já baixado pelo app em `~/Librar
 ```bash
 RUN_WINE_TESTS=1 WINHUB_DXVK_ARCHIVE=/caminho/dxvk.tar.gz WINHUB_WINETRICKS=/caminho/winetricks \
   swift test --filter ComponentIntegrationTests
+# baixa e instala de verdade o 1º motor do runtimes.json (Wine oficial + overlay do winhub-engine) e o cabextract
+RUN_WINE_TESTS=1 WINHUB_INSTALL_ENGINE=1 swift test --filter EngineInstallTests
 ```
 
 ## Arquitetura
@@ -138,8 +140,14 @@ Dados do usuário: `~/Library/Application Support/WinHub/{Runtimes,Components,Bo
 - **`WINEDEBUG` padrão é `fixme-all`** (`err` não esconde os "fixme" e enche os logs).
 - **Ambiente isolado:** `WineEnvironment` só herda `HOME, USER, LOGNAME, LANG, LC_ALL, TMPDIR, SHELL`;
   sempre define `ROSETTA_ADVERTISE_AVX=1` e `DOTNET_EnableWriteXorExecute=0`. Configurações da garrafa vencem.
-- **DXVK-macOS** só tem `d3d10core` e `d3d11` (o `dxgi` é do Wine). DXVK → overrides `n,b`; voltar ao
-  Wine → `b` (não precisa restaurar arquivos).
+- **DXVK-macOS** só tem `d3d10core` e `d3d11` (o `dxgi` é do Wine). DXVK/DXMT → overrides `n,b`. Voltar
+  ao Wine copia de volta as DLLs do motor (`lib/wine/{x86_64,i386}-windows`; no Wine 11 o `system32` guarda
+  cópias exatas delas) e **remove** os overrides; só um motor sem esses arquivos recebe `b`.
+- **Gráficos por programa** (`Bottle.programGraphics`, `applyProgramGraphics`): as DLLs vão para a pasta
+  do `.exe` (64 ou 32 bits pelo cabeçalho PE) e os overrides para
+  `HKCU\Software\Wine\AppDefaults\<exe>\DllOverrides`. O `WINEDLLOVERRIDES` do ambiente vence o
+  registro, por isso a garrafa não pode forçar `b` nessas DLLs. Só são apagadas DLLs idênticas às que o
+  WinHub copiou; se o jogo traz a própria, a troca é recusada.
 - **wined3d no macOS só chega ao D3D feature level 9_3** (OpenGL 4.1). Jogos Unity 6 em D3D11 (ex.:
   Hollow Knight) falham ao criar o dispositivo. Precisam de DXVK ou DXMT (`docs/compat/`).
 - **DXMT (motor `winhub-engine`):** o Wine 11 não exporta o que o DXMT procura no `winemac.so`, e a
