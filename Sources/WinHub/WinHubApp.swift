@@ -1,0 +1,88 @@
+import AppKit
+import SwiftUI
+import UniformTypeIdentifiers
+
+@main
+struct WinHubApp: App {
+    @NSApplicationDelegateAdaptor private var appDelegate: AppDelegate
+    @State private var store = CatalogStore()
+    @State private var wine = WineStore()
+
+    var body: some Scene {
+        WindowGroup("WinHub") {
+            RootView()
+                .environment(store)
+                .environment(wine)
+                .frame(minWidth: 900, minHeight: 560)
+                .task { await store.loadInitialCatalog() }
+                .onOpenURL { wine.handle($0) }
+        }
+        .handlesExternalEvents(matching: ["*"])
+        .commands {
+            CommandGroup(after: .newItem) {
+                Button("Instalar app não listado…") { wine.chooseInstaller() }
+                    .keyboardShortcut("i")
+                Divider()
+                Button("Importar catálogo…") { presentImportPanel() }
+                    .keyboardShortcut("o")
+                Button("Restaurar catálogo de exemplo") {
+                    Task { await store.resetToSample() }
+                }
+            }
+        }
+
+        Settings {
+            SettingsView()
+                .environment(store)
+                .environment(wine)
+        }
+    }
+
+    @MainActor
+    private func presentImportPanel() {
+        let panel = NSOpenPanel()
+        panel.allowedContentTypes = [.json]
+        panel.allowsMultipleSelection = false
+        panel.message = "Escolha um catálogo do WinHub (.json)"
+        if panel.runModal() == .OK, let url = panel.url {
+            Task { await store.importCatalog(from: url) }
+        }
+    }
+}
+
+/// Lets the SwiftPM-built executable behave like a regular windowed app.
+final class AppDelegate: NSObject, NSApplicationDelegate {
+    func applicationDidFinishLaunching(_ notification: Notification) {
+        NSApp.setActivationPolicy(.regular)
+        NSApp.activate()
+    }
+
+    func applicationShouldTerminateAfterLastWindowClosed(_ sender: NSApplication) -> Bool { true }
+}
+
+struct SettingsView: View {
+    @Environment(CatalogStore.self) private var store
+    @Environment(WineStore.self) private var wine
+
+    var body: some View {
+        @Bindable var store = store
+        Form {
+            Section("Catálogo") {
+                Toggle("Mostrar apps sem teste", isOn: $store.showUntested)
+                Text("Inclui títulos sem avaliação ou marcados como “Não instala”.")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
+            Section("Wine") {
+                if let runtime = wine.runtime {
+                    LabeledContent("Instalado", value: "\(runtime.manifest.name) \(runtime.manifest.version)")
+                    LabeledContent("Licença", value: runtime.manifest.license)
+                } else {
+                    Button("Baixar o Wine…") { wine.isShowingRuntimeSetup = true }
+                }
+            }
+        }
+        .formStyle(.grouped)
+        .frame(width: 420)
+    }
+}

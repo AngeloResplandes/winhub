@@ -1,0 +1,48 @@
+import Foundation
+
+/// Builds the environment for Wine processes of a bottle.
+public enum WineEnvironment {
+    public enum DebugLevel: Sendable {
+        /// Errors only; Wine's many "fixme" notes are hidden (the default).
+        case errors
+        /// No Wine output at all.
+        case silent
+        /// A raw `WINEDEBUG` value, e.g. `"+relay"`.
+        case custom(String)
+
+        var value: String {
+            switch self {
+            case .errors: "fixme-all"
+            case .silent: "-all"
+            case .custom(let value): value
+            }
+        }
+    }
+
+    /// Variables kept from the parent environment; everything else is dropped so the
+    /// user's shell configuration cannot leak into Windows programs.
+    static let inherited = ["HOME", "USER", "LOGNAME", "LANG", "LC_ALL", "TMPDIR", "SHELL"]
+
+    public static func make(for bottle: Bottle, runtime: InstalledRuntime, debug: DebugLevel = .errors,
+                            extraOverrides: [String: String] = [:],
+                            base: [String: String] = ProcessInfo.processInfo.environment) -> [String: String] {
+        var env = base.filter { inherited.contains($0.key) }
+        env["PATH"] = "\(runtime.binDirectory.path):/usr/bin:/bin:/usr/sbin:/sbin"
+        env["WINEPREFIX"] = bottle.prefix.path
+        env["WINEDEBUG"] = debug.value
+        // Rosetta hides AVX from x86_64 code unless asked; many games need it.
+        env["ROSETTA_ADVERTISE_AVX"] = "1"
+        // .NET 7+ JIT under Rosetta needs W^X disabled.
+        env["DOTNET_EnableWriteXorExecute"] = "0"
+
+        let overrides = bottle.dllOverrides.merging(extraOverrides) { _, new in new }
+        if !overrides.isEmpty {
+            env["WINEDLLOVERRIDES"] = overrides.sorted { $0.key < $1.key }
+                .map { "\($0.key)=\($0.value)" }
+                .joined(separator: ";")
+        }
+        // Bottle settings win over everything above.
+        env.merge(bottle.environment) { _, bottleValue in bottleValue }
+        return env
+    }
+}

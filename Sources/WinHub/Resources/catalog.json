@@ -1,0 +1,285 @@
+[
+  {
+    "id": "winhub.sample.1",
+    "name": "Half-Life 2",
+    "category": "Games/First Person Shooter",
+    "summary": "Clássico de tiro em primeira pessoa com física inovadora.",
+    "rating": 5,
+    "isFeatured": true,
+    "steamID": 220
+  },
+  {
+    "id": "winhub.sample.2",
+    "name": "Half-Life",
+    "category": "Games/First Person Shooter",
+    "summary": "O FPS original que apresentou Gordon Freeman.",
+    "rating": 4,
+    "isFeatured": false,
+    "steamID": 70
+  },
+  {
+    "id": "winhub.sample.3",
+    "name": "Portal 2",
+    "category": "Games/Puzzle Games",
+    "summary": "Quebra-cabeças com portais em modo solo e cooperativo.",
+    "rating": 5,
+    "isFeatured": true,
+    "steamID": 620
+  },
+  {
+    "id": "winhub.sample.4",
+    "name": "The Elder Scrolls V: Skyrim Special Edition",
+    "category": "Games/Role Playing Games",
+    "summary": "RPG de mundo aberto em Tamriel.",
+    "rating": 4,
+    "isFeatured": true,
+    "steamID": 489830
+  },
+  {
+    "id": "winhub.sample.5",
+    "name": "The Witcher 3: Wild Hunt",
+    "category": "Games/Role Playing Games",
+    "summary": "RPG de fantasia sombria com Geralt de Rívia.",
+    "rating": 4,
+    "isFeatured": true,
+    "steamID": 292030
+  },
+  {
+    "id": "winhub.sample.6",
+    "name": "Pokémon Trading Card Game Live",
+    "category": "Games/Casual Games",
+    "summary": "Versão digital do jogo de cartas colecionáveis.",
+    "rating": 3,
+    "isFeatured": false
+  },
+  {
+    "id": "winhub.sample.7",
+    "name": "Elite Dangerous",
+    "category": "Games/Simulation Games",
+    "summary": "Simulador espacial em uma galáxia em escala real.",
+    "rating": 3,
+    "isFeatured": false,
+    "steamID": 359320
+  },
+  {
+    "id": "winhub.sample.8",
+    "name": "Age of Empires II: Definitive Edition",
+    "category": "Games/Strategy Games",
+    "summary": "Estratégia em tempo real remasterizada.",
+    "rating": 5,
+    "isFeatured": true,
+    "steamID": 813780
+  },
+  {
+    "id": "winhub.sample.9",
+    "name": "StarCraft II",
+    "category": "Games/Strategy Games",
+    "summary": "Estratégia em tempo real de ficção científica.",
+    "rating": 4,
+    "isFeatured": false
+  },
+  {
+    "id": "winhub.sample.10",
+    "name": "Diablo IV",
+    "category": "Games/Role Playing Games",
+    "summary": "RPG de ação no santuário infernal.",
+    "rating": 2,
+    "isFeatured": false,
+    "steamID": 2344520
+  },
+  {
+    "id": "winhub.sample.11",
+    "name": "Fallout: New Vegas",
+    "category": "Games/Role Playing Games",
+    "summary": "RPG pós-apocalíptico no deserto de Mojave.",
+    "rating": 4,
+    "isFeatured": false,
+    "steamID": 22380
+  },
+  {
+    "id": "winhub.sample.12",
+    "name": "Fallout 4",
+    "category": "Games/Role Playing Games",
+    "summary": "RPG pós-apocalíptico em Boston.",
+    "rating": 3,
+    "isFeatured": false,
+    "steamID": 377160
+  },
+  {
+    "id": "winhub.sample.13",
+    "name": "Grand Theft Auto V",
+    "category": "Games/Action Games",
+    "summary": "Ação em mundo aberto em Los Santos.",
+    "rating": 1,
+    "isFeatured": false,
+    "steamID": 271590
+  },
+  {
+    "id": "winhub.sample.14",
+    "name": "Cyberpunk 2077",
+    "category": "Games/Role Playing Games",
+    "summary": "RPG futurista em Night City.",
+    "rating": 3,
+    "isFeatured": true,
+    "steamID": 1091500
+  },
+  {
+    "id": "winhub.sample.15",
+    "name": "Hades",
+    "category": "Games/Action Games",
+    "summary": "Roguelike de ação no submundo grego.",
+    "rating": 5,
+    "isFeatured": false,
+    "steamID": 1145360
+  },
+  {
+    "id": "winhub.sample.16",
+    "name": "Hollow Knight",
+    "category": "Games/Action Games",
+    "summary": "Metroidvania em um reino de insetos.",
+    "rating": 0,
+    "isFeatured": false,
+    "steamID": 367520
+  },
+  {
+    "id": "winhub.sample.17",
+    "name": "Stardew Valley",
+    "category": "Games/Simulation Games",
+    "summary": "Simulador de fazenda e vida no campo.",
+    "rating": 5,
+    "isFeatured": false,
+    "steamID": 413150
+  },
+  {
+    "id": "winhub.sample.18",
+    "name": "Counter-Strike 2",
+    "category": "Games/First Person Shooter",
+    "summary": "FPS competitivo por equipes.",
+    "rating": 1,
+    "isFeatured": false,
+    "steamID": 730
+  },
+  {
+    "id": "winhub.sample.19",
+    "name": "Baldur's Gate 3",
+    "category": "Games/Role Playing Games",
+    "summary": "RPG baseado em Dungeons & Dragons.",
+    "rating": 4,
+    "isFeatured": true,
+    "steamID": 1086940
+  },
+  {
+    "id": "winhub.sample.20",
+    "name": "Baldur's Gate II: Enhanced Edition",
+    "category": "Games/Role Playing Games",
+    "summary": "Clássico RPG da Infinity Engine.",
+    "rating": 5,
+    "isFeatured": false,
+    "steamID": 257350
+  },
+  {
+    "id": "winhub.sample.21",
+    "name": "Microsoft Office 2016",
+    "category": "Productivity/Office Suites",
+    "summary": "Suíte de escritório com Word, Excel e PowerPoint.",
+    "rating": 3,
+    "isFeatured": false
+  },
+  {
+    "id": "winhub.sample.22",
+    "name": "Notepad++",
+    "category": "Programming/Text Editors",
+    "summary": "Editor de texto e código-fonte leve.",
+    "rating": 5,
+    "isFeatured": true
+  },
+  {
+    "id": "winhub.sample.23",
+    "name": "Quicken Classic",
+    "category": "Productivity/Finance & Accounting",
+    "summary": "Gerenciamento de finanças pessoais.",
+    "rating": 4,
+    "isFeatured": false
+  },
+  {
+    "id": "winhub.sample.24",
+    "name": "Steam",
+    "category": "Games/Game Tools",
+    "summary": "Loja e plataforma de jogos para Windows. Depois de instalada, os jogos com Steam aparecem aqui com o botão “Jogar pela Steam”.",
+    "rating": 4,
+    "isFeatured": true,
+    "recipe": {
+      "bottleName": "Steam",
+      "windowsVersion": "win10",
+      "installer": {
+        "url": "https://cdn.cloudflare.steamstatic.com/client/installer/SteamSetup.exe",
+        "arguments": [
+          "/S"
+        ]
+      },
+      "launch": {
+        "windowsPath": "C:\\Program Files (x86)\\Steam\\steam.exe"
+      }
+    }
+  },
+  {
+    "id": "winhub.sample.25",
+    "name": "Epic Games Store",
+    "category": "Games/Game Tools",
+    "summary": "Loja de jogos e inicializador.",
+    "rating": 3,
+    "isFeatured": false
+  },
+  {
+    "id": "winhub.sample.26",
+    "name": "Mass Effect Legendary Edition",
+    "category": "Games/Role Playing Games",
+    "summary": "Trilogia de ficção científica remasterizada.",
+    "rating": 4,
+    "isFeatured": false,
+    "steamID": 1328670
+  },
+  {
+    "id": "winhub.sample.27",
+    "name": "Dark Souls III",
+    "category": "Games/Role Playing Games",
+    "summary": "RPG de ação desafiador.",
+    "rating": 3,
+    "isFeatured": false,
+    "steamID": 374320
+  },
+  {
+    "id": "winhub.sample.28",
+    "name": "Elden Ring",
+    "category": "Games/Role Playing Games",
+    "summary": "RPG de ação em mundo aberto.",
+    "rating": 3,
+    "isFeatured": false,
+    "steamID": 1245620
+  },
+  {
+    "id": "winhub.sample.29",
+    "name": "Sid Meier's Civilization VI",
+    "category": "Games/Strategy Games",
+    "summary": "Estratégia por turnos para construir um império.",
+    "rating": 0,
+    "isFeatured": false,
+    "steamID": 289070
+  },
+  {
+    "id": "winhub.sample.30",
+    "name": "Microsoft Visio 2013",
+    "category": "Productivity/Diagramming",
+    "summary": "Diagramas e fluxogramas.",
+    "rating": 2,
+    "isFeatured": false
+  },
+  {
+    "id": "winhub.sample.31",
+    "name": "DirectX 9 Runtime",
+    "category": "Non-Applications/Components",
+    "summary": "Componente de runtime gráfico.",
+    "rating": 4,
+    "isFeatured": false
+  }
+]

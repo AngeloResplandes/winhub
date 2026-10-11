@@ -1,0 +1,71 @@
+name: Release
+
+# Publica dist/WinHub.zip ao criar uma tag como v0.1.0.
+# Sem os segredos abaixo, o app sai com assinatura ad-hoc (abra com clique direito → Abrir).
+#
+# Segredos opcionais para assinar e notarizar com o seu Apple Developer ID:
+#   DEVELOPER_ID_P12_BASE64   certificado "Developer ID Application" exportado (.p12) em base64
+#   DEVELOPER_ID_P12_PASSWORD senha do .p12
+#   DEVELOPER_ID              ex.: "Developer ID Application: Seu Nome (TEAMID)"
+#   NOTARY_KEY_BASE64         chave da API do App Store Connect (.p8) em base64
+#   NOTARY_KEY_ID, NOTARY_ISSUER_ID
+
+on:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: macos-15
+    env:
+      HAS_SIGNING: ${{ secrets.DEVELOPER_ID_P12_BASE64 != '' }}
+      HAS_NOTARY: ${{ secrets.NOTARY_KEY_BASE64 != '' }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Testes
+        run: swift test
+
+      - name: Importar certificado
+        if: env.HAS_SIGNING == 'true'
+        env:
+          P12: ${{ secrets.DEVELOPER_ID_P12_BASE64 }}
+          P12_PASSWORD: ${{ secrets.DEVELOPER_ID_P12_PASSWORD }}
+        run: |
+          KEYCHAIN="$RUNNER_TEMP/build.keychain-db"
+          echo "$P12" | base64 --decode > "$RUNNER_TEMP/cert.p12"
+          security create-keychain -p ci "$KEYCHAIN"
+          security set-keychain-settings -lut 21600 "$KEYCHAIN"
+          security unlock-keychain -p ci "$KEYCHAIN"
+          security import "$RUNNER_TEMP/cert.p12" -k "$KEYCHAIN" -P "$P12_PASSWORD" -T /usr/bin/codesign
+          security set-key-partition-list -S apple-tool:,apple: -s -k ci "$KEYCHAIN"
+          security list-keychains -d user -s "$KEYCHAIN" $(security list-keychains -d user | tr -d '"')
+
+      - name: Configurar notarização
+        if: env.HAS_NOTARY == 'true'
+        env:
+          KEY: ${{ secrets.NOTARY_KEY_BASE64 }}
+          KEY_ID: ${{ secrets.NOTARY_KEY_ID }}
+          ISSUER: ${{ secrets.NOTARY_ISSUER_ID }}
+        run: |
+          echo "$KEY" | base64 --decode > "$RUNNER_TEMP/notary.p8"
+          xcrun notarytool store-credentials winhub-notary --key "$RUNNER_TEMP/notary.p8" --key-id "$KEY_ID" --issuer "$ISSUER"
+          echo "NOTARY_PROFILE=winhub-notary" >> "$GITHUB_ENV"
+
+      - name: Empacotar
+        env:
+          DEVELOPER_ID: ${{ secrets.DEVELOPER_ID }}
+          VERSION: ${{ github.ref_name }}
+          BUILD: ${{ github.run_number }}
+        run: |
+          export VERSION="${VERSION#v}"
+          [ "$HAS_SIGNING" = "true" ] || unset DEVELOPER_ID
+          ./scripts/package-app.sh
+
+      - name: Publicar release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release create "${{ github.ref_name }}" dist/WinHub.zip --title "WinHub ${{ github.ref_name }}" --generate-notes
