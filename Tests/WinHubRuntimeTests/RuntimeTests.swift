@@ -369,3 +369,99 @@ struct ComponentIntegrationTests {
         #expect(userReg.contains("\"FontSmoothingType\"=dword:00000002"))
     }
 }
+
+@Suite struct WineOrphanReaperTests {
+    @Test func serverDirectoryUsesHexDeviceAndInode() {
+        let url = WineServerStatus.serverDirectory(device: 0x100000f, inode: 0x162c11, uid: 501)
+        #expect(url.path == "/tmp/.wine-501/server-100000f-162c11")
+    }
+
+    @Test func findsProcessesReferencingServerDirectory() {
+        let directory = URL(fileURLWithPath: "/tmp/.wine-501/server-100000f-162c11", isDirectory: true)
+        let output = """
+        p100
+        cwineserver
+        n/private/tmp/.wine-501/server-100000f-162c11
+        n/private/tmp/.wine-501/server-100000f-162c11/lock
+        p200
+        cwinedevice.exe
+        n/Users/me/prefix/drive_c/windows/system32
+        n/private/tmp/.wine-501/server-100000f-162c11/tmpmap-587e6bbb
+        p300
+        csteam.exe
+        n/private/tmp/.wine-501/server-100000f-162c111/tmpmap-1
+        n/Users/me/other
+        p400
+        cservices.exe
+        n/tmp/.wine-501/server-100000f-162c11
+        p500
+        cWinHub
+        n/private/tmp/.wine-501/server-100000f-162c11/lock
+        """
+        let pids = WineOrphanReaper.pids(in: output, referencing: directory, excluding: 500)
+        #expect(pids == [200, 400])
+    }
+
+    @Test func noServerDirectoryForMissingPrefix() {
+        #expect(WineServerStatus.serverDirectory(prefix: URL(fileURLWithPath: "/nonexistent/winhub/prefix")) == nil)
+        #expect(WineOrphanReaper.reap(prefix: URL(fileURLWithPath: "/nonexistent/winhub/prefix")).isEmpty)
+    }
+
+    @Test func staleSocketIsNotARunningServer() throws {
+        let dir = try makeTempDirectory()
+        defer { try? FileManager.default.removeItem(at: dir) }
+        #expect(!WineServerStatus.isRunning(serverDirectory: dir))
+        // What a wineserver killed with SIGKILL leaves: lock and socket, nobody holding the lock.
+        FileManager.default.createFile(atPath: dir.appending(path: "lock").path, contents: nil)
+        FileManager.default.createFile(atPath: dir.appending(path: "socket").path, contents: nil)
+        #expect(!WineServerStatus.isRunning(serverDirectory: dir))
+    }
+
+    @Test func endsProcessesWhenNoServerHoldsTheLock() throws {
+        let dir = try makeTempDirectory()
+        defer { try? FileManager.default.removeItem(at: dir) }
+        FileManager.default.createFile(atPath: dir.appending(path: "lock").path, contents: nil)
+        #expect(WineServerStatus.lockOwner(serverDirectory: dir) == nil)
+
+        // Stands in for an orphaned Wine client: its working directory is the server folder.
+        let orphan = Process()
+        orphan.executableURL = URL(fileURLWithPath: "/bin/sleep")
+        orphan.arguments = ["60"]
+        orphan.currentDirectoryURL = dir
+        try orphan.run()
+        defer { if orphan.isRunning { orphan.terminate() } }
+
+        let pids = WineOrphanReaper.reap(serverDirectory: dir)
+        #expect(pids == [orphan.processIdentifier])
+        orphan.waitUntilExit()
+        #expect(orphan.terminationReason == .uncaughtSignal)
+        #expect(orphan.terminationStatus == SIGKILL)
+    }
+
+    @Test(.enabled(if: FileManager.default.isExecutableFile(atPath: "/usr/bin/python3")))
+    func leavesProcessesAloneWhileServerHoldsTheLock() throws {
+        let dir = try makeTempDirectory()
+        defer { try? FileManager.default.removeItem(at: dir) }
+        let lock = dir.appending(path: "lock")
+        FileManager.default.createFile(atPath: lock.path, contents: nil)
+
+        // Holds an fcntl write lock on `lock` like a live wineserver, from inside the folder.
+        let server = Process()
+        server.executableURL = URL(fileURLWithPath: "/usr/bin/python3")
+        server.arguments = ["-I", "-c", """
+            import fcntl, sys, time
+            f = open(sys.argv[1], 'r+'); fcntl.lockf(f, fcntl.LOCK_EX); print('locked', flush=True); time.sleep(60)
+            """, lock.path]
+        server.currentDirectoryURL = dir
+        let pipe = Pipe()
+        server.standardOutput = pipe
+        try server.run()
+        defer { server.terminate(); server.waitUntilExit() }
+        _ = pipe.fileHandleForReading.availableData  // waits for "locked"
+
+        #expect(WineServerStatus.lockOwner(serverDirectory: dir) == server.processIdentifier)
+        #expect(WineServerStatus.isRunning(serverDirectory: dir))
+        #expect(WineOrphanReaper.reap(serverDirectory: dir).isEmpty)
+        #expect(server.isRunning)
+    }
+}

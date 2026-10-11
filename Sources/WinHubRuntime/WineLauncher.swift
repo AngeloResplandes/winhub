@@ -65,6 +65,20 @@ public struct WineLauncher: Sendable {
                                         environment: environment(for: bottle), log: logURL(bottle, "wineserver"))
         _ = try await ProcessRunner.run(runtime.wineserver, arguments: ["-w"],
                                         environment: environment(for: bottle), log: logURL(bottle, "wineserver"))
+        // `-k` only reaches the clients of the current wineserver, not those of an earlier one that died.
+        await reapOrphans(bottle)
+    }
+
+    /// Ends processes left behind by a wineserver of this bottle that is gone
+    /// (see `WineOrphanReaper`). Does nothing while the bottle's wineserver runs.
+    @discardableResult
+    public func reapOrphans(_ bottle: Bottle) async -> [pid_t] {
+        let pids = WineOrphanReaper.reap(prefix: bottle.prefix)
+        if !pids.isEmpty {
+            let line = "WinHub: ended orphaned Wine processes (wineserver gone): \(pids.map(String.init).joined(separator: " "))\n"
+            appendLog(bottle, "wineserver", line)
+        }
+        return pids
     }
 
     /// Runs `wine <arguments>` and returns its exit status.
@@ -82,6 +96,16 @@ public struct WineLauncher: Sendable {
     public func logURL(_ bottle: Bottle, _ name: String) -> URL {
         let safe = name.replacingOccurrences(of: "/", with: "-")
         return bottle.logs.appending(path: "\(safe).log")
+    }
+
+    private func appendLog(_ bottle: Bottle, _ name: String, _ text: String) {
+        let url = logURL(bottle, name)
+        try? FileManager.default.createDirectory(at: url.deletingLastPathComponent(), withIntermediateDirectories: true)
+        if !FileManager.default.fileExists(atPath: url.path) { FileManager.default.createFile(atPath: url.path, contents: nil) }
+        guard let handle = try? FileHandle(forWritingTo: url) else { return }
+        defer { try? handle.close() }
+        _ = try? handle.seekToEnd()
+        try? handle.write(contentsOf: Data(text.utf8))
     }
 
     private func runChecked(_ step: String, _ bottle: Bottle, _ arguments: [String], logName: String,
