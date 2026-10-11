@@ -146,6 +146,15 @@ public struct RuntimeManager: Sendable {
         return hasher.finalize().map { String(format: "%02x", $0) }.joined()
     }
 
+    /// This Mac has Apple silicon, where the x86_64 Wine runs through Rosetta 2.
+    public static var isAppleSilicon: Bool {
+        #if arch(arm64)
+        true
+        #else
+        false
+        #endif
+    }
+
     /// Wine builds for macOS are x86_64, so Apple silicon needs Rosetta 2.
     public static var isRosettaAvailable: Bool {
         #if arch(arm64)

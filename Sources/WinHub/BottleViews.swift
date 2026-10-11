@@ -345,6 +345,13 @@ struct RuntimeSetupView: View {
                 }
             }
 
+            if RuntimeManager.isAppleSilicon {
+                Text("Neste Mac, o Wine roda pelo Rosetta 2 da Apple. A Apple mantém o Rosetta para todos os apps até o macOS 27; a partir do macOS 28 ele fica restrito a jogos antigos, e o WinHub vai precisar de um Wine nativo para Apple silicon.")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+
             if !wine.isRosettaAvailable {
                 VStack(alignment: .leading, spacing: 8) {
                     Label("Este Mac precisa do Rosetta 2, da Apple, para rodar o Wine.", systemImage: "exclamationmark.triangle")
