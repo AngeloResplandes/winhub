@@ -26,6 +26,7 @@ swift run WinHub            # rodar sem empacotar (atalhos .app e links winhub:/
 ./scripts/package-app.sh    # gera dist/WinHub.app (universal) e dist/WinHub.zip, assinatura ad-hoc;
                             # compila o wrapper da Steam (precisa de: brew install mingw-w64)
 swift scripts/make-icon.swift saida.icns  # desenha o ícone (o package-app.sh já chama)
+swift scripts/make-icon.swift docs/icon.svg   # mesmo desenho em SVG, usado no README (rode ao mudar o ícone)
 ./scripts/build-steam-wrapper.sh   # só o wrapper, em .build/; para usar a Steam com swift run:
 WINHUB_STEAMWEBHELPER_WRAPPER=.build/steamwebhelper-wrapper.exe swift run WinHub
 open Package.swift          # abrir no Xcode

@@ -1,11 +1,23 @@
-# WinHub
+<p align="center">
+  <img src="docs/icon.svg" width="128" height="128" alt="Ícone do WinHub">
+</p>
 
-Aplicativo nativo para macOS (SwiftUI) para encontrar, instalar e rodar programas do Windows no Mac,
-usando o [Wine](https://www.winehq.org/).
+<h1 align="center">WinHub</h1>
 
-> **Projeto independente.** Sem relação com CodeWeavers, Apple, Microsoft ou Valve. Não contém código,
-> dados nem binários do CrossOver. Componentes de terceiros são baixados pelo usuário a partir das fontes
-> oficiais e conferidos por SHA-256. Veja [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
+Precisa de um programa ou jogo que só existe para Windows? Com o WinHub você o encontra num catálogo,
+instala e abre no Mac como qualquer outro app, sem máquina virtual e sem instalar o Windows. Títulos com
+receita, como a Steam, instalam com um clique.
+
+O WinHub é um aplicativo nativo para macOS que cuida de tudo o que o [Wine](https://www.winehq.org/)
+precisa para rodar programas do Windows. Cada programa fica numa "garrafa", um Windows separado com as
+próprias configurações, e você escolhe o que cada uma usa: a versão do Windows, os gráficos (Wine ou DXVK)
+e as bibliotecas extras instaladas pelo winetricks. Os programas instalados ganham atalhos que abrem pelo
+Finder, pelo Spotlight ou pelo Dock.
+
+Na primeira vez, o WinHub baixa o Wine oficial do WineHQ e confere o arquivo antes de instalar; motores,
+componentes e instaladores vêm sempre das fontes oficiais. Depois disso, o app se mantém atualizado
+sozinho: o catálogo acompanha este repositório, e as versões novas do app são baixadas em segundo plano e
+instaladas com um clique.
 
 ## O que já faz
 
@@ -119,7 +131,7 @@ Tests/                   testes unitários e de integração
 Support/                 wrapper do steamwebhelper (programa do Windows, compilado no empacotamento)
 scripts/package-app.sh   gera dist/WinHub.app e dist/WinHub.zip
 scripts/build-steam-wrapper.sh  compila o wrapper da Steam (mingw-w64)
-scripts/make-icon.swift  desenha o ícone do app e gera o .icns
+scripts/make-icon.swift  desenha o ícone do app (.icns no empacotamento, docs/icon.svg para o README)
 ```
 
 Dados do usuário: `~/Library/Application Support/WinHub/` (motor, componentes e garrafas) e
@@ -128,3 +140,9 @@ Dados do usuário: `~/Library/Application Support/WinHub/` (motor, componentes e
 ## Licença
 
 MIT. Veja [LICENSE](LICENSE) e [CONTRIBUTING.md](CONTRIBUTING.md) (regra de "sala limpa").
+
+---
+
+**Projeto independente.** Sem relação com CodeWeavers, Apple, Microsoft ou Valve. Não contém código,
+dados nem binários do CrossOver. Componentes de terceiros são baixados pelo usuário a partir das fontes
+oficiais e conferidos por SHA-256. Veja [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
