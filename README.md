@@ -45,8 +45,11 @@ instaladas com um clique.
 - O Direct3D do próprio Wine (wined3d) chega só ao feature level 9_3 no macOS. Jogos que exigem
   Direct3D 11 (como os feitos em Unity 6) precisam de DXVK ou DXMT. Veja
   [docs/compat/hollow-knight.md](docs/compat/hollow-knight.md).
+- **Resoluções:** o Wine para Mac oferece aos jogos só os modos de tela do macOS, na proporção da tela
+  do Mac. Resoluções 16:9 como 1920×1080 não aparecem.
 - Sem **MSync**: os patches abertos ([wine-msync](https://github.com/marzent/wine-msync)) param no
-  Wine 9.15, e o porte para o Wine 11 ainda não foi feito.
+  Wine 9.15. O porte para o Wine 11 está
+  planejado em [winhub-engine/docs/msync-plan.md](https://github.com/AngeloResplandes/winhub-engine/blob/main/docs/msync-plan.md).
 - Alguns verbos do winetricks exigem o `cabextract`, que não vem no macOS. Ele virá como componente do
   winhub-engine.
 - O Wine para macOS é x86_64: em Macs com Apple Silicon é preciso o **Rosetta 2**, que a Apple mantém de

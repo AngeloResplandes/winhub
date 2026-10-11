@@ -42,9 +42,26 @@ O build "builtin" do DXMT **não funciona** se colocado na pasta do jogo: o Wine
 carrega a própria versão (wined3d) no lugar. Para escolher o backend por jogo, é preciso o build com
 `wine_builtin_dll=false`, ou trocar as DLLs no motor.
 
-Ainda não testado: gameplay (Dirtmouth / Forgotten Crossroads), áudio e controle. As teclas injetadas
-com `SendInput` dentro do Wine não chegam ao Unity 6 (Input System), então essa parte precisa de alguém
-jogando.
+### Jogando (DXMT, motor `winhub-wine-11.18-r1`)
+
+Testado por uma pessoa jogando: o jogo roda bem, com som, e o controle (Xbox 360) é reconhecido. As
+teclas injetadas com `SendInput` dentro do Wine não chegam ao Unity 6 (Input System), por isso o
+gameplay não tem teste automático.
+
+### Tela cheia e resolução
+
+- **Resoluções:** o jogo lista os modos que o Wine informa, e o driver de Mac do Wine só oferece os modos
+  do próprio macOS. Nesta tela (1470×956 pontos) são 14 modos, de 960×600 a 2560×1664, todos na proporção
+  da tela do Mac. **Não há 1920×1080 nem outros modos 16:9.**
+- **Tela cheia:** abrir o jogo já em tela cheia funciona nos dois modos do Unity: "tela cheia em janela"
+  e exclusiva (a janela ocupa a tela toda, 1470×956). Trocar pelo menu Opções → Vídeo também funcionou:
+  o Wine troca o modo do Mac (por exemplo, para 1280×800) e volta ao sair.
+- Numa primeira sessão, a troca pelo menu não teve efeito. O jogo tinha começado **em janela** com um
+  tamanho fora do padrão (1369×797). Não foi possível reproduzir depois, e nenhum código mudou entre as
+  duas sessões.
+- O driver de Mac do Wine só troca o modo de tela quando o app está em primeiro plano; fora dele, guarda
+  a troca para depois. Para investigar, reabra a Steam com `WINEDEBUG=fixme-all,+display,warn+win` e
+  veja as linhas de `macdrv_ChangeDisplaySettings` e "Setting display mode" (do DXMT).
 
 ## Como reproduzir
 
@@ -59,6 +76,9 @@ jogando.
   Steam (o jogo herda o ambiente dela).
 
 ## Conclusões para o WinHub
+
+- **Recomendação no catálogo:** Bom (4). Gráficos: DXMT só no jogo (`steamGame.graphics` no
+  `catalog.json`; a tela do jogo oferece "Usar DXMT neste jogo").
 
 - O wined3d não serve para jogos Unity 6 em D3D11 no macOS. Jogos assim precisam de DXVK ou DXMT.
 - O DXMT funciona com o Wine oficial 11.18 e o nosso patch no `winemac.drv`. É o melhor resultado

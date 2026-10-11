@@ -21,7 +21,7 @@ Wine. Projeto **público e independente** (MIT). Leia este arquivo inteiro antes
 
 ```bash
 swift build                 # compilar
-swift test                  # 87 testes (unitários; os com Wine real ficam desligados)
+swift test                  # 91 testes (unitários; os com Wine real ficam desligados)
 swift run WinHub            # rodar sem empacotar (atalhos .app e links winhub:// não funcionam assim)
 ./scripts/package-app.sh    # gera dist/WinHub.app (universal) e dist/WinHub.zip, assinatura ad-hoc;
                             # compila o wrapper da Steam (precisa de: brew install mingw-w64)
@@ -35,8 +35,8 @@ open Package.swift          # abrir no Xcode
 Testes com o Wine de verdade (precisam do Wine já baixado pelo app em `~/Library/Application Support/WinHub/Runtimes`):
 
 ```bash
-RUN_WINE_TESTS=1 WINHUB_DXVK_ARCHIVE=/caminho/dxvk.tar.gz WINHUB_WINETRICKS=/caminho/winetricks \
-  swift test --filter ComponentIntegrationTests
+RUN_WINE_TESTS=1 swift test --filter ComponentIntegrationTests   # baixa DXVK e winetricks se faltarem
+# WINHUB_DXVK_ARCHIVE/WINHUB_WINETRICKS usam arquivos locais; WINHUB_CABEXTRACT_VERB=corefonts testa o cabextract
 # baixa e instala de verdade o 1º motor do runtimes.json (Wine oficial + overlay do winhub-engine) e o cabextract
 RUN_WINE_TESTS=1 WINHUB_INSTALL_ENGINE=1 swift test --filter EngineInstallTests
 ```
@@ -143,6 +143,11 @@ Dados do usuário: `~/Library/Application Support/WinHub/{Runtimes,Components,Bo
 - **DXVK-macOS** só tem `d3d10core` e `d3d11` (o `dxgi` é do Wine). DXVK/DXMT → overrides `n,b`. Voltar
   ao Wine copia de volta as DLLs do motor (`lib/wine/{x86_64,i386}-windows`; no Wine 11 o `system32` guarda
   cópias exatas delas) e **remove** os overrides; só um motor sem esses arquivos recebe `b`.
+- **Catálogo de jogos da Steam:** `steamGame` (`installDir`, `executable`, `graphics`) diz onde o jogo
+  fica e qual Direct3D funcionou melhor nos nossos testes. A tela do jogo só oferece o botão
+  "Usar … neste jogo"; nada é aplicado sem clique.
+- **Resoluções no Mac:** o `winemac.drv` só lista os modos do macOS (sem 16:9) e só troca o modo com o app
+  em primeiro plano. Veja `docs/compat/hollow-knight.md`.
 - **Gráficos por programa** (`Bottle.programGraphics`, `applyProgramGraphics`): as DLLs vão para a pasta
   do `.exe` (64 ou 32 bits pelo cabeçalho PE) e os overrides para
   `HKCU\Software\Wine\AppDefaults\<exe>\DllOverrides`. O `WINEDLLOVERRIDES` do ambiente vence o
@@ -188,9 +193,8 @@ Dados do usuário: `~/Library/Application Support/WinHub/{Runtimes,Components,Bo
 
 - Ícones reais dos programas (extrair do `.exe`) nos cards e atalhos.
 - Mais receitas testadas no catálogo; catálogo comunitário versionado.
-- Publicar a primeira release do `winhub-engine` e trocar o `runtimes.json` para ela.
-- Gráficos por jogo na garrafa da Steam (`AppDefaults` no registro + DLLs na pasta do jogo), sem afetar a
-  interface da Steam.
-- Portar o msync para o Wine 11 no `winhub-engine`.
+- Mais jogos D3D10/11 no relatório de compatibilidade (`docs/compat/`), com `steamGame` no catálogo.
+- Modos de tela 16:9 emulados no `winemac.drv` (hoje só os do macOS aparecem para os jogos).
+- Portar o msync para o Wine 11 no `winhub-engine` (plano em `winhub-engine/docs/msync-plan.md`).
 - Wine ARM64 nativo quando o suporte do upstream para macOS chegar (o Rosetta 2 perde o suporte geral no
   macOS 28).
