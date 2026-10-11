@@ -1,6 +1,8 @@
 name: Release
 
-# Publica dist/WinHub.zip ao criar uma tag como v0.1.0.
+# Publica uma release a cada push na main (o app instalado a encontra e se atualiza sozinho).
+# A versão é "<arquivo VERSION>.<número da execução>", por exemplo 0.2.57; para mudar major/minor,
+# edite o arquivo VERSION.
 # Sem os segredos abaixo, o app sai com assinatura ad-hoc (na primeira abertura: Ajustes do Sistema →
 # Privacidade e Segurança → Abrir Mesmo Assim).
 #
@@ -13,10 +15,17 @@ name: Release
 
 on:
   push:
-    tags: ["v*"]
+    branches: [main]
+    paths-ignore: ["**.md", "docs/**"]
+  workflow_dispatch:
 
 permissions:
   contents: write
+
+# Uma release de cada vez, na ordem dos pushes.
+concurrency:
+  group: release
+  cancel-in-progress: false
 
 jobs:
   release:
@@ -26,6 +35,9 @@ jobs:
       HAS_NOTARY: ${{ secrets.NOTARY_KEY_BASE64 != '' }}
     steps:
       - uses: actions/checkout@v4
+
+      - name: Versão
+        run: echo "VERSION=$(tr -d '[:space:]' < VERSION).${{ github.run_number }}" >> "$GITHUB_ENV"
 
       - name: Testes
         run: swift test
@@ -62,14 +74,15 @@ jobs:
       - name: Empacotar
         env:
           DEVELOPER_ID: ${{ secrets.DEVELOPER_ID }}
-          VERSION: ${{ github.ref_name }}
           BUILD: ${{ github.run_number }}
         run: |
-          export VERSION="${VERSION#v}"
           [ "$HAS_SIGNING" = "true" ] || unset DEVELOPER_ID
           ./scripts/package-app.sh
 
       - name: Publicar release
         env:
           GH_TOKEN: ${{ github.token }}
-        run: gh release create "${{ github.ref_name }}" dist/WinHub.zip --title "WinHub ${{ github.ref_name }}" --generate-notes
+        # A tag criada com o GITHUB_TOKEN não dispara outros workflows.
+        run: |
+          gh release create "v$VERSION" dist/WinHub.zip --target "$GITHUB_SHA" \
+            --title "WinHub $VERSION" --generate-notes --latest

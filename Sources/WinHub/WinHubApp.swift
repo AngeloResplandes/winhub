@@ -7,26 +7,36 @@ struct WinHubApp: App {
     @NSApplicationDelegateAdaptor private var appDelegate: AppDelegate
     @State private var store = CatalogStore()
     @State private var wine = WineStore()
+    @State private var updates = UpdateStore()
 
     var body: some Scene {
         WindowGroup("WinHub") {
             RootView()
                 .environment(store)
                 .environment(wine)
+                .environment(updates)
                 .frame(minWidth: 900, minHeight: 560)
-                .task { await store.loadInitialCatalog() }
+                .task {
+                    await store.loadInitialCatalog()
+                    updates.start(catalog: store, wine: wine)
+                }
                 .onOpenURL { wine.handle($0) }
         }
         .handlesExternalEvents(matching: ["*"])
         .commands {
+            CommandGroup(after: .appInfo) {
+                Button("Procurar Atualizações…") {
+                    Task { await updates.check(userInitiated: true) }
+                }
+            }
             CommandGroup(after: .newItem) {
                 Button("Instalar app não listado…") { wine.chooseInstaller() }
                     .keyboardShortcut("i")
                 Divider()
                 Button("Importar catálogo…") { presentImportPanel() }
                     .keyboardShortcut("o")
-                Button("Restaurar catálogo de exemplo") {
-                    Task { await store.resetToSample() }
+                Button("Restaurar catálogo oficial") {
+                    Task { await store.resetToOfficial() }
                 }
             }
         }
@@ -35,6 +45,7 @@ struct WinHubApp: App {
             SettingsView()
                 .environment(store)
                 .environment(wine)
+                .environment(updates)
         }
     }
 
@@ -63,9 +74,11 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 struct SettingsView: View {
     @Environment(CatalogStore.self) private var store
     @Environment(WineStore.self) private var wine
+    @Environment(UpdateStore.self) private var updates
 
     var body: some View {
         @Bindable var store = store
+        @Bindable var updates = updates
         Form {
             Section("Catálogo") {
                 Toggle("Mostrar apps sem teste", isOn: $store.showUntested)
@@ -79,6 +92,26 @@ struct SettingsView: View {
                     LabeledContent("Licença", value: runtime.manifest.license)
                 } else {
                     Button("Baixar o Wine…") { wine.isShowingRuntimeSetup = true }
+                }
+            }
+            Section("Atualizações") {
+                LabeledContent("Versão", value: updates.currentVersion?.description ?? "desenvolvimento")
+                Toggle("Procurar atualizações automaticamente", isOn: $updates.automaticChecks)
+                Text("O catálogo e os dados acompanham o repositório no GitHub; versões novas do app são baixadas e instaladas ao reiniciar.")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+                HStack {
+                    Text(updates.statusText).font(.caption).foregroundStyle(.secondary)
+                    Spacer()
+                    if updates.readyVersion != nil {
+                        Button("Reiniciar para atualizar") { updates.restartToUpdate() }
+                    } else {
+                        Button("Procurar agora") { Task { await updates.check() } }
+                            .disabled(updates.phase == .checking)
+                    }
+                }
+                if let lastCheck = updates.lastCheck {
+                    LabeledContent("Última verificação", value: lastCheck.formatted(date: .abbreviated, time: .shortened))
                 }
             }
         }

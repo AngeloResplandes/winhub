@@ -32,14 +32,18 @@ usando o [Wine](https://www.winehq.org/).
 
 ## Instalar
 
-1. Baixe o [`WinHub.zip` da versão 0.1.0](https://github.com/AngeloResplandes/winhub/releases/download/v0.1.0/WinHub.zip)
-   (veja a [página da release v0.1.0](https://github.com/AngeloResplandes/winhub/releases/tag/v0.1.0) ou
-   [todas as versões](https://github.com/AngeloResplandes/winhub/releases)) e mova o `WinHub.app` para
+1. Baixe o [`WinHub.zip` da versão mais recente](https://github.com/AngeloResplandes/winhub/releases/latest/download/WinHub.zip)
+   (veja [todas as versões](https://github.com/AngeloResplandes/winhub/releases)) e mova o `WinHub.app` para
    Aplicativos.
 2. Se o app não estiver notarizado, o macOS bloqueia a primeira abertura. Tente abrir uma vez e, em
    **Ajustes do Sistema → Privacidade e Segurança**, clique em **Abrir Mesmo Assim** (desde o macOS 15,
    o clique direito → Abrir não basta mais).
 3. No WinHub, clique em **Baixar o Wine** (191 MB, uma vez só).
+
+Depois disso o WinHub se atualiza sozinho: o catálogo acompanha cada commit do repositório e as versões
+novas do app são baixadas em segundo plano e instaladas quando você clica em **Reiniciar para atualizar**
+(desligue em **Ajustes → Atualizações**). Funciona se o app estiver numa pasta em que você pode gravar,
+como Aplicativos.
 
 ## Desenvolvimento
 
@@ -67,8 +71,10 @@ O script também compila o wrapper da Steam (veja abaixo) e precisa do mingw-w64
 ./scripts/package-app.sh
 ```
 
-Uma tag `v*` dispara o workflow de release, que publica `WinHub.zip`. Os segredos para assinatura e
-notarização estão descritos em `.github/workflows/release.yml`.
+Cada push na `main` (fora mudanças só em `.md`) dispara o workflow de release, que publica a versão
+`<VERSION>.<número da execução>` (ex.: `0.2.57`) com o `WinHub.zip`; para mudar major/minor, edite o
+arquivo `VERSION`. Os segredos para assinatura e notarização estão descritos em
+`.github/workflows/release.yml`.
 
 ## Catálogo e receitas
 

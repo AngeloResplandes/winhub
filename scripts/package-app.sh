@@ -8,7 +8,10 @@
 set -eu
 
 cd "$(dirname "$0")/.."
-VERSION="${VERSION:-0.1.0}"
+# The release workflow passes VERSION=<VERSION file>.<run number>; local builds end in .0.
+VERSION="${VERSION:-$(tr -d '[:space:]' < VERSION).0}"
+# Repository the app checks for updates (forks update from themselves).
+REPOSITORY="${GITHUB_REPOSITORY:-AngeloResplandes/winhub}"
 BUILD="${BUILD:-1}"
 DIST="dist"
 APP="$DIST/WinHub.app"
@@ -40,6 +43,7 @@ cat > "$APP/Contents/Info.plist" <<PLIST
     <key>LSMinimumSystemVersion</key><string>14.0</string>
     <key>LSApplicationCategoryType</key><string>public.app-category.games</string>
     <key>NSHighResolutionCapable</key><true/>
+    <key>WinHubUpdateRepository</key><string>$REPOSITORY</string>
     <key>CFBundleURLTypes</key>
     <array>
         <dict>

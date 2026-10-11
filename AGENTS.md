@@ -21,7 +21,7 @@ Wine. Projeto **público e independente** (MIT). Leia este arquivo inteiro antes
 
 ```bash
 swift build                 # compilar
-swift test                  # 65 testes (unitários; os com Wine real ficam desligados)
+swift test                  # 77 testes (unitários; os com Wine real ficam desligados)
 swift run WinHub            # rodar sem empacotar (atalhos .app e links winhub:// não funcionam assim)
 ./scripts/package-app.sh    # gera dist/WinHub.app (universal) e dist/WinHub.zip, assinatura ad-hoc;
                             # compila o wrapper da Steam (precisa de: brew install mingw-w64)
@@ -54,10 +54,13 @@ Sources/WinHubRuntime/   tudo que toca disco, rede e processos do Wine
   Components                        DXVK e winetricks (ComponentManager) + GraphicsBackend
   AppLauncherBuilder                atalhos ~/Applications/WinHub/<garrafa>/<programa>.app
   SteamWebHelperWrapper             põe o wrapper no lugar do steamwebhelper.exe da Steam
+  AppUpdater                        acha a release mais nova no GitHub, baixa, confere e troca o .app
+  RemoteDataSync                    cópia local dos JSON de Resources/ da branch main
   Downloader, ProcessRunner         utilitários
 Sources/WinHub/          app SwiftUI
   WinHubApp (cenas, menus, Ajustes, onOpenURL), RootView (barra lateral + folhas),
   CatalogStore (@Observable, catálogo e busca), WineStore (@Observable, motor/garrafas/tarefas),
+  UpdateStore (@Observable, atualizações; OfficialData = JSON baixado ou o do pacote),
   CatalogView, EntryViews (cards, detalhe, ações Instalar/Abrir), BottleViews (garrafas, programas, folhas)
   Resources/: catalog.json, runtimes.json, components.json
 Support/steamwebhelper-wrapper/  programa do Windows (C, MIT) compilado pelo package-app.sh com mingw-w64
@@ -65,8 +68,8 @@ Support/steamwebhelper-wrapper/  programa do Windows (C, MIT) compilado pelo pac
 
 Dependências: `WinHub` → `WinHubCore` + `WinHubRuntime`. Core e Runtime não dependem um do outro nem da UI.
 
-Dados do usuário: `~/Library/Application Support/WinHub/{Runtimes,Components,Bottles}`,
-`~/Library/Caches/WinHub/Downloads`, atalhos em `~/Applications/WinHub/`.
+Dados do usuário: `~/Library/Application Support/WinHub/{Runtimes,Components,Bottles,Remote}`,
+`~/Library/Caches/WinHub/{Downloads,Updates}`, atalhos em `~/Applications/WinHub/`.
 
 ## Fluxos principais
 
@@ -78,6 +81,17 @@ Dados do usuário: `~/Library/Application Support/WinHub/{Runtimes,Components,Bo
   winetricks → baixa instalador → `runInstaller` → confere `launch.windowsPath` → abre.
 - **Abrir programa:** `WineStore.launch` dispara e não espera; o estado "em execução" vem do
   `WineServerStatus`, não do processo iniciado (a Steam se reinicia sozinha).
+- **Atualizações** (`UpdateStore`, 10 s após abrir e depois a cada hora): (1) `RemoteDataSync` baixa
+  `catalog.json`, `runtimes.json` e `components.json` de `raw.githubusercontent.com/<repo>/main/Sources/WinHub/Resources/`
+  e só grava em `Application Support/WinHub/Remote/` se decodificar nesta versão do app; o catálogo
+  oficial e os manifestos são recarregados (um catálogo importado pelo usuário nunca é trocado). Um
+  `runtimes.json` com Wine novo não invalida o instalado (`RuntimeManager.installedRuntimes()`): a barra
+  lateral oferece "Atualizar o Wine". (2) `AppUpdater` lê `releases/latest` (com ETag), baixa o
+  `WinHub.zip`, confere o SHA-256 do `digest` que o GitHub calcula, valida identificador, versão,
+  `codesign --verify` e, com Developer ID, o mesmo TeamIdentifier. "Reiniciar para atualizar" roda um
+  `sh` que espera o PID sair, troca o `.app` (desfaz se falhar) e o abre. O repositório vem da chave
+  `WinHubUpdateRepository` do Info.plist (`GITHUB_REPOSITORY` no CI). Cada push na `main` gera a release
+  `v<VERSION>.<run_number>` (`release.yml`).
 - **Atalhos `.app`:** o script do atalho só faz `open "winhub://open?bottle=<uuid>&shortcut=<path>"`;
   o `WineStore.handle(_:)` valida que o `.lnk` está dentro do `drive_c` da garrafa e o abre.
 
@@ -113,6 +127,11 @@ Dados do usuário: `~/Library/Application Support/WinHub/{Runtimes,Components,Bo
   `/tmp/.wine-<uid>/server-<dev>-<inode>/` e o `-k` dele não alcança os órfãos. O `WineOrphanReaper` os
   encerra (SIGKILL) quando ninguém segura o `lock` da pasta; roda após `shutdown` e antes de cada `launch`.
   Use o `lock`, não o `socket`, para saber se o servidor vive: um servidor morto com SIGKILL deixa o socket.
+- **Atualização do app:** só com o `WinHub.app` empacotado, fora da translocação do Gatekeeper
+  (`/AppTranslocation/`) e numa pasta gravável; com `swift run` só os dados se atualizam. Asset sem
+  `digest` é ignorado. O zip baixado pelo `URLSession` não ganha o atributo de quarentena, por isso o app
+  novo abre sem novo aviso do Gatekeeper. Mudanças nos JSON precisam continuar decodificáveis pelas
+  versões anteriores (`decodeIfPresent`), senão os apps antigos ignoram a atualização até se atualizarem.
 - **`WINEDEBUG` padrão é `fixme-all`** (`err` não esconde os "fixme" e enche os logs).
 - **Ambiente isolado:** `WineEnvironment` só herda `HOME, USER, LOGNAME, LANG, LC_ALL, TMPDIR, SHELL`;
   sempre define `ROSETTA_ADVERTISE_AVX=1` e `DOTNET_EnableWriteXorExecute=0`. Configurações da garrafa vencem.
@@ -140,8 +159,8 @@ Dados do usuário: `~/Library/Application Support/WinHub/{Runtimes,Components,Bo
 ## CI e publicação
 
 - `.github/workflows/ci.yml`: build + testes + empacotamento a cada push/PR (runner `macos-15`, Xcode 16.4).
-- `.github/workflows/release.yml`: tag `v*` publica `WinHub.zip`; assina/notariza se os segredos do
-  Developer ID existirem (lista no próprio arquivo).
+- `.github/workflows/release.yml`: cada push na `main` (exceto só `.md`) publica `v<VERSION>.<run_number>`
+  com `WinHub.zip`; assina/notariza se os segredos do Developer ID existirem (lista no próprio arquivo).
 - Commits: mensagens em inglês, no imperativo. O autor do repositório usa o e-mail noreply do GitHub.
 
 ## Próximos passos possíveis

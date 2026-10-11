@@ -278,7 +278,8 @@ struct RuntimeSetupView: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
-            Label("Baixar o Wine", systemImage: "shippingbox.and.arrow.backward").font(.title2.bold())
+            Label(wine.runtimeUpgrade == nil ? "Baixar o Wine" : "Atualizar o Wine",
+                  systemImage: "shippingbox.and.arrow.backward").font(.title2.bold())
             Text("Para rodar programas do Windows, o WinHub usa o Wine, um projeto de código aberto. Ele é baixado uma vez, direto da fonte oficial, e conferido antes de ser instalado.")
                 .fixedSize(horizontal: false, vertical: true)
 

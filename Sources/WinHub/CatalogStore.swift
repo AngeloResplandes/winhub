@@ -7,12 +7,13 @@ import WinHubCore
 @Observable
 final class CatalogStore {
     enum Source: Equatable {
-        case sample
+        /// The repository's catalog, updated with every commit (see `OfficialData`).
+        case official
         case imported(URL)
 
         var label: String {
             switch self {
-            case .sample: "Catálogo de exemplo"
+            case .official: "Catálogo do WinHub"
             case .imported(let url): url.lastPathComponent
             }
         }
@@ -21,7 +22,7 @@ final class CatalogStore {
     private(set) var engine = CatalogSearchEngine(entries: [])
     private(set) var result = CatalogSearchEngine(entries: []).search("")
     private(set) var isLoading = false
-    private(set) var source: Source = .sample
+    private(set) var source: Source = .official
     var errorMessage: String?
 
     var query = "" { didSet { if query != oldValue { refresh() } } }
@@ -53,23 +54,38 @@ final class CatalogStore {
     func loadInitialCatalog() async {
         if FileManager.default.fileExists(atPath: Self.importedCatalogURL.path) {
             await load(from: Self.importedCatalogURL, source: .imported(Self.importedCatalogURL), persist: false)
-        } else if let sample = Bundle.module.url(forResource: "catalog", withExtension: "json") {
-            await load(from: sample, source: .sample, persist: false)
+        } else {
+            await loadOfficial()
+        }
+    }
+
+    /// Picks up a newly downloaded official catalog, unless the user imported their own.
+    func reloadOfficial() async {
+        guard source == .official else { return }
+        await loadOfficial()
+    }
+
+    private func loadOfficial() async {
+        let urls = OfficialData.urls(for: OfficialData.catalog)
+        for (index, url) in urls.enumerated() {
+            if await load(from: url, source: .official, persist: false, reportingErrors: index == urls.count - 1) { return }
         }
     }
 
     func importCatalog(from url: URL) async {
+        selection = nil
         await load(from: url, source: .imported(url), persist: true)
     }
 
-    func resetToSample() async {
+    func resetToOfficial() async {
         try? FileManager.default.removeItem(at: Self.importedCatalogURL)
         selection = nil
         await loadInitialCatalog()
     }
 
     /// Parses off the main thread, then publishes the results.
-    private func load(from url: URL, source: Source, persist: Bool) async {
+    @discardableResult
+    private func load(from url: URL, source: Source, persist: Bool, reportingErrors: Bool = true) async -> Bool {
         isLoading = true
         defer { isLoading = false }
         let destination = Self.importedCatalogURL
@@ -87,10 +103,11 @@ final class CatalogStore {
             }.value
             engine = CatalogSearchEngine(entries: entries)
             self.source = source
-            selection = nil
             refresh()
+            return true
         } catch {
-            errorMessage = error.localizedDescription
+            if reportingErrors { errorMessage = error.localizedDescription }
+            return false
         }
     }
 

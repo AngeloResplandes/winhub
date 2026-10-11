@@ -50,6 +50,17 @@ public struct RuntimeManager: Sendable {
         return FileManager.default.isExecutableFile(atPath: runtime.wine.path) ? runtime : nil
     }
 
+    /// Every fully installed runtime, read from the markers, so a runtime stays usable after the
+    /// manifest moves on to a newer Wine.
+    public func installedRuntimes() -> [InstalledRuntime] {
+        let folders = (try? FileManager.default.contentsOfDirectory(at: root, includingPropertiesForKeys: nil)) ?? []
+        return folders.sorted { $0.lastPathComponent < $1.lastPathComponent }.compactMap { folder in
+            guard let data = try? Data(contentsOf: folder.appending(path: Self.markerName)),
+                  let recorded = try? JSONDecoder().decode(RuntimeManifest.self, from: data) else { return nil }
+            return installed(recorded)
+        }
+    }
+
     /// Downloads `manifest.url`, checks its SHA-256 and unpacks it. Progress is 0…1.
     public func install(_ manifest: RuntimeManifest,
                         progress: @escaping @Sendable (Double) -> Void = { _ in }) async throws -> InstalledRuntime {

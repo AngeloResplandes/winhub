@@ -16,8 +16,8 @@ final class WineStore {
         var bottleID: Bottle.ID?
     }
 
-    let manifests: [RuntimeManifest]
-    let components: [ComponentManifest]
+    private(set) var manifests: [RuntimeManifest] = []
+    private(set) var components: [ComponentManifest] = []
     private(set) var runtime: InstalledRuntime?
     /// 0…1 while the runtime downloads; `nil` otherwise.
     private(set) var runtimeProgress: Double?
@@ -42,11 +42,7 @@ final class WineStore {
         bundled: Bundle.main.url(forResource: "steamwebhelper-wrapper", withExtension: "exe"))
 
     init() {
-        let url = Bundle.module.url(forResource: "runtimes", withExtension: "json")
-        manifests = url.flatMap { try? RuntimeManifest.loadAll(from: $0) } ?? []
-        let componentsURL = Bundle.module.url(forResource: "components", withExtension: "json")
-        components = componentsURL.flatMap { try? ComponentManifest.loadAll(from: $0) } ?? []
-        refresh()
+        reloadManifests()
         Task { [weak self] in
             while let self {
                 self.updateActiveBottles()
@@ -63,8 +59,26 @@ final class WineStore {
     var manifest: RuntimeManifest? { manifests.first }
     var isRosettaAvailable: Bool { RuntimeManager.isRosettaAvailable }
 
+    /// A newer Wine than the installed one (the manifests follow the repository).
+    var runtimeUpgrade: RuntimeManifest? {
+        guard let runtime, let manifest, runtime.manifest.sha256 != manifest.sha256 else { return nil }
+        return manifest
+    }
+
+    /// Reads the manifests: the copy downloaded from the repository, else the bundled one.
+    func reloadManifests() {
+        manifests = OfficialData.load(OfficialData.runtimes) { url in
+            let all = try RuntimeManifest.loadAll(from: url)
+            guard !all.isEmpty else { throw CocoaError(.coderValueNotFound) }
+            return all
+        } ?? []
+        components = OfficialData.load(OfficialData.components, ComponentManifest.loadAll) ?? []
+        refresh()
+    }
+
     func refresh() {
-        runtime = manifest.flatMap(runtimeManager.installed)
+        // An older Wine keeps working until the user installs the new one.
+        runtime = manifest.flatMap(runtimeManager.installed) ?? runtimeManager.installedRuntimes().first
         bottles = bottleStore.list()
         programs = Dictionary(uniqueKeysWithValues: bottles.map { ($0.id, ProgramScanner.programs(in: $0)) })
         updateActiveBottles()
