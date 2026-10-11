@@ -560,40 +560,68 @@ struct WineIntegrationTests {
     }
 }
 
-/// Runs with `RUN_WINE_TESTS=1`, the Wine runtime installed by the app, and
-/// `WINHUB_DXVK_ARCHIVE` / `WINHUB_WINETRICKS` pointing to the real downloads.
-@Suite(.enabled(if: ProcessInfo.processInfo.environment["RUN_WINE_TESTS"] == "1"
-                && ProcessInfo.processInfo.environment["WINHUB_DXVK_ARCHIVE"] != nil))
+/// Runs with `RUN_WINE_TESTS=1` and the Wine runtime installed by the app. Components come from
+/// `WINHUB_DXVK_ARCHIVE` / `WINHUB_WINETRICKS` when set, otherwise they are downloaded.
+@Suite(.enabled(if: ProcessInfo.processInfo.environment["RUN_WINE_TESTS"] == "1"))
 struct ComponentIntegrationTests {
-    @Test(.timeLimit(.minutes(10)))
-    func dxvkAndWinetricksInRealBottle() async throws {
-        let env = ProcessInfo.processInfo.environment
-        let manifests = try ComponentManifest.loadAll(from: URL(fileURLWithPath: #filePath)
-            .deletingLastPathComponent().deletingLastPathComponent().deletingLastPathComponent()
-            .appending(path: "Sources/WinHub/Resources/components.json"))
+    static let resources = URL(fileURLWithPath: #filePath)
+        .deletingLastPathComponent().deletingLastPathComponent().deletingLastPathComponent()
+        .appending(path: "Sources/WinHub/Resources")
+
+    /// A component from `WINHUB_<NAME>_ARCHIVE`/`WINHUB_<NAME>` if given, else downloaded from its manifest.
+    func component(_ name: String, env variable: String, in manager: ComponentManager,
+                   manifests: [ComponentManifest]) async throws -> InstalledComponent {
+        let manifest = try #require(manifests.first { $0.name == name })
+        if let path = ProcessInfo.processInfo.environment[variable] {
+            return try manager.installFile(at: URL(fileURLWithPath: path), manifest: manifest)
+        }
+        return try await manager.install(manifest)
+    }
+
+    @Test(.timeLimit(.minutes(15)))
+    func graphicsAndWinetricksInRealBottle() async throws {
+        let manifests = try ComponentManifest.loadAll(from: Self.resources.appending(path: "components.json"))
         let dir = try makeTempDirectory()
         defer { try? FileManager.default.removeItem(at: dir) }
         let components = ComponentManager(root: dir.appending(path: "components"))
-        let dxvk = try components.installFile(at: URL(fileURLWithPath: try #require(env["WINHUB_DXVK_ARCHIVE"])),
-                                              manifest: try #require(manifests.first { $0.name == "DXVK-macOS" }))
-        let winetricks = try components.installFile(at: URL(fileURLWithPath: try #require(env["WINHUB_WINETRICKS"])),
-                                                    manifest: try #require(manifests.first { $0.name == "winetricks" }))
+        let dxvk = try await component("DXVK-macOS", env: "WINHUB_DXVK_ARCHIVE", in: components, manifests: manifests)
+        let winetricks = try await component("winetricks", env: "WINHUB_WINETRICKS", in: components, manifests: manifests)
 
-        // Uses the Wine that WinHub installed (run the app and download it first).
-        let wineManifest = try RuntimeManifest.loadAll(from: URL(fileURLWithPath: #filePath)
-            .deletingLastPathComponent().deletingLastPathComponent().deletingLastPathComponent()
-            .appending(path: "Sources/WinHub/Resources/runtimes.json"))[0]
+        // Uses the Wine that WinHub installed (run the app, or EngineInstallTests, first).
+        let wineManifest = try RuntimeManifest.loadAll(from: Self.resources.appending(path: "runtimes.json"))[0]
         let runtime = try #require(RuntimeManager(root: RuntimeManager.defaultRoot).installed(wineManifest))
         let store = BottleStore(root: dir.appending(path: "bottles"))
         var bottle = try store.create(name: "Componentes", runtimeID: wineManifest.id)
         let launcher = WineLauncher(runtime: runtime)
         try await launcher.initialize(bottle)
+        let system32 = bottle.driveC.appending(path: "windows/system32")
+        let wineD3D11 = try Data(contentsOf: runtime.wineDirectory.appending(path: "lib/wine/x86_64-windows/d3d11.dll"))
 
         bottle = try launcher.applyGraphics(.dxvk, to: bottle, dxvk: dxvk)
-        #expect(FileManager.default.fileExists(atPath: bottle.driveC.appending(path: "windows/system32/d3d11.dll").path))
+        #expect(try Data(contentsOf: system32.appending(path: "d3d11.dll")) != wineD3D11)
         #expect(await (try launcher.run(bottle, ["cmd", "/c", "ver"], logName: "ver-dxvk")) == 0)
 
+        if runtime.manifest.supports(.dxmt) {
+            bottle = try launcher.applyGraphics(.dxmt, to: bottle, dxvk: dxvk)
+            #expect(bottle.dllOverrides["dxgi"] == "n,b")
+            #expect(FileManager.default.fileExists(atPath: system32.appending(path: "winemetal.dll").path))
+            #expect(await (try launcher.run(bottle, ["cmd", "/c", "ver"], logName: "ver-dxmt")) == 0)
+        }
+
+        // Back to Wine's Direct3D: its own DLLs return and nothing is forced in the environment.
+        bottle = try launcher.applyGraphics(.wined3d, to: bottle, dxvk: dxvk)
+        #expect(try Data(contentsOf: system32.appending(path: "d3d11.dll")) == wineD3D11)
+        #expect(bottle.dllOverrides.isEmpty)
+
         try await launcher.runWinetricks(["fontsmooth=rgb"], in: bottle, winetricks: winetricks)
+
+        // A verb that needs cabextract, e.g. WINHUB_CABEXTRACT_VERB=corefonts (downloads its files).
+        if let verb = ProcessInfo.processInfo.environment["WINHUB_CABEXTRACT_VERB"] {
+            let cabextract = try await component("cabextract", env: "WINHUB_CABEXTRACT_ARCHIVE", in: components,
+                                                 manifests: manifests)
+            try await launcher.runWinetricks([verb], in: bottle, winetricks: winetricks, cabextract: cabextract)
+        }
+
         try await launcher.shutdown(bottle)
         let userReg = try String(contentsOf: bottle.prefix.appending(path: "user.reg"), encoding: .utf8)
         #expect(userReg.contains("\"FontSmoothingType\"=dword:00000002"))
@@ -702,9 +730,7 @@ struct ComponentIntegrationTests {
 @Suite(.enabled(if: ProcessInfo.processInfo.environment["RUN_WINE_TESTS"] == "1"
                 && ProcessInfo.processInfo.environment["WINHUB_INSTALL_ENGINE"] == "1"))
 struct EngineInstallTests {
-    static let resources = URL(fileURLWithPath: #filePath)
-        .deletingLastPathComponent().deletingLastPathComponent().deletingLastPathComponent()
-        .appending(path: "Sources/WinHub/Resources")
+    static let resources = ComponentIntegrationTests.resources
 
     @Test(.timeLimit(.minutes(20)))
     func installsEngineWithOverlay() async throws {
