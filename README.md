@@ -32,8 +32,10 @@ usando o [Wine](https://www.winehq.org/).
 
 ## Instalar
 
-1. Baixe `WinHub.zip` na página de [Releases](https://github.com/AngeloResplandes/winhub/releases) e mova o
-   `WinHub.app` para Aplicativos.
+1. Baixe o [`WinHub.zip` da versão 0.1.0](https://github.com/AngeloResplandes/winhub/releases/download/v0.1.0/WinHub.zip)
+   (veja a [página da release v0.1.0](https://github.com/AngeloResplandes/winhub/releases/tag/v0.1.0) ou
+   [todas as versões](https://github.com/AngeloResplandes/winhub/releases)) e mova o `WinHub.app` para
+   Aplicativos.
 2. Se o app não estiver notarizado, o macOS bloqueia a primeira abertura. Tente abrir uma vez e, em
    **Ajustes do Sistema → Privacidade e Segurança**, clique em **Abrir Mesmo Assim** (desde o macOS 15,
    o clique direito → Abrir não basta mais).
