@@ -25,6 +25,7 @@ swift test                  # 77 testes (unitários; os com Wine real ficam desl
 swift run WinHub            # rodar sem empacotar (atalhos .app e links winhub:// não funcionam assim)
 ./scripts/package-app.sh    # gera dist/WinHub.app (universal) e dist/WinHub.zip, assinatura ad-hoc;
                             # compila o wrapper da Steam (precisa de: brew install mingw-w64)
+swift scripts/make-icon.swift saida.icns  # desenha o ícone (o package-app.sh já chama)
 ./scripts/build-steam-wrapper.sh   # só o wrapper, em .build/; para usar a Steam com swift run:
 WINHUB_STEAMWEBHELPER_WRAPPER=.build/steamwebhelper-wrapper.exe swift run WinHub
 open Package.swift          # abrir no Xcode
@@ -63,6 +64,7 @@ Sources/WinHub/          app SwiftUI
   UpdateStore (@Observable, atualizações; OfficialData = JSON baixado ou o do pacote),
   CatalogView, EntryViews (cards, detalhe, ações Instalar/Abrir), BottleViews (garrafas, programas, folhas)
   Resources/: catalog.json, runtimes.json, components.json
+scripts/make-icon.swift  ícone do app desenhado em código (CoreGraphics → .icns); sem imagens no Git
 Support/steamwebhelper-wrapper/  programa do Windows (C, MIT) compilado pelo package-app.sh com mingw-w64
 ```
 

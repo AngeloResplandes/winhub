@@ -119,6 +119,7 @@ Tests/                   testes unitários e de integração
 Support/                 wrapper do steamwebhelper (programa do Windows, compilado no empacotamento)
 scripts/package-app.sh   gera dist/WinHub.app e dist/WinHub.zip
 scripts/build-steam-wrapper.sh  compila o wrapper da Steam (mingw-w64)
+scripts/make-icon.swift  desenha o ícone do app e gera o .icns
 ```
 
 Dados do usuário: `~/Library/Application Support/WinHub/` (motor, componentes e garrafas) e

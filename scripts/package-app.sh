@@ -24,6 +24,9 @@ mkdir -p "$APP/Contents/MacOS" "$APP/Contents/Resources"
 cp "$BIN_DIR/WinHub" "$APP/Contents/MacOS/WinHub"
 cp -R "$BIN_DIR/WinHub_WinHub.bundle" "$APP/Contents/Resources/"
 
+# App icon, drawn from code (see scripts/make-icon.swift).
+swift scripts/make-icon.swift "$APP/Contents/Resources/AppIcon.icns"
+
 # Windows program that keeps Steam's window from staying black (see SteamWebHelperWrapper.swift).
 ./scripts/build-steam-wrapper.sh "$APP/Contents/Resources/steamwebhelper-wrapper.exe" >/dev/null
 
@@ -36,6 +39,7 @@ cat > "$APP/Contents/Info.plist" <<PLIST
     <key>CFBundleDisplayName</key><string>WinHub</string>
     <key>CFBundleIdentifier</key><string>io.github.winhub</string>
     <key>CFBundleExecutable</key><string>WinHub</string>
+    <key>CFBundleIconFile</key><string>AppIcon</string>
     <key>CFBundlePackageType</key><string>APPL</string>
     <key>CFBundleShortVersionString</key><string>$VERSION</string>
     <key>CFBundleVersion</key><string>$BUILD</string>
