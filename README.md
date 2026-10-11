@@ -32,8 +32,11 @@ usando o [Wine](https://www.winehq.org/).
 
 ## Instalar
 
-1. Baixe `WinHub.zip` na página de [Releases](../../releases) e mova o `WinHub.app` para Aplicativos.
-2. Se o app não estiver notarizado, abra com **clique direito → Abrir** na primeira vez.
+1. Baixe `WinHub.zip` na página de [Releases](https://github.com/AngeloResplandes/winhub/releases) e mova o
+   `WinHub.app` para Aplicativos.
+2. Se o app não estiver notarizado, o macOS bloqueia a primeira abertura. Tente abrir uma vez e, em
+   **Ajustes do Sistema → Privacidade e Segurança**, clique em **Abrir Mesmo Assim** (desde o macOS 15,
+   o clique direito → Abrir não basta mais).
 3. No WinHub, clique em **Baixar o Wine** (191 MB, uma vez só).
 
 ## Desenvolvimento

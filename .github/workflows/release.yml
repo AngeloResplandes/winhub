@@ -1,7 +1,8 @@
 name: Release
 
 # Publica dist/WinHub.zip ao criar uma tag como v0.1.0.
-# Sem os segredos abaixo, o app sai com assinatura ad-hoc (abra com clique direito → Abrir).
+# Sem os segredos abaixo, o app sai com assinatura ad-hoc (na primeira abertura: Ajustes do Sistema →
+# Privacidade e Segurança → Abrir Mesmo Assim).
 #
 # Segredos opcionais para assinar e notarizar com o seu Apple Developer ID:
 #   DEVELOPER_ID_P12_BASE64   certificado "Developer ID Application" exportado (.p12) em base64
