@@ -18,6 +18,16 @@ public struct SteamWebHelperWrapper: Sendable {
         self.wrapper = wrapper
     }
 
+    /// The wrapper in the app's resources (`bundled`) or, for `swift run`, the build
+    /// named by `WINHUB_STEAMWEBHELPER_WRAPPER` (see `scripts/build-steam-wrapper.sh`).
+    public static func locate(bundled: URL?,
+                              environment: [String: String] = ProcessInfo.processInfo.environment) -> Self? {
+        let dev = environment["WINHUB_STEAMWEBHELPER_WRAPPER"].map { URL(fileURLWithPath: $0) }
+        return [bundled, dev].compactMap { $0 }
+            .first { FileManager.default.fileExists(atPath: $0.path) }
+            .map(Self.init)
+    }
+
     static let folder = "Program Files (x86)/Steam/bin/cef/cef.win64"
     static let helperName = "steamwebhelper.exe"
     static let realName = "steamwebhelper_real.exe"
@@ -26,23 +36,16 @@ public struct SteamWebHelperWrapper: Sendable {
     /// mistaken for Steam's helper (it would then start itself in a loop).
     public static let marker = "WINHUB-STEAMWEBHELPER-WRAPPER"
 
-    /// Puts the wrapper in place, again after Steam updates its helper.
+    /// Puts the wrapper in place, again after Steam updates its helper. Call it only
+    /// before starting Steam: while Steam runs, a swap is undone when Steam restarts.
     /// Returns `false` when the wrapper is not in place afterwards (no Steam helper to wrap).
-    ///
-    /// `onlyIfNeverWrapped` is for checks while Steam runs: only a bottle without a saved
-    /// helper (Steam just installed its client) is changed. Steam started without
-    /// `-noverifyfiles` restores its helper and restarts, so wrapping it again then
-    /// would make both undo each other in a loop; the next launch from WinHub fixes it.
     @discardableResult
-    public func install(in bottle: Bottle, onlyIfNeverWrapped: Bool = false) throws -> Bool {
+    public func install(in bottle: Bottle) throws -> Bool {
         let fm = FileManager.default
         let cef = bottle.driveC.appending(path: Self.folder, directoryHint: .isDirectory)
         let helper = cef.appending(path: Self.helperName)
         let real = cef.appending(path: Self.realName)
 
-        if onlyIfNeverWrapped, fm.fileExists(atPath: real.path) {
-            return try fm.fileExists(atPath: helper.path) && Self.isWrapper(Data(contentsOf: helper))
-        }
         if fm.fileExists(atPath: helper.path) {
             let installed = try Data(contentsOf: helper)
             if !Self.isWrapper(installed) {

@@ -89,19 +89,24 @@ public enum SteamClient {
     public static let windowsPath = #"C:\Program Files (x86)\Steam\steam.exe"#
 
     /// Steam checks its files on start and would put back the original
-    /// `steamwebhelper.exe` over WinHub's wrapper.
-    public static let launchArguments = ["-noverifyfiles"]
+    /// `steamwebhelper.exe` over WinHub's wrapper. Only used while the wrapper is
+    /// installed: on the first start the check is what downloads Steam's client.
+    public static func launchArguments(wrapperInstalled: Bool) -> [String] {
+        wrapperInstalled ? ["-noverifyfiles"] : []
+    }
 
     /// `steam://run/<id>` installs the game first if needed, then starts it.
-    public static func runArguments(appID: Int) -> [String] {
-        launchArguments + ["steam://run/\(appID)"]
+    public static func runArguments(appID: Int, wrapperInstalled: Bool) -> [String] {
+        launchArguments(wrapperInstalled: wrapperInstalled) + ["steam://run/\(appID)"]
     }
 
     /// Arguments for opening `windowsPath`; the Steam client gets `launchArguments` first.
-    public static func arguments(forOpening windowsPath: String, _ arguments: [String] = []) -> [String] {
+    public static func arguments(forOpening windowsPath: String, _ arguments: [String] = [],
+                                 wrapperInstalled: Bool) -> [String] {
         let normalize = { (path: String) in path.replacingOccurrences(of: "/", with: "\\").lowercased() }
         guard normalize(windowsPath) == normalize(Self.windowsPath) else { return arguments }
-        return launchArguments + arguments.filter { !launchArguments.contains($0) }
+        let extra = launchArguments(wrapperInstalled: wrapperInstalled)
+        return extra + arguments.filter { !extra.contains($0) }
     }
 
     /// The Start Menu shortcut that Steam's installer creates is named "Steam".

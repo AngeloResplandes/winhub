@@ -37,9 +37,9 @@ final class WineStore {
     private let downloader = Downloader(directory: Downloader.defaultDirectory)
     private let launchers = AppLauncherBuilder(root: AppLauncherBuilder.defaultRoot)
     private let componentManager = ComponentManager(root: ComponentManager.defaultRoot)
-    /// Only in the packaged app; `swift run` has no Windows build of the wrapper.
-    private let steamWrapper = Bundle.main.url(forResource: "steamwebhelper-wrapper", withExtension: "exe")
-        .map(SteamWebHelperWrapper.init)
+    /// In the packaged app's resources; `swift run` needs `WINHUB_STEAMWEBHELPER_WRAPPER`.
+    private let steamWrapper = SteamWebHelperWrapper.locate(
+        bundled: Bundle.main.url(forResource: "steamwebhelper-wrapper", withExtension: "exe"))
 
     init() {
         let url = Bundle.module.url(forResource: "runtimes", withExtension: "json")
@@ -56,10 +56,7 @@ final class WineStore {
     }
 
     private func updateActiveBottles() {
-        let running = bottles.filter { WineServerStatus.isRunning(prefix: $0.prefix) }
-        // Steam downloads its client (and helper) on the first start after installing.
-        for bottle in running { _ = try? steamWrapper?.install(in: bottle, onlyIfNeverWrapped: true) }
-        let active = Set(running.map(\.id))
+        let active = Set(bottles.filter { WineServerStatus.isRunning(prefix: $0.prefix) }.map(\.id))
         if active != activeBottles { activeBottles = active }
     }
 
@@ -334,14 +331,17 @@ final class WineStore {
 
     func open(_ recipe: Recipe) {
         guard let bottle = bottle(named: recipe.bottleName) else { return }
-        let arguments = SteamClient.arguments(forOpening: recipe.launch.windowsPath, recipe.launch.arguments)
+        let arguments = SteamClient.arguments(forOpening: recipe.launch.windowsPath, recipe.launch.arguments,
+                                              wrapperInstalled: prepareSteam(in: bottle))
         launch(in: bottle) { launcher in
             try await launcher.run(bottle, windowsPath: recipe.launch.windowsPath, arguments: arguments)
         }
     }
 
     func open(_ program: InstalledProgram, in bottle: Bottle) {
-        let arguments = SteamClient.isClientShortcut(named: program.name) ? SteamClient.launchArguments : []
+        let wrapperInstalled = prepareSteam(in: bottle)
+        let arguments = SteamClient.isClientShortcut(named: program.name)
+            ? SteamClient.launchArguments(wrapperInstalled: wrapperInstalled) : []
         launch(in: bottle) { launcher in
             try await launcher.open(bottle, shortcut: program.shortcut, arguments: arguments)
         }
@@ -350,9 +350,9 @@ final class WineStore {
     /// Opens a Steam game through the Steam client bottle.
     func playOnSteam(appID: Int) {
         guard let bottle = bottle(named: SteamClient.bottleName) else { return }
+        let arguments = SteamClient.runArguments(appID: appID, wrapperInstalled: prepareSteam(in: bottle))
         launch(in: bottle) { launcher in
-            try await launcher.run(bottle, windowsPath: SteamClient.windowsPath,
-                                   arguments: SteamClient.runArguments(appID: appID))
+            try await launcher.run(bottle, windowsPath: SteamClient.windowsPath, arguments: arguments)
         }
     }
 
@@ -362,15 +362,21 @@ final class WineStore {
         return FileManager.default.fileExists(atPath: steam.path)
     }
 
+    /// Puts the Steam wrapper in place (see `SteamWebHelperWrapper`). Returns whether it
+    /// is installed, i.e. whether Steam must be told to skip its file check.
+    private func prepareSteam(in bottle: Bottle) -> Bool {
+        do {
+            return try steamWrapper?.install(in: bottle) ?? false
+        } catch {
+            errorMessage = "Não foi possível preparar a janela da Steam: \(error.localizedDescription)"
+            return false
+        }
+    }
+
     /// Starts a program and returns immediately. Programs may restart
     /// themselves (Steam does after updating), so "running" is tracked per bottle.
     private func launch(in bottle: Bottle, _ body: @escaping @Sendable (WineLauncher) async throws -> Int32) {
         guard let runtime = requireRuntime() else { return }
-        do {
-            try steamWrapper?.install(in: bottle)
-        } catch {
-            errorMessage = "Não foi possível preparar a janela da Steam: \(error.localizedDescription)"
-        }
         activeBottles.insert(bottle.id)
         Task {
             do {

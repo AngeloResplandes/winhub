@@ -186,15 +186,25 @@ import Testing
     }
 
     @Test func steamRunArguments() {
-        #expect(SteamClient.runArguments(appID: 220) == ["-noverifyfiles", "steam://run/220"])
+        #expect(SteamClient.runArguments(appID: 220, wrapperInstalled: true) == ["-noverifyfiles", "steam://run/220"])
+        #expect(SteamClient.runArguments(appID: 220, wrapperInstalled: false) == ["steam://run/220"])
     }
 
-    @Test func steamClientSkipsFileVerification() {
-        #expect(SteamClient.arguments(forOpening: SteamClient.windowsPath) == ["-noverifyfiles"])
-        #expect(SteamClient.arguments(forOpening: "c:/program files (x86)/steam/STEAM.EXE", ["-silent"])
-                == ["-noverifyfiles", "-silent"])
-        #expect(SteamClient.arguments(forOpening: SteamClient.windowsPath, ["-noverifyfiles"]) == ["-noverifyfiles"])
-        #expect(SteamClient.arguments(forOpening: #"C:\Games\game.exe"#, ["-x"]) == ["-x"])
+    @Test func steamClientSkipsFileVerificationOnlyWithWrapper() {
+        #expect(SteamClient.arguments(forOpening: SteamClient.windowsPath, wrapperInstalled: true) == ["-noverifyfiles"])
+        #expect(SteamClient.arguments(forOpening: "c:/program files (x86)/steam/STEAM.EXE", ["-silent"],
+                                      wrapperInstalled: true) == ["-noverifyfiles", "-silent"])
+        #expect(SteamClient.arguments(forOpening: SteamClient.windowsPath, ["-noverifyfiles"],
+                                      wrapperInstalled: true) == ["-noverifyfiles"])
+        #expect(SteamClient.arguments(forOpening: #"C:\Games\game.exe"#, ["-x"], wrapperInstalled: true) == ["-x"])
+    }
+
+    /// The first start after installing must not skip the check: Steam then never
+    /// downloads its client.
+    @Test func firstStartChecksFiles() {
+        #expect(SteamClient.arguments(forOpening: SteamClient.windowsPath, wrapperInstalled: false) == [])
+        #expect(SteamClient.arguments(forOpening: SteamClient.windowsPath, ["-silent"], wrapperInstalled: false)
+                == ["-silent"])
     }
 
     @Test func recognizesSteamClientShortcut() {

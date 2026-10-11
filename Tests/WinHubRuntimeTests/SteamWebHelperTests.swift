@@ -94,29 +94,6 @@ import Testing
         #expect(f.read(f.real) == "steam v1")
     }
 
-    @Test func whileRunningWrapsOnlyANewInstall() throws {
-        let f = try Fixture()
-        defer { try? FileManager.default.removeItem(at: f.dir) }
-        try f.write("steam v1", to: f.helper)
-
-        #expect(try f.wrapper.install(in: f.bottle, onlyIfNeverWrapped: true))
-        #expect(f.read(f.helper) == f.current)
-        #expect(f.read(f.real) == "steam v1")
-    }
-
-    /// Steam started without `-noverifyfiles` puts its helper back and restarts;
-    /// wrapping it again while it runs would make both undo each other forever.
-    @Test func whileRunningLeavesARestoredHelperAlone() throws {
-        let f = try Fixture()
-        defer { try? FileManager.default.removeItem(at: f.dir) }
-        try f.write("steam v1", to: f.helper)
-        try f.write("steam v1", to: f.real)
-
-        #expect(try f.wrapper.install(in: f.bottle, onlyIfNeverWrapped: true) == false)
-        #expect(f.read(f.helper) == "steam v1")
-        #expect(f.read(f.real) == "steam v1")
-    }
-
     @Test func wrapperSourceEmbedsTheMarker() throws {
         let source = URL(fileURLWithPath: #filePath)
             .deletingLastPathComponent().deletingLastPathComponent().deletingLastPathComponent()
@@ -130,6 +107,26 @@ import Testing
         defer { try? FileManager.default.removeItem(at: f.dir) }
         try f.write(f.current, to: f.helper)
         #expect(try f.wrapper.install(in: f.bottle) == false)
+    }
+}
+
+@Suite struct SteamWebHelperWrapperLocationTests {
+    @Test func prefersTheAppsResources() throws {
+        let dir = try makeTempDirectory()
+        defer { try? FileManager.default.removeItem(at: dir) }
+        let bundled = dir.appending(path: "steamwebhelper-wrapper.exe")
+        let dev = dir.appending(path: "dev.exe")
+        for file in [bundled, dev] { FileManager.default.createFile(atPath: file.path, contents: Data()) }
+
+        let env = ["WINHUB_STEAMWEBHELPER_WRAPPER": dev.path]
+        #expect(SteamWebHelperWrapper.locate(bundled: bundled, environment: env)?.wrapper == bundled)
+        #expect(SteamWebHelperWrapper.locate(bundled: nil, environment: env)?.wrapper == dev)
+    }
+
+    @Test func ignoresMissingFiles() {
+        let env = ["WINHUB_STEAMWEBHELPER_WRAPPER": "/nonexistent/wrapper.exe"]
+        #expect(SteamWebHelperWrapper.locate(bundled: nil, environment: env) == nil)
+        #expect(SteamWebHelperWrapper.locate(bundled: nil, environment: [:]) == nil)
     }
 }
 

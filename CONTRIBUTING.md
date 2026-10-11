@@ -21,6 +21,7 @@ Ao abrir um pull request, você declara que a contribuição é sua e respeita e
 
 Requisitos: macOS 14+, Xcode 16+ (Swift 6) e Rosetta 2 nos Macs com Apple Silicon. Para empacotar
 (`./scripts/package-app.sh`), também o mingw-w64 (`brew install mingw-w64`), que compila o wrapper da Steam.
+Para usar a Steam com `swift run`, veja "Steam e a janela preta" no README.
 
 ```bash
 swift build

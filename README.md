@@ -88,8 +88,15 @@ No Wine 11 para macOS, a janela da Steam fica preta: a interface dela é um Chro
 janela a partir de outro processo, e o driver de macOS do Wine não mostra esse desenho. O WinHub
 coloca na garrafa um pequeno programa próprio (`Support/steamwebhelper-wrapper/`) no lugar do
 `steamwebhelper.exe`; ele abre o original (renomeado para `steamwebhelper_real.exe`) com
-`--in-process-gpu`. A Steam é sempre aberta com `-noverifyfiles`, senão ela restaura o original.
-Com `swift run` o wrapper não existe (só o app empacotado o inclui), e a janela fica preta.
+`--in-process-gpu`. Com o wrapper instalado, a Steam é aberta com `-noverifyfiles`, senão ela restaura
+o original. Logo depois de instalar a Steam, a primeira sessão ainda fica preta (é nela que a Steam baixa
+o cliente e o helper); feche-a (**Encerrar** na garrafa) e abra de novo pelo WinHub.
+O app empacotado já inclui o wrapper. Com `swift run`, compile-o e indique o caminho:
+
+```bash
+./scripts/build-steam-wrapper.sh
+WINHUB_STEAMWEBHELPER_WRAPPER=.build/steamwebhelper-wrapper.exe swift run WinHub
+```
 
 ## Estrutura
 
@@ -100,6 +107,7 @@ Sources/WinHub/          app SwiftUI
 Tests/                   testes unitários e de integração
 Support/                 wrapper do steamwebhelper (programa do Windows, compilado no empacotamento)
 scripts/package-app.sh   gera dist/WinHub.app e dist/WinHub.zip
+scripts/build-steam-wrapper.sh  compila o wrapper da Steam (mingw-w64)
 ```
 
 Dados do usuário: `~/Library/Application Support/WinHub/` (motor, componentes e garrafas) e
