@@ -13,6 +13,13 @@ fontes oficiais, quando ele aciona o download no app. Cada download é conferido
 | winetricks 20260125 | Instala componentes do Windows (opcional) | LGPL-2.1 | https://github.com/Winetricks/winetricks |
 | Steam (instalador `SteamSetup.exe`) | Receita do catálogo | Licença da Valve | Baixado do CDN oficial da Valve só quando o usuário clica em Instalar |
 
+O app empacotado inclui um único programa do Windows feito pelo próprio WinHub: o wrapper do
+`steamwebhelper.exe` (`Support/steamwebhelper-wrapper/`, MIT), que evita a janela preta da Steam. Ele é
+compilado no empacotamento com o mingw-w64, que fica só na máquina de build; o `.exe` resultante leva
+o código de inicialização do runtime do mingw-w64 (ZPL-2.1 / domínio público) e partes da libgcc (GPL-3.0
+com a GCC Runtime Library Exception, que permite distribuí-lo sob a licença do WinHub). Código-fonte:
+https://www.mingw-w64.org · https://gcc.gnu.org
+
 Os componentes que o winetricks instala (como os redistribuíveis do Visual C++) vêm dos sites dos
 respectivos fabricantes e seguem as licenças deles. O D3DMetal (Game Porting Toolkit da Apple) **não** é
 usado nem distribuído pelo WinHub.

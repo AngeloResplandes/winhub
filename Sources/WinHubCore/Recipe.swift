@@ -88,8 +88,24 @@ public enum SteamClient {
     public static let bottleName = "Steam"
     public static let windowsPath = #"C:\Program Files (x86)\Steam\steam.exe"#
 
+    /// Steam checks its files on start and would put back the original
+    /// `steamwebhelper.exe` over WinHub's wrapper.
+    public static let launchArguments = ["-noverifyfiles"]
+
     /// `steam://run/<id>` installs the game first if needed, then starts it.
     public static func runArguments(appID: Int) -> [String] {
-        ["steam://run/\(appID)"]
+        launchArguments + ["steam://run/\(appID)"]
+    }
+
+    /// Arguments for opening `windowsPath`; the Steam client gets `launchArguments` first.
+    public static func arguments(forOpening windowsPath: String, _ arguments: [String] = []) -> [String] {
+        let normalize = { (path: String) in path.replacingOccurrences(of: "/", with: "\\").lowercased() }
+        guard normalize(windowsPath) == normalize(Self.windowsPath) else { return arguments }
+        return launchArguments + arguments.filter { !launchArguments.contains($0) }
+    }
+
+    /// The Start Menu shortcut that Steam's installer creates is named "Steam".
+    public static func isClientShortcut(named name: String) -> Bool {
+        name.caseInsensitiveCompare("Steam") == .orderedSame
     }
 }

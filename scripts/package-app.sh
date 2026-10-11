@@ -21,6 +21,12 @@ mkdir -p "$APP/Contents/MacOS" "$APP/Contents/Resources"
 cp "$BIN_DIR/WinHub" "$APP/Contents/MacOS/WinHub"
 cp -R "$BIN_DIR/WinHub_WinHub.bundle" "$APP/Contents/Resources/"
 
+# Windows program that keeps Steam's window from staying black (see SteamWebHelperWrapper.swift).
+MINGW_CC="${MINGW_CC:-x86_64-w64-mingw32-gcc}"
+command -v "$MINGW_CC" >/dev/null || { echo "Falta o $MINGW_CC (instale com: brew install mingw-w64)" >&2; exit 1; }
+"$MINGW_CC" -municode -mwindows -O2 -s -Wall -Wextra -Werror \
+    -o "$APP/Contents/Resources/steamwebhelper-wrapper.exe" Support/steamwebhelper-wrapper/steamwebhelper_wrapper.c
+
 cat > "$APP/Contents/Info.plist" <<PLIST
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">

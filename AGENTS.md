@@ -21,9 +21,10 @@ Wine. Projeto **público e independente** (MIT). Leia este arquivo inteiro antes
 
 ```bash
 swift build                 # compilar
-swift test                  # 51 testes (unitários; os com Wine real ficam desligados)
+swift test                  # 64 testes (unitários; os com Wine real ficam desligados)
 swift run WinHub            # rodar sem empacotar (atalhos .app e links winhub:// não funcionam assim)
-./scripts/package-app.sh    # gera dist/WinHub.app (universal) e dist/WinHub.zip, assinatura ad-hoc
+./scripts/package-app.sh    # gera dist/WinHub.app (universal) e dist/WinHub.zip, assinatura ad-hoc;
+                            # compila o wrapper da Steam (precisa de: brew install mingw-w64)
 open Package.swift          # abrir no Xcode
 ```
 
@@ -50,12 +51,14 @@ Sources/WinHubRuntime/   tudo que toca disco, rede e processos do Wine
   WineOrphanReaper                  encerra processos órfãos de um wineserver que morreu
   Components                        DXVK e winetricks (ComponentManager) + GraphicsBackend
   AppLauncherBuilder                atalhos ~/Applications/WinHub/<garrafa>/<programa>.app
+  SteamWebHelperWrapper             põe o wrapper no lugar do steamwebhelper.exe da Steam
   Downloader, ProcessRunner         utilitários
 Sources/WinHub/          app SwiftUI
   WinHubApp (cenas, menus, Ajustes, onOpenURL), RootView (barra lateral + folhas),
   CatalogStore (@Observable, catálogo e busca), WineStore (@Observable, motor/garrafas/tarefas),
   CatalogView, EntryViews (cards, detalhe, ações Instalar/Abrir), BottleViews (garrafas, programas, folhas)
   Resources/: catalog.json, runtimes.json, components.json
+Support/steamwebhelper-wrapper/  programa do Windows (C, MIT) compilado pelo package-app.sh com mingw-w64
 ```
 
 Dependências: `WinHub` → `WinHubCore` + `WinHubRuntime`. Core e Runtime não dependem um do outro nem da UI.
@@ -82,6 +85,21 @@ Dados do usuário: `~/Library/Application Support/WinHub/{Runtimes,Components,Bo
   no macOS 27: o sistema devolve vazia a lista de conexões TCP (`net.inet.tcp.pcblist`) para apps comuns,
   e a Steam rejeita o `steamwebhelper` ("Erro de transporte inesperado"). O Wine ≥ 9.17 monta essa tabela
   no wineserver e funciona. Não volte para um motor sem essa correção.
+- **Janela preta da Steam (Wine 11 no macOS).** A interface da Steam é um Chromium (`steamwebhelper.exe`)
+  que desenha cada janela a partir de outro processo (o de GPU); o driver de macOS do Wine 11 não mostra o
+  que um processo desenha na janela de outro, então tudo fica preto (com ou sem GPU). Correção: o
+  `SteamWebHelperWrapper` troca o `steamwebhelper.exe` por `Support/steamwebhelper-wrapper` (o original vira
+  `steamwebhelper_real.exe`), que o abre com `--in-process-gpu`; `WINHUB_CEF_FLAGS` substitui as opções
+  para testes. A troca é refeita antes de cada abertura (a Steam repõe o helper ao se atualizar). Com a
+  garrafa rodando, o ciclo de 3 s só troca numa garrafa que nunca recebeu o wrapper (a Steam acabou de
+  baixar o cliente): se a Steam for aberta sem `-noverifyfiles`, ela repõe o original e se reinicia, e
+  trocar de novo nessa hora gera um laço de reinícios (aconteceu). Toda abertura da Steam leva `-noverifyfiles`
+  (`SteamClient.launchArguments`; no `.lnk`, `start /unix Steam.lnk -noverifyfiles` repassa a opção),
+  senão ela detecta o tamanho diferente e restaura o original. Todo build do wrapper contém
+  `SteamWebHelperWrapper.marker`, para um wrapper antigo nunca ser tomado pelo helper da Steam (ele se
+  abriria em laço). Não funcionam: as opções `-cef-*` da Steam (ela não as repassa), `renderer=vulkan`
+  no wined3d (a janela nem aparece) e o DXVK (o D3D11 funciona, mas a janela continua preta). Não há
+  mais builds oficiais do Wine 10 para macOS. Com `swift run` o wrapper não existe e a janela fica preta.
 - **Nunca rode o Wine de dentro do processo de um atalho `.app`.** Programas iniciados assim travam (a
   Steam fica parada em "Verifying…"). Por isso os atalhos delegam ao WinHub via `winhub://`.
 - **Processos órfãos de wineserver morto.** Se o wineserver morre sem encerrar os clientes (ex.: SIGKILL),

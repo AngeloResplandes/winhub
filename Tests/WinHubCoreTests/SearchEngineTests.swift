@@ -186,7 +186,21 @@ import Testing
     }
 
     @Test func steamRunArguments() {
-        #expect(SteamClient.runArguments(appID: 220) == ["steam://run/220"])
+        #expect(SteamClient.runArguments(appID: 220) == ["-noverifyfiles", "steam://run/220"])
+    }
+
+    @Test func steamClientSkipsFileVerification() {
+        #expect(SteamClient.arguments(forOpening: SteamClient.windowsPath) == ["-noverifyfiles"])
+        #expect(SteamClient.arguments(forOpening: "c:/program files (x86)/steam/STEAM.EXE", ["-silent"])
+                == ["-noverifyfiles", "-silent"])
+        #expect(SteamClient.arguments(forOpening: SteamClient.windowsPath, ["-noverifyfiles"]) == ["-noverifyfiles"])
+        #expect(SteamClient.arguments(forOpening: #"C:\Games\game.exe"#, ["-x"]) == ["-x"])
+    }
+
+    @Test func recognizesSteamClientShortcut() {
+        #expect(SteamClient.isClientShortcut(named: "Steam"))
+        #expect(SteamClient.isClientShortcut(named: "steam"))
+        #expect(!SteamClient.isClientShortcut(named: "Steam Support Center"))
     }
 }
 

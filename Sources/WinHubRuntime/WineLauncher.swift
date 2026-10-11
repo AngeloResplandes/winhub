@@ -46,10 +46,15 @@ public struct WineLauncher: Sendable {
     }
 
     /// Opens a Windows shortcut (`.lnk`) found inside the bottle. Returns when it exits.
+    /// `arguments` are passed to the program after the shortcut's own.
     @discardableResult
-    public func open(_ bottle: Bottle, shortcut: URL) async throws -> Int32 {
-        try await run(bottle, ["start", "/wait", "/unix", shortcut.path],
+    public func open(_ bottle: Bottle, shortcut: URL, arguments: [String] = []) async throws -> Int32 {
+        try await run(bottle, Self.shortcutArguments(shortcut, arguments),
                       logName: shortcut.deletingPathExtension().lastPathComponent)
+    }
+
+    static func shortcutArguments(_ shortcut: URL, _ arguments: [String]) -> [String] {
+        ["start", "/wait", "/unix", shortcut.path] + arguments
     }
 
     /// Runs a program by its Windows path, e.g. `C:\Program Files\App\app.exe`.

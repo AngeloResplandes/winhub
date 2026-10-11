@@ -55,6 +55,9 @@ jobs:
           xcrun notarytool store-credentials winhub-notary --key "$RUNNER_TEMP/notary.p8" --key-id "$KEY_ID" --issuer "$ISSUER"
           echo "NOTARY_PROFILE=winhub-notary" >> "$GITHUB_ENV"
 
+      - name: Instalar mingw-w64 (compila o wrapper da Steam)
+        run: brew install mingw-w64
+
       - name: Empacotar
         env:
           DEVELOPER_ID: ${{ secrets.DEVELOPER_ID }}

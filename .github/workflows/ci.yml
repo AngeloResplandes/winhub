@@ -17,6 +17,8 @@ jobs:
       - name: Testes
         # Os testes com o Wine real (RUN_WINE_TESTS=1) não rodam no CI.
         run: swift test
+      - name: Instalar mingw-w64 (compila o wrapper da Steam)
+        run: brew install mingw-w64
       - name: Empacotar (assinatura ad-hoc)
         run: ./scripts/package-app.sh
       - uses: actions/upload-artifact@v4

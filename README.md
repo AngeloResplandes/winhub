@@ -55,7 +55,8 @@ Testes com o Wine de verdade (opcionais; precisam do Wine já baixado pelo app):
 RUN_WINE_TESTS=1 WINHUB_DXVK_ARCHIVE=/caminho/dxvk.tar.gz WINHUB_WINETRICKS=/caminho/winetricks swift test --filter ComponentIntegrationTests
 ```
 
-Empacotar o `.app` (assinatura ad-hoc; com `DEVELOPER_ID` e `NOTARY_PROFILE` assina e notariza):
+Empacotar o `.app` (assinatura ad-hoc; com `DEVELOPER_ID` e `NOTARY_PROFILE` assina e notariza).
+O script também compila o wrapper da Steam (veja abaixo) e precisa do mingw-w64 (`brew install mingw-w64`):
 
 ```bash
 ./scripts/package-app.sh
@@ -81,6 +82,15 @@ O catálogo é um JSON (`Sources/WinHub/Resources/catalog.json`; as avaliações
 
 Use apenas URLs oficiais de download e descreva só passos que você testou (veja [CONTRIBUTING.md](CONTRIBUTING.md)).
 
+### Steam e a janela preta
+
+No Wine 11 para macOS, a janela da Steam fica preta: a interface dela é um Chromium que desenha cada
+janela a partir de outro processo, e o driver de macOS do Wine não mostra esse desenho. O WinHub
+coloca na garrafa um pequeno programa próprio (`Support/steamwebhelper-wrapper/`) no lugar do
+`steamwebhelper.exe`; ele abre o original (renomeado para `steamwebhelper_real.exe`) com
+`--in-process-gpu`. A Steam é sempre aberta com `-noverifyfiles`, senão ela restaura o original.
+Com `swift run` o wrapper não existe (só o app empacotado o inclui), e a janela fica preta.
+
 ## Estrutura
 
 ```
@@ -88,6 +98,7 @@ Sources/WinHubCore/      catálogo, busca e receitas (sem interface)
 Sources/WinHubRuntime/   motor Wine, garrafas, execução, atalhos, DXVK e winetricks
 Sources/WinHub/          app SwiftUI
 Tests/                   testes unitários e de integração
+Support/                 wrapper do steamwebhelper (programa do Windows, compilado no empacotamento)
 scripts/package-app.sh   gera dist/WinHub.app e dist/WinHub.zip
 ```
 
