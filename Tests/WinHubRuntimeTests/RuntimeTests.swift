@@ -695,3 +695,50 @@ struct ComponentIntegrationTests {
         #expect(server.isRunning)
     }
 }
+
+/// Installs the first runtime of the bundled `runtimes.json` (the WinHub engine: WineHQ build
+/// plus overlay) and the `cabextract` component, downloading them for real. Runs with
+/// `RUN_WINE_TESTS=1 WINHUB_INSTALL_ENGINE=1`; `WINHUB_RUNTIMES_ROOT` picks where (default: the app's).
+@Suite(.enabled(if: ProcessInfo.processInfo.environment["RUN_WINE_TESTS"] == "1"
+                && ProcessInfo.processInfo.environment["WINHUB_INSTALL_ENGINE"] == "1"))
+struct EngineInstallTests {
+    static let resources = URL(fileURLWithPath: #filePath)
+        .deletingLastPathComponent().deletingLastPathComponent().deletingLastPathComponent()
+        .appending(path: "Sources/WinHub/Resources")
+
+    @Test(.timeLimit(.minutes(20)))
+    func installsEngineWithOverlay() async throws {
+        let manifest = try #require(try RuntimeManifest.loadAll(from: Self.resources.appending(path: "runtimes.json")).first)
+        #expect(manifest.overlay != nil)
+        #expect(manifest.supports(.dxmt))
+        let root = ProcessInfo.processInfo.environment["WINHUB_RUNTIMES_ROOT"].map { URL(fileURLWithPath: $0) }
+            ?? RuntimeManager.defaultRoot
+        let manager = RuntimeManager(root: root)
+        var runtime = manager.installed(manifest)
+        if runtime == nil { runtime = try await manager.install(manifest) }
+        let installed = try #require(runtime)
+
+        #expect(manager.installed(manifest) != nil)
+        let winemac = installed.wineDirectory.appending(path: "lib/wine/x86_64-unix/winemac.so")
+        let symbols = try ProcessRunner.run(URL(fileURLWithPath: "/usr/bin/nm"), arguments: ["-gU", winemac.path])
+        #expect(symbols.output.contains(" _macdrv_functions"))
+        for arch in ["x64", "x32"] {
+            for dll in ["d3d11", "dxgi", "d3d10core", "winemetal"] {
+                #expect(FileManager.default.fileExists(atPath: installed.dxmtDirectory.appending(path: "\(arch)/\(dll).dll").path))
+            }
+        }
+        let version = try ProcessRunner.run(installed.wine, arguments: ["--version"])
+        #expect(version.output.contains("wine-11"))
+    }
+
+    @Test(.timeLimit(.minutes(5)))
+    func installsCabextract() async throws {
+        let all = try ComponentManifest.loadAll(from: Self.resources.appending(path: "components.json"))
+        let manifest = try #require(all.first { $0.name == "cabextract" })
+        let dir = try makeTempDirectory()
+        defer { try? FileManager.default.removeItem(at: dir) }
+        let component = try await ComponentManager(root: dir).install(manifest)
+        let result = try ProcessRunner.run(component.payload.appending(path: "cabextract"), arguments: ["--version"])
+        #expect(result.output.contains("cabextract version 1.11"))
+    }
+}

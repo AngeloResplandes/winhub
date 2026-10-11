@@ -22,5 +22,17 @@
     "license": "LGPL-2.1",
     "sourceURL": "https://github.com/Winetricks/winetricks",
     "path": "winetricks"
+  },
+  {
+    "id": "cabextract-1.11-r1",
+    "name": "cabextract",
+    "version": "1.11",
+    "kind": "archive",
+    "url": "https://github.com/AngeloResplandes/winhub-engine/releases/download/wine-11.18-r1/cabextract-1.11-macos.tar.xz",
+    "sha256": "7887db4ea11b1e2c4e84cd6b6bad014fc32abf8edd6b25dca12c9e6ceed4e40d",
+    "size": 68384,
+    "license": "GPL-3.0-or-later",
+    "sourceURL": "https://github.com/AngeloResplandes/winhub-engine/releases/download/wine-11.18-r1/cabextract-1.11.tar.gz",
+    "path": "cabextract-1.11"
   }
 ]
