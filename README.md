@@ -47,9 +47,9 @@ CrossOver code or data is used.
 | | |
 |---|---|
 | Version | 0.2 (a release on every push to `main`) |
-| Parity with CrossOver | **~53%** (estimated, [details](docs/crossover-parity.md)) |
+| Parity with CrossOver | **~57%** (estimated, [details](docs/crossover-parity.md)) |
 | Tested | Steam with saved login; Hollow Knight (Direct3D 11) at 60 FPS through DXMT ([reports](docs/compat/README.md)) |
-| Biggest gaps | engine revision 2 not published yet, Direct3D 12 without D3DMetal, small catalog ([all gaps](docs/gaps.md)) |
+| Biggest gaps | Direct3D 12 without D3DMetal, small catalog, empty rule database ([all gaps](docs/gaps.md)) |
 
 ### Known limitations
 
