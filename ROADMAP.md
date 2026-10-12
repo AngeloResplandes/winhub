@@ -13,7 +13,7 @@ One-page summary. Detail: [parity with CrossOver](docs/crossover-parity.md) (wei
 
 | | Value | Kind |
 |---|---|---|
-| **WinHub parity with CrossOver** | **~53%** | estimated, weighted by dimension |
+| **WinHub parity with CrossOver** | **~57%** | estimated, weighted by dimension |
 | Catalog search | same results as CrossOver in the cases compared | measured |
 | Steam | installs with one click; saved login kept across engines | measured |
 | Direct3D 11 game | Hollow Knight at 60 FPS through DXMT | measured |
@@ -27,18 +27,19 @@ One-page summary. Detail: [parity with CrossOver](docs/crossover-parity.md) (wei
 - Direct3D per bottle and per program: Wine, DXVK, DXMT; with engine revision 2, also Automático and D3DMetal,
   chosen by the engine with nothing copied into bottles.
 - Signed per-game rule database from winhub-engine.
+- Engine revision 2 (`wine-11.0-r2`) is the default engine.
 
 ## Next
 
-1. **Ship engine revision 2** as the default in `runtimes.json`.
-2. **More tested titles:** catalog entries, recipes and a compatibility report per game.
-3. **English interface** (String Catalogs), then other languages.
-4. **Bottle export and import.**
-5. **Program icons** in lists and shortcuts.
-6. **Notarized releases.**
+1. **More tested titles:** catalog entries, recipes and a compatibility report per game.
+2. **English interface** (String Catalogs), then other languages.
+3. **Bottle export and import.**
+4. **Program icons** in lists and shortcuts.
+5. **Notarized releases.**
 
 ## Revision history
 
 | Date | Change |
 |---|---|
 | 2026-10-12 | First roadmap. |
+| 2026-10-12 | Engine revision 2 is the default. |

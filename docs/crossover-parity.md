@@ -13,8 +13,7 @@ are judgement, with the reason next to them. The engine has its own, more detail
 
 | | Value | Kind |
 |---|---|---|
-| **WinHub parity** (weighted, below) | **~53%** | estimated |
-| With engine revision 2 as the default | ~57% | estimated (the graphics row goes from 50% to 68%) |
+| **WinHub parity** (weighted, below) | **~57%** | estimated |
 | Catalog search | same results as CrossOver in the cases compared | measured |
 | Steam and a Direct3D 11 game | Steam with saved login; Hollow Knight through DXMT at feature level 11.1 | measured on 2026-10-12 |
 
@@ -27,12 +26,12 @@ are judgement, with the reason next to them. The engine has its own, more detail
 | Install recipes | 10% | recipes for thousands of applications | 1 recipe (Steam), any `.exe`/`.msi`, winetricks components | 15% | estimated |
 | Bottles | 10% | create, Windows version, settings, templates, archives | create, Windows version, Direct3D, msync, HUD, components; no export or import | 75% | estimated |
 | Steam | 10% | works | works: black-window wrapper, saved login, games opened through Steam | 90% | measured |
-| Graphics and engine | 20% | the engine inside CrossOver 26.3 | revision 1 is the default today; revision 2 (~68% of CrossOver's engine) is supported but not yet published | 50% | estimated |
+| Graphics and engine | 20% | the engine inside CrossOver 26.3 | engine revision 2 (`wine-11.0-r2`), the default; see the engine's own parity table | 68% | estimated (engine parity) |
 | Per-game rules | 10% | curated database, updated online | per-program Direct3D rules; the signed database channel works but has no rules yet | 20% | estimated |
 | Desktop integration | 5% | shortcuts for installed programs | `.app` shortcuts that open from the Finder, Spotlight and the Dock | 80% | estimated |
 | Updates | 5% | app, catalog and rules | app, catalog, manifests and signed rules | 95% | estimated |
 | Interface and languages | 10% | several languages | Brazilian Portuguese only | 40% | estimated |
-| **Weighted** | 100% | | | **~53%** | estimated |
+| **Weighted** | 100% | | | **~57%** | estimated |
 
 ## Differences that are choices, not gaps
 
@@ -48,4 +47,5 @@ are judgement, with the reason next to them. The engine has its own, more detail
 
 | Date | Change |
 |---|---|
-| 2026-10-12 | First assessment. |
+| 2026-10-12 | First assessment (~53%, engine revision 1 as the default). |
+| 2026-10-12 | Engine revision 2 becomes the default: graphics and engine 50% → 68%, total ~57%. |

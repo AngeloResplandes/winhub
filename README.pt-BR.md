@@ -48,9 +48,9 @@ código ou dado fechado do CrossOver é usado.
 | | |
 |---|---|
 | Versão | 0.2 (uma versão a cada push na `main`) |
-| Paridade com o CrossOver | **~53%** (estimado, [detalhes](docs/pt-BR/crossover-parity.md)) |
+| Paridade com o CrossOver | **~57%** (estimado, [detalhes](docs/pt-BR/crossover-parity.md)) |
 | Testado | Steam com login salvo; Hollow Knight (Direct3D 11) a 60 FPS pelo DXMT ([relatórios](docs/pt-BR/compat/README.md)) |
-| Maiores lacunas | revisão 2 do motor ainda não publicada, Direct3D 12 sem D3DMetal, catálogo pequeno ([todas as lacunas](docs/pt-BR/gaps.md)) |
+| Maiores lacunas | Direct3D 12 sem D3DMetal, catálogo pequeno, banco de regras vazio ([todas as lacunas](docs/pt-BR/gaps.md)) |
 
 ### Limitações conhecidas
 
