@@ -13,7 +13,7 @@
 
 ```bash
 swift build
-swift test            # 110 testes; os que precisam do Wine de verdade ficam desligados
+swift test            # 112 testes; os que precisam do Wine de verdade ficam desligados
 swift run WinHub      # roda sem empacotar
 open Package.swift    # abre no Xcode
 ```
@@ -90,7 +90,13 @@ Para desfazer: restaure a cópia do `runtimes.json`, religue as verificações a
 
 ## Convenções
 
-- **A interface é em português do Brasil**; código, identificadores e comentários em inglês.
+- **Os textos da interface são escritos em português do Brasil** (o idioma de origem) e traduzidos em
+  `Sources/WinHub/Resources/Localizable.xcstrings`; código, identificadores e comentários em inglês. Texto que não é
+  um literal do SwiftUI (erros, progresso, títulos de enums) usa `String(localized:)`, em qualquer módulo. Depois de
+  mudar a interface, rode `./scripts/update-strings.sh` e traduza as chaves novas; o `LocalizationTests` falha com
+  uma chave sem inglês ou com argumentos diferentes. O `package-app.sh` copia as pastas `.lproj` compiladas para o
+  app, então com `swift run` a interface fica em português. As entradas do catálogo se traduzem por `localizedNames`
+  e `localizedSummaries`.
 - Comentários curtos, só onde o "porquê" não é óbvio.
 - Modelos `Codable` novos usam `decodeIfPresent` com padrão, para JSON antigo (`bottle.json`, catálogos de
   usuários) continuar decodificando, e mudanças no JSON publicado precisam continuar decodificáveis pelas versões

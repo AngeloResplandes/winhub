@@ -156,7 +156,7 @@ final class WineStore {
             let bottle = try bottleStore.create(name: name, runtimeID: runtime.manifest.id, windowsVersion: windowsVersion,
                                                 graphics: runtime.dispatchesGraphics ? .auto : .wined3d)
             refresh()
-            try await perform(key: bottle.id.uuidString, "Criando a garrafa…") {
+            try await perform(key: bottle.id.uuidString, String(localized: "Criando a garrafa…")) {
                 try await WineLauncher(runtime: runtime).initialize(bottle)
             }
             refresh()
@@ -185,7 +185,7 @@ final class WineStore {
 
     func shutdown(_ bottle: Bottle) async {
         guard let runtime else { return }
-        try? await perform(key: bottle.id.uuidString, "Encerrando os programas…") {
+        try? await perform(key: bottle.id.uuidString, String(localized: "Encerrando os programas…")) {
             try await WineLauncher(runtime: runtime).shutdown(bottle)
         }
     }
@@ -250,7 +250,7 @@ final class WineStore {
             let dxvk = runtime.dispatchesGraphics ? nil
                 : backend == .dxvk ? try await ensureComponent(named: "DXVK-macOS", key: key)
                 : component(named: "DXVK-macOS").flatMap(componentManager.installed)
-            let updated = try await perform(key: key, "Aplicando os gráficos do programa…") {
+            let updated = try await perform(key: key, String(localized: "Aplicando os gráficos do programa…")) {
                 try await WineLauncher(runtime: runtime).applyProgramGraphics(backend, program: program, in: bottle, dxvk: dxvk)
             }
             try bottleStore.save(updated)
@@ -265,12 +265,12 @@ final class WineStore {
     func chooseProgramForGraphics(in bottle: Bottle) async {
         let panel = NSOpenPanel()
         panel.allowedContentTypes = [.exe].compactMap { $0 }
-        panel.message = "Escolha o .exe do programa ou do jogo"
+        panel.message = String(localized: "Escolha o .exe do programa ou do jogo")
         let steamGames = bottle.driveC.appending(path: "Program Files (x86)/Steam/steamapps/common", directoryHint: .isDirectory)
         panel.directoryURL = FileManager.default.fileExists(atPath: steamGames.path) ? steamGames : bottle.driveC
         guard panel.runModal() == .OK, let url = panel.url else { return }
         guard let program = bottle.windowsPath(forUnixPath: url) else {
-            errorMessage = "Escolha um programa que esteja dentro do disco C: da garrafa “\(bottle.name)”."
+            errorMessage = String(localized: "Escolha um programa que esteja dentro do disco C: da garrafa “\(bottle.name)”.")
             return
         }
         await setProgramGraphics(graphicsBackends.contains(.dxmt) ? .dxmt : .dxvk, program: program, in: bottle)
@@ -286,14 +286,14 @@ final class WineStore {
         let panel = NSOpenPanel()
         panel.canChooseDirectories = true
         panel.canChooseFiles = false
-        panel.message = "Escolha a pasta do Game Porting Toolkit da Apple (ou a pasta redist/lib dele)"
+        panel.message = String(localized: "Escolha a pasta do Game Porting Toolkit da Apple (ou a pasta redist/lib dele)")
         guard panel.runModal() == .OK, let url = panel.url else { return }
         guard let found = D3DMetal.resolve(url) else {
-            errorMessage = "Não há D3DMetal em “\(url.lastPathComponent)”. Escolha a pasta do Game Porting Toolkit ou a pasta redist/lib dele."
+            errorMessage = String(localized: "Não há D3DMetal em “\(url.lastPathComponent)”. Escolha a pasta do Game Porting Toolkit ou a pasta redist/lib dele.")
             return
         }
         if found.path.hasPrefix("/Volumes/") {
-            errorMessage = "O D3DMetal está num disco (\(found.path)). Ele só funciona enquanto esse disco estiver montado; copie a pasta lib para o Mac para usar sempre."
+            errorMessage = String(localized: "O D3DMetal está num disco (\(found.path)). Ele só funciona enquanto esse disco estiver montado; copie a pasta lib para o Mac para usar sempre.")
         }
         D3DMetal.location = found
         d3dmetalLocation = found
@@ -318,7 +318,7 @@ final class WineStore {
         var updated = bottle
         updated.msync = enabled
         if msyncChangeClosesPrograms(enabled, for: bottle), let runtime {
-            try? await perform(key: bottle.id.uuidString, "Encerrando a garrafa para aplicar…") {
+            try? await perform(key: bottle.id.uuidString, String(localized: "Encerrando a garrafa para aplicar…")) {
                 try await WineLauncher(runtime: runtime).shutdown(bottle)
             }
             updateActiveBottles()
@@ -332,7 +332,7 @@ final class WineStore {
         var updated = bottle
         updated.extraDisplayModes = enabled
         do {
-            try await perform(key: bottle.id.uuidString, "Aplicando as resoluções…") {
+            try await perform(key: bottle.id.uuidString, String(localized: "Aplicando as resoluções…")) {
                 let launcher = WineLauncher(runtime: runtime)
                 if activeBottles.contains(bottle.id) {
                     try await launcher.shutdown(bottle)
@@ -437,7 +437,7 @@ final class WineStore {
         let panel = NSOpenPanel()
         panel.allowedContentTypes = [.exe, .msi].compactMap { $0 }
         panel.allowsOtherFileTypes = true
-        panel.message = "Escolha o instalador do Windows (.exe ou .msi)"
+        panel.message = String(localized: "Escolha o instalador do Windows (.exe ou .msi)")
         if panel.runModal() == .OK, let url = panel.url {
             pendingInstall = PendingInstall(file: url, bottleID: bottleID)
         }
@@ -475,7 +475,7 @@ final class WineStore {
         do {
             var bottle = bottle(named: recipe.bottleName)
             if bottle == nil {
-                activity[entryID] = "Criando a garrafa “\(recipe.bottleName)”…"
+                activity[entryID] = String(localized: "Criando a garrafa “\(recipe.bottleName)”…")
                 bottle = await createBottle(name: recipe.bottleName, windowsVersion: version)
             }
             guard let bottle else { activity[entryID] = nil; return }
@@ -491,7 +491,7 @@ final class WineStore {
             }
             refresh()
             guard isInstalled(recipe) else {
-                errorMessage = "O instalador terminou, mas o programa não foi encontrado em \(recipe.launch.windowsPath)."
+                errorMessage = String(localized: "O instalador terminou, mas o programa não foi encontrado em \(recipe.launch.windowsPath).")
                 return
             }
             open(recipe)
@@ -513,13 +513,13 @@ final class WineStore {
               let path = items.first(where: { $0.name == "shortcut" })?.value else { return }
         refresh()
         guard let bottle = bottle(id: id) else {
-            errorMessage = "A garrafa deste atalho não existe mais."
+            errorMessage = String(localized: "A garrafa deste atalho não existe mais.")
             return
         }
         let shortcut = URL(fileURLWithPath: path).standardizedFileURL
         guard shortcut.path.hasPrefix(bottle.driveC.standardizedFileURL.path + "/"),
               let program = programs[bottle.id]?.first(where: { $0.shortcut.standardizedFileURL == shortcut }) else {
-            errorMessage = "O programa deste atalho não foi encontrado na garrafa “\(bottle.name)”."
+            errorMessage = String(localized: "O programa deste atalho não foi encontrado na garrafa “\(bottle.name)”.")
             return
         }
         open(program, in: bottle)
@@ -585,7 +585,7 @@ final class WineStore {
         do {
             return try steamWrapper?.install(in: bottle) ?? false
         } catch {
-            errorMessage = "Não foi possível preparar a janela da Steam: \(error.localizedDescription)"
+            errorMessage = String(localized: "Não foi possível preparar a janela da Steam: \(error.localizedDescription)")
             return false
         }
     }

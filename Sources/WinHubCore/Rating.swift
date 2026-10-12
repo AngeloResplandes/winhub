@@ -18,13 +18,13 @@ public enum Rating: Int, Codable, Sendable, CaseIterable, Comparable {
 
     public var title: String {
         switch self {
-        case .unverified: "Fonte não confiável"
-        case .untested: "Sem teste"
-        case .doesNotInstall: "Não instala"
-        case .installsButDoesNotRun: "Instala, mas não abre"
-        case .limited: "Funciona com limitações"
-        case .good: "Bom"
-        case .excellent: "Excelente"
+        case .unverified: String(localized: "Fonte não confiável")
+        case .untested: String(localized: "Sem teste")
+        case .doesNotInstall: String(localized: "Não instala")
+        case .installsButDoesNotRun: String(localized: "Instala, mas não abre")
+        case .limited: String(localized: "Funciona com limitações")
+        case .good: String(localized: "Bom")
+        case .excellent: String(localized: "Excelente")
         }
     }
 

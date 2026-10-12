@@ -171,7 +171,7 @@ struct BottleDetailView: View {
                 ))
                 .help("Mostra o painel de desempenho do Metal (e o do DXVK, se ele estiver em uso).")
                 LabeledContent("Motor", value: wine.runtime?.manifest.version ?? bottle.runtimeID)
-                LabeledContent("Em execução", value: wine.activeBottles.contains(bottle.id) ? "Sim" : "Não")
+                LabeledContent("Em execução", value: wine.activeBottles.contains(bottle.id) ? String(localized: "Sim") : String(localized: "Não"))
             }
 
             Section {

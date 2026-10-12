@@ -114,8 +114,8 @@ public enum BottleError: Error, LocalizedError, Equatable {
 
     public var errorDescription: String? {
         switch self {
-        case .nameTaken(let name): "Já existe uma garrafa chamada “\(name)”."
-        case .invalidName: "Dê um nome à garrafa."
+        case .nameTaken(let name): String(localized: "Já existe uma garrafa chamada “\(name)”.")
+        case .invalidName: String(localized: "Dê um nome à garrafa.")
         }
     }
 }

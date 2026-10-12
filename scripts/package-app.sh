@@ -23,6 +23,13 @@ rm -rf "$APP"
 mkdir -p "$APP/Contents/MacOS" "$APP/Contents/Resources"
 cp "$BIN_DIR/WinHub" "$APP/Contents/MacOS/WinHub"
 cp -R "$BIN_DIR/WinHub_WinHub.bundle" "$APP/Contents/Resources/"
+# The interface's translations (Sources/WinHub/Resources/Localizable.xcstrings, compiled into the resource
+# bundle) go into the app's own bundle, where SwiftUI and String(localized:) look by default, from every module.
+# The bundle is flat with SwiftPM's native build system and has Contents/Resources with swift-build.
+for lproj in "$BIN_DIR/WinHub_WinHub.bundle/"*.lproj "$BIN_DIR/WinHub_WinHub.bundle/Contents/Resources/"*.lproj; do
+    if [ -d "$lproj" ]; then cp -R "$lproj" "$APP/Contents/Resources/"; fi
+done
+test -f "$APP/Contents/Resources/en.lproj/Localizable.strings" || { echo "English strings missing from the app" >&2; exit 1; }
 
 # App icon, drawn from code (see scripts/make-icon.swift).
 swift scripts/make-icon.swift "$APP/Contents/Resources/AppIcon.icns"
@@ -44,6 +51,7 @@ cat > "$APP/Contents/Info.plist" <<PLIST
     <key>CFBundleShortVersionString</key><string>$VERSION</string>
     <key>CFBundleVersion</key><string>$BUILD</string>
     <key>CFBundleDevelopmentRegion</key><string>pt</string>
+    <key>CFBundleLocalizations</key><array><string>pt</string><string>en</string></array>
     <key>LSMinimumSystemVersion</key><string>14.0</string>
     <key>LSApplicationCategoryType</key><string>public.app-category.games</string>
     <key>NSHighResolutionCapable</key><true/>

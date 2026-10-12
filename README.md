@@ -56,9 +56,10 @@ CrossOver code or data is used.
 - **D3DMetal** (Apple's Game Porting Toolkit) is not included: Apple's license does not allow redistributing it.
   If you have it, point **Ajustes → D3DMetal** to it.
 - Wine's own Direct3D only reaches feature level 9_3 on macOS; Direct3D 11 games need DXMT, DXVK or D3DMetal.
-- Games only see the Mac screen's own display modes (no 1920×1080 on most Macs).
+- Games see the Mac screen's own display modes; **Resoluções extras** adds 16:9 and others up to the screen size in
+  points, so 1920×1080 is still missing on most Macs.
 - The engine is x86_64: Apple silicon Macs need **Rosetta 2**, whose general support Apple keeps until macOS 27.
-- The interface is in Brazilian Portuguese only.
+- The interface is in Brazilian Portuguese and English (it follows the macOS language).
 
 ## Install
 

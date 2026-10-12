@@ -11,15 +11,15 @@ public enum RuntimeError: Error, LocalizedError, Equatable {
     public var errorDescription: String? {
         switch self {
         case .checksumMismatch(let expected, let actual):
-            "O arquivo baixado não confere (SHA-256 esperado \(expected.prefix(12))…, obtido \(actual.prefix(12))…). Nada foi instalado."
+            String(localized: "O arquivo baixado não confere (SHA-256 esperado \(expected.prefix(12))…, obtido \(actual.prefix(12))…). Nada foi instalado.")
         case .extractionFailed(let status, let output):
-            "Não foi possível extrair o motor (código \(status)). \(output)"
+            String(localized: "Não foi possível extrair o motor (código \(status)). \(output)")
         case .missingBinary(let url):
-            "O motor não contém \(url.lastPathComponent) no local esperado."
+            String(localized: "O motor não contém \(url.lastPathComponent) no local esperado.")
         case .rosettaUnavailable:
-            "Este Mac precisa do Rosetta 2. Instale com: softwareupdate --install-rosetta --agree-to-license"
+            String(localized: "Este Mac precisa do Rosetta 2. Instale com: softwareupdate --install-rosetta --agree-to-license")
         case .rosettaInstallFailed(let output):
-            "Não foi possível instalar o Rosetta 2. \(output)"
+            String(localized: "Não foi possível instalar o Rosetta 2. \(output)")
         }
     }
 }
@@ -117,7 +117,7 @@ public struct RuntimeManager: Sendable {
         if let overlay = manifest.overlay, let overlayArchive {
             for path in overlay.replace {
                 guard let folder = Self.replaceTarget(path, in: runtime.wineDirectory) else {
-                    throw RuntimeError.extractionFailed(status: -1, output: "Pasta inválida no motor: \(path)")
+                    throw RuntimeError.extractionFailed(status: -1, output: String(localized: "Pasta inválida no motor: \(path)"))
                 }
                 try? FileManager.default.removeItem(at: folder)
             }

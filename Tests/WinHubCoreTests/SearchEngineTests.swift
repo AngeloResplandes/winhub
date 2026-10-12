@@ -132,9 +132,17 @@ import Testing
         #expect(entry.displayName(preferredLanguages: ["fr"]) == "Default")
     }
 
+    @Test func displaySummaryFollowsLanguage() {
+        let entry = CatalogEntry(id: "x", name: "X", summary: "Resumo", localizedSummaries: ["en": "Summary"])
+        #expect(entry.displaySummary(preferredLanguages: ["en-US", "pt-BR"]) == "Summary")
+        #expect(entry.displaySummary(preferredLanguages: ["pt-BR", "en"]) == "Resumo")
+        #expect(entry.displaySummary(preferredLanguages: ["fr"]) == "Resumo")
+    }
+
     @Test func decodesMinimalJSON() throws {
         let json = #"[{"id": "a", "name": "App"}]"#
         let entries = try JSONDecoder().decode([CatalogEntry].self, from: Data(json.utf8))
+        #expect(entries[0].localizedSummaries.isEmpty)
         #expect(entries[0].rating == .untested)
         #expect(!entries[0].isFeatured)
         #expect(entries[0].steamID == nil)

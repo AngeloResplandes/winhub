@@ -79,13 +79,13 @@ final class UpdateStore {
 
     var statusText: String {
         switch phase {
-        case .idle: "Ainda não procurou."
-        case .checking: "Procurando…"
-        case .downloading(let version): "Baixando a versão \(version)…"
-        case .ready(let version, _, _): "A versão \(version) está pronta para instalar."
-        case .upToDate: "O WinHub está atualizado."
+        case .idle: String(localized: "Ainda não procurou.")
+        case .checking: String(localized: "Procurando…")
+        case .downloading(let version): String(localized: "Baixando a versão \(version)…")
+        case .ready(let version, _, _): String(localized: "A versão \(version) está pronta para instalar.")
+        case .upToDate: String(localized: "O WinHub está atualizado.")
         case .unavailable(let reason): reason
-        case .failed(let message): "Não foi possível procurar atualizações: \(message)"
+        case .failed(let message): String(localized: "Não foi possível procurar atualizações: \(message)")
         }
     }
 
@@ -126,11 +126,11 @@ final class UpdateStore {
     private func checkApp() async {
         let bundle = Bundle.main.bundleURL
         guard let currentVersion, bundle.pathExtension == "app" else {
-            phase = .unavailable("O app só se atualiza sozinho quando empacotado (WinHub.app).")
+            phase = .unavailable(String(localized: "O app só se atualiza sozinho quando empacotado (WinHub.app)."))
             return
         }
         guard AppUpdater.canReplace(bundle) else {
-            phase = .unavailable("Mova o WinHub para a pasta Aplicativos para que ele se atualize sozinho.")
+            phase = .unavailable(String(localized: "Mova o WinHub para a pasta Aplicativos para que ele se atualize sozinho."))
             return
         }
         if readyVersion == nil { phase = .checking }

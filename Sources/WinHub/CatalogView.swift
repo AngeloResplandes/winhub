@@ -67,9 +67,9 @@ struct CatalogView: View {
     private var countLabel: String {
         let result = store.result
         if result.isTruncated {
-            return "Mostrando \(result.entries.count) de \(result.totalMatches) — refine a busca"
+            return String(localized: "Mostrando \(result.entries.count) de \(result.totalMatches) — refine a busca")
         }
-        return result.totalMatches == 1 ? "1 título" : "\(result.totalMatches) títulos"
+        return String(localized: "\(result.totalMatches) títulos")
     }
 
     private var footer: some View {

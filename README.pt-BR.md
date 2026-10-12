@@ -58,10 +58,11 @@ código ou dado fechado do CrossOver é usado.
   você o tem, aponte **Ajustes → D3DMetal** para ele.
 - O Direct3D do próprio Wine só chega ao feature level 9_3 no macOS; jogos Direct3D 11 precisam de DXMT, DXVK ou
   D3DMetal.
-- Os jogos só veem os modos de tela da própria tela do Mac (sem 1920×1080 na maioria dos Macs).
+- Os jogos veem os modos de tela da própria tela do Mac; **Resoluções extras** acrescenta 16:9 e outros até o tamanho
+  da tela em pontos, então o 1920×1080 ainda falta na maioria dos Macs.
 - O motor é x86_64: Macs com Apple silicon precisam do **Rosetta 2**, que a Apple mantém de forma geral até o
   macOS 27.
-- A interface é só em português do Brasil.
+- A interface é em português do Brasil e em inglês (segue o idioma do macOS).
 
 ## Instalar
 
