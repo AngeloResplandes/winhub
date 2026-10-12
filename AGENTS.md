@@ -27,7 +27,7 @@ in [`docs/`](docs/) (English) and [`docs/pt-BR/`](docs/pt-BR/) (Brazilian Portug
 
 ```bash
 swift build                 # build
-swift test                  # 102 tests (unit; the ones with a real Wine stay off)
+swift test                  # 104 tests (unit; the ones with a real Wine stay off)
 swift run WinHub            # run without packaging (.app shortcuts and winhub:// links do not work this way)
 ./scripts/package-app.sh    # builds dist/WinHub.app (universal) and dist/WinHub.zip, ad-hoc signature;
                             # builds the Steam wrapper (needs: brew install mingw-w64)
@@ -192,8 +192,9 @@ Dated decisions are in `docs/decisions.md`. The pitfalls an agent must know:
   `applyGraphics(.dxmt)`, and DXVK-macOS comes from the component. That path stays in the code for people still
   on those engines. `.auto` and `.d3dmetal` do not exist there.
 - **msync** does not exist in official Wine; revision 2 brings CrossOver's (feature `msync`). It is per bottle
-  (`Bottle.msync`); after changing it, close the bottle: `ntdll` refuses processes whose `WINEMSYNC` differs from
-  the running `wineserver`.
+  (`Bottle.msync`). `ntdll` refuses processes whose `WINEMSYNC` differs from the running `wineserver`, so
+  `WineStore.setMSync` ends a running bottle before saving (after a confirmation in the UI);
+  `WineEnvironment.needsServerRestart` says which changes need that.
 - **winetricks:** some verbs need `cabextract`, which macOS lacks. If `components.json` has a `cabextract`
   component, it goes into winetricks' `PATH`.
 - **Testing games:** test on an APFS clone of the bottle and **never run two Steam instances of the same bottle at

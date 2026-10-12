@@ -55,6 +55,9 @@ public enum WineEnvironment {
                 env["CX_APPLEGPTK_LIBD3DSHARED_PATH"] = D3DMetal.sharedLibrary(in: d3dmetal).path
             }
         }
+        if bottle.nvidiaExtensions && runtime.manifest.supports(.nvext) {
+            env["DXMT_ENABLE_NVEXT"] = "1"
+        }
         if bottle.performanceHUD {
             env["MTL_HUD_ENABLED"] = "1"
             if bottle.graphics == .dxvk { env["DXVK_HUD"] = "fps,devinfo" }
@@ -69,5 +72,15 @@ public enum WineEnvironment {
         // Bottle settings win over everything above.
         env.merge(bottle.environment) { _, bottleValue in bottleValue }
         return env
+    }
+
+    /// Variables a running wineserver and its processes must agree on (ntdll refuses the rest).
+    static let serverBound = ["WINEMSYNC"]
+
+    /// Whether going from `old` to `new` settings needs the bottle's wineserver ended first.
+    public static func needsServerRestart(from old: Bottle, to new: Bottle, runtime: InstalledRuntime) -> Bool {
+        let before = make(for: old, runtime: runtime, base: [:])
+        let after = make(for: new, runtime: runtime, base: [:])
+        return serverBound.contains { before[$0] != after[$0] }
     }
 }

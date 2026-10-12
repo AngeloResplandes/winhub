@@ -97,6 +97,8 @@ public struct RuntimeManifest: Codable, Sendable, Identifiable, Equatable {
         case backendDispatch = "backend-dispatch"
         /// Reads compatibility rules (`WINHUB_COMPAT_RULES`, `WINHUB_HOME/compat/compatdb.json`).
         case compatdb
+        /// Ships DXMT's `nvapi64`/`nvngx`, on with `DXMT_ENABLE_NVEXT=1`.
+        case nvext
     }
 
     public static func loadAll(from url: URL) throws -> [RuntimeManifest] {

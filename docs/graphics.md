@@ -40,8 +40,10 @@ If the folder is on an external disk, D3DMetal only works while that disk is mou
 ## Fast synchronization and performance
 
 - **Sincronização rápida (MSync)** (revision 2): cheaper synchronization in CPU-bound games. It takes effect the
-  next time a program opens. If the bottle is running, close it first (**Encerrar**): Wine refuses programs whose
-  setting differs from the `wineserver` already running.
+  next time a program opens. Wine refuses programs whose setting differs from the `wineserver` already running, so
+  if the bottle is running WinHub asks to close its programs and ends the bottle before saving the change.
+- **Recursos da NVIDIA (DLSS pelo MetalFX)** (revision 3): with DXMT, games see an NVIDIA card (NVAPI) and can
+  turn on DLSS, which DXMT runs on MetalFX. Off by default; turn it off again if a game starts to fail.
 - **Mostrar desempenho (FPS) nos jogos**: Metal's performance HUD (and DXVK's, when in use).
 
 ## How it works

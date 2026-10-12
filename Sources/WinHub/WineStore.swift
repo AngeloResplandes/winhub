@@ -75,6 +75,7 @@ final class WineStore {
         }
     }
     var supportsMSync: Bool { runtime?.manifest.supports(.msync) == true }
+    var supportsNVIDIAExtensions: Bool { runtime?.manifest.supports(.nvext) == true }
     /// winetricks finds `cabextract` only when the manifests offer it.
     var hasCabextract: Bool { component(named: "cabextract") != nil }
 
@@ -303,9 +304,31 @@ final class WineStore {
         d3dmetalLocation = D3DMetal.defaultLocation
     }
 
-    func setMSync(_ enabled: Bool, for bottle: Bottle) {
+    /// Changing msync while the bottle runs means closing its programs first (see `setMSync`).
+    func msyncChangeClosesPrograms(_ enabled: Bool, for bottle: Bottle) -> Bool {
         var updated = bottle
         updated.msync = enabled
+        guard let runtime, activeBottles.contains(bottle.id) else { return false }
+        return WineEnvironment.needsServerRestart(from: bottle, to: updated, runtime: runtime)
+    }
+
+    /// ntdll refuses new processes whose `WINEMSYNC` differs from the running wineserver's, so a
+    /// running bottle is ended (with its current settings) before the change is saved.
+    func setMSync(_ enabled: Bool, for bottle: Bottle) async {
+        var updated = bottle
+        updated.msync = enabled
+        if msyncChangeClosesPrograms(enabled, for: bottle), let runtime {
+            try? await perform(key: bottle.id.uuidString, "Encerrando a garrafa para aplicar…") {
+                try await WineLauncher(runtime: runtime).shutdown(bottle)
+            }
+            updateActiveBottles()
+        }
+        save(updated)
+    }
+
+    func setNVIDIAExtensions(_ enabled: Bool, for bottle: Bottle) {
+        var updated = bottle
+        updated.nvidiaExtensions = enabled
         save(updated)
     }
 

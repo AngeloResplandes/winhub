@@ -32,13 +32,16 @@ public struct Bottle: Codable, Sendable, Identifiable, Hashable {
     public var msync: Bool
     /// Show Metal's performance HUD (and DXVK's, with DXVK) in games.
     public var performanceHUD: Bool
+    /// Turn on DXMT's NVIDIA extensions (NVAPI, DLSS over MetalFX); only with a runtime that has them.
+    public var nvidiaExtensions: Bool
     public var createdAt: Date
 
     /// Folder of this bottle; set when it is loaded, not stored in the JSON.
     public internal(set) var folder: URL = URL(fileURLWithPath: "/")
 
     enum CodingKeys: String, CodingKey {
-        case id, name, runtimeID, windowsVersion, environment, dllOverrides, graphics, programGraphics, msync, performanceHUD, createdAt
+        case id, name, runtimeID, windowsVersion, environment, dllOverrides, graphics, programGraphics, msync, performanceHUD
+        case nvidiaExtensions, createdAt
     }
 
     public init(from decoder: Decoder) throws {
@@ -55,6 +58,7 @@ public struct Bottle: Codable, Sendable, Identifiable, Hashable {
         programGraphics = programs.compactMapValues(GraphicsBackend.init(rawValue:))
         msync = try c.decodeIfPresent(Bool.self, forKey: .msync) ?? false
         performanceHUD = try c.decodeIfPresent(Bool.self, forKey: .performanceHUD) ?? false
+        nvidiaExtensions = try c.decodeIfPresent(Bool.self, forKey: .nvidiaExtensions) ?? false
         createdAt = try c.decodeIfPresent(Date.self, forKey: .createdAt) ?? .now
     }
 
@@ -72,6 +76,7 @@ public struct Bottle: Codable, Sendable, Identifiable, Hashable {
         self.programGraphics = [:]
         self.msync = msync
         self.performanceHUD = performanceHUD
+        self.nvidiaExtensions = false
         self.createdAt = createdAt
     }
 

@@ -75,6 +75,7 @@ struct BottleDetailView: View {
     let bottle: Bottle
     let onDeleted: () -> Void
     @State private var isConfirmingDelete = false
+    @State private var pendingMSync: Bool?
     @State private var verbs = ""
 
     var body: some View {
@@ -118,9 +119,22 @@ struct BottleDetailView: View {
                 if wine.supportsMSync {
                     Toggle("Sincronização rápida (MSync)", isOn: Binding(
                         get: { bottle.msync },
-                        set: { wine.setMSync($0, for: bottle) }
+                        set: { enabled in
+                            if wine.msyncChangeClosesPrograms(enabled, for: bottle) {
+                                pendingMSync = enabled
+                            } else {
+                                Task { await wine.setMSync(enabled, for: bottle) }
+                            }
+                        }
                     ))
-                    .help("Reduz o custo de sincronização do Wine em jogos. Vale na próxima vez que um programa abrir.")
+                    .help("Reduz o custo de sincronização do Wine em jogos. Vale na próxima vez que um programa abrir; com a garrafa aberta, os programas dela são fechados para aplicar.")
+                }
+                if wine.supportsNVIDIAExtensions {
+                    Toggle("Recursos da NVIDIA (DLSS pelo MetalFX)", isOn: Binding(
+                        get: { bottle.nvidiaExtensions },
+                        set: { wine.setNVIDIAExtensions($0, for: bottle) }
+                    ))
+                    .help("Com o DXMT, faz os jogos verem uma placa NVIDIA e usarem o DLSS por cima do MetalFX. Deixe desligado se um jogo passar a falhar. Vale na próxima vez que um programa abrir.")
                 }
                 Toggle("Mostrar desempenho (FPS) nos jogos", isOn: Binding(
                     get: { bottle.performanceHUD },
@@ -207,6 +221,20 @@ struct BottleDetailView: View {
             }
         } message: {
             Text("Todos os programas e arquivos dentro dela serão apagados. Esta ação não pode ser desfeita.")
+        }
+        .confirmationDialog("Fechar os programas desta garrafa?", isPresented: Binding(
+            get: { pendingMSync != nil },
+            set: { if !$0 { pendingMSync = nil } }
+        )) {
+            Button("Encerrar e aplicar") {
+                if let enabled = pendingMSync {
+                    Task { await wine.setMSync(enabled, for: bottle) }
+                }
+                pendingMSync = nil
+            }
+            Button("Cancelar", role: .cancel) { pendingMSync = nil }
+        } message: {
+            Text("A sincronização rápida só muda com a garrafa encerrada. Salve o que estiver aberto antes de continuar.")
         }
     }
 }

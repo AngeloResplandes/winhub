@@ -13,7 +13,7 @@
 
 ```bash
 swift build
-swift test            # 102 testes; os que precisam do Wine de verdade ficam desligados
+swift test            # 104 testes; os que precisam do Wine de verdade ficam desligados
 swift run WinHub      # roda sem empacotar
 open Package.swift    # abre no Xcode
 ```
