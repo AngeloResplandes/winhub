@@ -60,9 +60,19 @@ final class WineStore {
     private(set) var isRosettaAvailable = RuntimeManager.isRosettaAvailable
     private(set) var isInstallingRosetta = false
 
-    /// Backends the installed runtime can use (DXMT needs a build made for it).
+    /// Backends the installed runtime can use (DXMT needs a build made for it; "automatic" and
+    /// D3DMetal need an engine that picks the Direct3D itself, D3DMetal also the user's copy of it).
     var graphicsBackends: [GraphicsBackend] {
-        GraphicsBackend.allCases.filter { $0 != .dxmt || runtime?.manifest.supports(.dxmt) == true }
+        let dispatches = runtime?.dispatchesGraphics == true
+        return GraphicsBackend.allCases.filter { backend in
+            switch backend {
+            case .auto: dispatches
+            case .d3dmetal: dispatches && D3DMetal.installed(at: d3dmetalLocation) != nil
+            case .dxmt: runtime?.manifest.supports(.dxmt) == true
+            case .dxvk: !dispatches || runtime?.manifest.supports(.dxvk) == true
+            case .wined3d: true
+            }
+        }
     }
     var supportsMSync: Bool { runtime?.manifest.supports(.msync) == true }
     /// winetricks finds `cabextract` only when the manifests offer it.
@@ -142,7 +152,8 @@ final class WineStore {
     func createBottle(name: String, windowsVersion: Bottle.WindowsVersion = .win10) async -> Bottle? {
         guard let runtime = requireRuntime() else { return nil }
         do {
-            let bottle = try bottleStore.create(name: name, runtimeID: runtime.manifest.id, windowsVersion: windowsVersion)
+            let bottle = try bottleStore.create(name: name, runtimeID: runtime.manifest.id, windowsVersion: windowsVersion,
+                                                graphics: runtime.dispatchesGraphics ? .auto : .wined3d)
             refresh()
             try await perform(key: bottle.id.uuidString, "Criando a garrafa…") {
                 try await WineLauncher(runtime: runtime).initialize(bottle)
@@ -219,7 +230,9 @@ final class WineStore {
     func setGraphics(_ backend: GraphicsBackend, for bottle: Bottle) async {
         guard let runtime = requireRuntime() else { return }
         do {
-            let dxvk = backend == .dxvk ? try await ensureComponent(named: "DXVK-macOS", key: bottle.id.uuidString) : nil
+            // Engines that pick the Direct3D themselves bring DXVK; older ones copy the DXVK-macOS component.
+            let dxvk = backend == .dxvk && !runtime.dispatchesGraphics
+                ? try await ensureComponent(named: "DXVK-macOS", key: bottle.id.uuidString) : nil
             let updated = try WineLauncher(runtime: runtime).applyGraphics(backend, to: bottle, dxvk: dxvk)
             try bottleStore.save(updated)
             refresh()
@@ -233,7 +246,8 @@ final class WineStore {
         guard let runtime = requireRuntime() else { return }
         let key = bottle.id.uuidString
         do {
-            let dxvk = backend == .dxvk ? try await ensureComponent(named: "DXVK-macOS", key: key)
+            let dxvk = runtime.dispatchesGraphics ? nil
+                : backend == .dxvk ? try await ensureComponent(named: "DXVK-macOS", key: key)
                 : component(named: "DXVK-macOS").flatMap(componentManager.installed)
             let updated = try await perform(key: key, "Aplicando os gráficos do programa…") {
                 try await WineLauncher(runtime: runtime).applyProgramGraphics(backend, program: program, in: bottle, dxvk: dxvk)
@@ -259,6 +273,34 @@ final class WineStore {
             return
         }
         await setProgramGraphics(graphicsBackends.contains(.dxmt) ? .dxmt : .dxvk, program: program, in: bottle)
+    }
+
+    /// Where WinHub looks for Apple's D3DMetal; observed by the settings.
+    private(set) var d3dmetalLocation = D3DMetal.location
+    var hasD3DMetal: Bool { D3DMetal.installed(at: d3dmetalLocation) != nil }
+    var usesDefaultD3DMetalFolder: Bool { d3dmetalLocation == D3DMetal.defaultLocation }
+
+    /// Asks for the user's Game Porting Toolkit folder (WinHub never ships D3DMetal).
+    func chooseD3DMetalFolder() {
+        let panel = NSOpenPanel()
+        panel.canChooseDirectories = true
+        panel.canChooseFiles = false
+        panel.message = "Escolha a pasta do Game Porting Toolkit da Apple (ou a pasta redist/lib dele)"
+        guard panel.runModal() == .OK, let url = panel.url else { return }
+        guard let found = D3DMetal.resolve(url) else {
+            errorMessage = "Não há D3DMetal em “\(url.lastPathComponent)”. Escolha a pasta do Game Porting Toolkit ou a pasta redist/lib dele."
+            return
+        }
+        if found.path.hasPrefix("/Volumes/") {
+            errorMessage = "O D3DMetal está num disco (\(found.path)). Ele só funciona enquanto esse disco estiver montado; copie a pasta lib para o Mac para usar sempre."
+        }
+        D3DMetal.location = found
+        d3dmetalLocation = found
+    }
+
+    func useDefaultD3DMetalFolder() {
+        D3DMetal.location = D3DMetal.defaultLocation
+        d3dmetalLocation = D3DMetal.defaultLocation
     }
 
     func setMSync(_ enabled: Bool, for bottle: Bottle) {
@@ -496,6 +538,8 @@ final class WineStore {
                 let launcher = WineLauncher(runtime: runtime)
                 // A new wineserver reuses the prefix's folder; clear what an earlier one left behind.
                 await launcher.reapOrphans(bottle)
+                // Bottles set up when DXVK/DXMT were copied into them, now with an engine that picks it.
+                if let migrated = try await launcher.migrateToDispatchedGraphics(bottle) { try bottleStore.save(migrated) }
                 _ = try await body(launcher)
             } catch {
                 errorMessage = error.localizedDescription

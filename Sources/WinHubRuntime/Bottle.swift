@@ -137,13 +137,14 @@ public struct BottleStore: Sendable {
     }
 
     /// Writes the bottle's folder and `bottle.json`. The prefix is created later by `WineLauncher.initialize`.
-    public func create(name: String, runtimeID: String, windowsVersion: Bottle.WindowsVersion = .win10) throws -> Bottle {
+    public func create(name: String, runtimeID: String, windowsVersion: Bottle.WindowsVersion = .win10,
+                       graphics: GraphicsBackend = .wined3d) throws -> Bottle {
         let trimmed = name.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !trimmed.isEmpty else { throw BottleError.invalidName }
         guard !list().contains(where: { $0.name.caseInsensitiveCompare(trimmed) == .orderedSame }) else {
             throw BottleError.nameTaken(trimmed)
         }
-        var bottle = Bottle(name: trimmed, runtimeID: runtimeID, windowsVersion: windowsVersion)
+        var bottle = Bottle(name: trimmed, runtimeID: runtimeID, windowsVersion: windowsVersion, graphics: graphics)
         bottle.folder = root.appending(path: Self.folderName(for: trimmed, id: bottle.id), directoryHint: .isDirectory)
         try FileManager.default.createDirectory(at: bottle.folder, withIntermediateDirectories: true)
         try save(bottle)

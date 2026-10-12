@@ -23,17 +23,22 @@ public struct RuntimeManifest: Codable, Sendable, Identifiable, Equatable {
         public var url: URL
         public var sha256: String
         public var size: Int64
+        /// Folders of the main archive's Wine folder removed before the overlay is unpacked, e.g.
+        /// `["bin", "lib/wine"]` for an engine that brings its own Wine.
+        public var replace: [String]
 
-        public init(url: URL, sha256: String, size: Int64) {
+        public init(url: URL, sha256: String, size: Int64, replace: [String] = []) {
             self.url = url
             self.sha256 = sha256.lowercased()
             self.size = size
+            self.replace = replace
         }
 
         public init(from decoder: Decoder) throws {
             let c = try decoder.container(keyedBy: CodingKeys.self)
             self.init(url: try c.decode(URL.self, forKey: .url), sha256: try c.decode(String.self, forKey: .sha256),
-                      size: try c.decode(Int64.self, forKey: .size))
+                      size: try c.decode(Int64.self, forKey: .size),
+                      replace: try c.decodeIfPresent([String].self, forKey: .replace) ?? [])
         }
     }
 
@@ -84,8 +89,14 @@ public struct RuntimeManifest: Codable, Sendable, Identifiable, Equatable {
     public enum Feature: String, Sendable {
         /// Ships DXMT and a `winemac.so` exporting the symbols it needs.
         case dxmt
+        /// Ships DXVK in `lib/dxvk`.
+        case dxvk
         /// Built with the msync patches (`WINEMSYNC=1`).
         case msync
+        /// Picks the Direct3D itself (`WINHUB_GRAPHICS_BACKEND`): nothing is copied into bottles.
+        case backendDispatch = "backend-dispatch"
+        /// Reads compatibility rules (`WINHUB_COMPAT_RULES`, `WINHUB_HOME/compat/compatdb.json`).
+        case compatdb
     }
 
     public static func loadAll(from url: URL) throws -> [RuntimeManifest] {
@@ -103,7 +114,10 @@ public struct InstalledRuntime: Sendable, Equatable {
     public var wineserver: URL { binDirectory.appending(path: "wineserver") }
     /// The folder holding `bin/` and `lib/`, where the overlay is unpacked.
     public var wineDirectory: URL { binDirectory.deletingLastPathComponent() }
-    /// DXMT's Direct3D DLLs (`x64/`, `x32/`), copied into bottles that use it.
+    /// Picks the Direct3D at run time instead of having DLLs copied into bottles.
+    public var dispatchesGraphics: Bool { manifest.supports(.backendDispatch) }
+    /// DXMT's Direct3D DLLs (`x64/`, `x32/`), copied into bottles that use it. Engines that pick the
+    /// Direct3D themselves lay it out like a Wine library folder instead and copy nothing.
     public var dxmtDirectory: URL {
         wineDirectory.appending(path: "lib/dxmt", directoryHint: .isDirectory)
     }

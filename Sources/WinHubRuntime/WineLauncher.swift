@@ -95,7 +95,8 @@ public struct WineLauncher: Sendable {
     }
 
     public func environment(for bottle: Bottle, extraOverrides: [String: String] = [:]) -> [String: String] {
-        WineEnvironment.make(for: bottle, runtime: runtime, extraOverrides: extraOverrides)
+        WineEnvironment.make(for: bottle, runtime: runtime, extraOverrides: extraOverrides,
+                             d3dmetal: runtime.dispatchesGraphics ? D3DMetal.installed() : nil)
     }
 
     public func logURL(_ bottle: Bottle, _ name: String) -> URL {

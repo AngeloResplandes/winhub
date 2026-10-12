@@ -114,7 +114,13 @@ public struct RuntimeManager: Sendable {
         guard FileManager.default.isExecutableFile(atPath: runtime.wine.path) else {
             throw RuntimeError.missingBinary(runtime.wine)
         }
-        if manifest.overlay != nil, let overlayArchive {
+        if let overlay = manifest.overlay, let overlayArchive {
+            for path in overlay.replace {
+                guard let folder = Self.replaceTarget(path, in: runtime.wineDirectory) else {
+                    throw RuntimeError.extractionFailed(status: -1, output: "Pasta inválida no motor: \(path)")
+                }
+                try? FileManager.default.removeItem(at: folder)
+            }
             let result = try ProcessRunner.run(URL(fileURLWithPath: "/usr/bin/tar"),
                                                arguments: ["-xf", overlayArchive.path, "-C", runtime.wineDirectory.path])
             guard result.status == 0 else {
@@ -127,6 +133,13 @@ public struct RuntimeManager: Sendable {
         try FileManager.default.moveItem(at: staging, to: destination)
         try JSONEncoder().encode(manifest).write(to: destination.appending(path: Self.markerName))
         return InstalledRuntime(manifest: manifest, root: destination)
+    }
+
+    /// A folder named by `Overlay.replace`, which must stay inside the Wine folder.
+    static func replaceTarget(_ path: String, in wineDirectory: URL) -> URL? {
+        let parts = path.split(separator: "/")
+        guard !path.hasPrefix("/"), !parts.isEmpty, !parts.contains(where: { $0 == ".." || $0 == "." }) else { return nil }
+        return wineDirectory.appending(path: parts.joined(separator: "/"), directoryHint: .isDirectory)
     }
 
     public func remove(_ manifest: RuntimeManifest) throws {

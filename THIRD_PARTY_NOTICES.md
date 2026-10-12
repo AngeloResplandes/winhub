@@ -9,7 +9,7 @@ fontes oficiais, quando ele aciona o download no app. Cada download é conferido
 | Wine (pacote oficial do WineHQ para macOS) | Roda programas do Windows | LGPL-2.1 | https://gitlab.winehq.org/wine/wine · pacotes: https://github.com/Gcenx/macOS_Wine_builds |
 | Bibliotecas incluídas no pacote do Wine: FreeType, GnuTLS (+ nettle, gmp, libtasn1, libidn2, libunistring, p11-kit), SDL2, brotli, bzip2 | Fontes, HTTPS, controles | FreeType (FTL/GPL-2.0), GnuTLS (LGPL-2.1+), nettle (LGPL-3.0+/GPL-2.0+), gmp (LGPL-3.0+/GPL-2.0+), SDL2 (zlib), brotli (MIT), bzip2 (bzip2) | Ver os projetos de origem |
 | MoltenVK (incluído no pacote do Wine) | Vulkan sobre Metal | Apache-2.0 | https://github.com/KhronosGroup/MoltenVK |
-| Motor do WinHub ([winhub-engine](https://github.com/AngeloResplandes/winhub-engine)): overlay sobre o Wine oficial | `winemac.so` com o patch para o DXMT (LGPL-2.1) e o DXMT v0.80 (MIT), compilados pelo CI do winhub-engine a partir das fontes; o DXMT leva o Direct3D 10/11 ao Metal (opcional, por garrafa ou por programa) | LGPL-2.1 (Wine); MIT (DXMT); Apache-2.0 with LLVM Exceptions (partes do LLVM 15 no `winemetal.so`) | https://github.com/AngeloResplandes/winhub-engine · https://github.com/3Shain/dxmt |
+| Motor do WinHub ([winhub-engine](https://github.com/AngeloResplandes/winhub-engine)): overlay sobre o Wine oficial | Wine 11 compilado das fontes LGPL publicadas pela CodeWeavers para o CrossOver, o `winhubcompat` (escolhe o Direct3D), o DXMT v0.80 e o DXVK 1.10.3, compilados pelo CI do winhub-engine a partir das fontes | LGPL-2.1 (Wine, winhubcompat); MIT (DXMT, cJSON); zlib (DXVK); Apache-2.0 with LLVM Exceptions (partes do LLVM 15 no `winemetal.so`) | https://github.com/AngeloResplandes/winhub-engine · https://www.codeweavers.com/crossover/source · https://github.com/3Shain/dxmt |
 | cabextract 1.11 (compilado pelo winhub-engine) | Usado por alguns verbos do winetricks (opcional) | GPL-3.0-or-later (libmspack embutida: LGPL-2.1) | https://www.cabextract.org.uk · o código exato vai em cada release do winhub-engine |
 | DXVK-macOS 1.10.3 | Direct3D 10/11 sobre Vulkan (opcional, por garrafa) | zlib | https://github.com/Gcenx/DXVK-macOS |
 | winetricks 20260125 | Instala componentes do Windows (opcional) | LGPL-2.1 | https://github.com/Winetricks/winetricks |
@@ -24,7 +24,8 @@ https://www.mingw-w64.org · https://gcc.gnu.org
 
 Os componentes que o winetricks instala (como os redistribuíveis do Visual C++) vêm dos sites dos
 respectivos fabricantes e seguem as licenças deles. O D3DMetal (Game Porting Toolkit da Apple) **não** é
-usado nem distribuído pelo WinHub.
+distribuído pelo WinHub; ele só é usado se o próprio usuário o puser em
+`~/Library/Application Support/WinHub/D3DMetal`.
 
 ## Marcas
 

@@ -132,7 +132,7 @@ struct BottleDetailView: View {
             }
 
             Section {
-                let choices = wine.graphicsBackends.filter { $0 != .wined3d }
+                let choices = wine.graphicsBackends.filter { $0 != .wined3d && $0 != .auto }
                 ForEach(bottle.programGraphics.keys.sorted(), id: \.self) { program in
                     HStack {
                         Label(program.split(separator: "\\").last.map(String.init) ?? program, systemImage: "gamecontroller")
