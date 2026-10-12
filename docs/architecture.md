@@ -94,6 +94,7 @@ Engines declare what they can do in `features` in `runtimes.json`:
 | `msync` | Offers the per-bottle msync switch (`WINEMSYNC=1`) |
 | `backend-dispatch` | The engine picks the Direct3D itself: WinHub only sets `WINHUB_GRAPHICS_BACKEND` and writes per-program rules; offers Automático and D3DMetal |
 | `compatdb` | The engine reads rule files: the bottle's (`WINHUB_COMPAT_RULES`) and the signed database (`WINHUB_HOME/compat/compatdb.json`) |
+| `nvext` | Offers the per-bottle switch for DXMT's NVIDIA extensions (`DXMT_ENABLE_NVEXT=1`: NVAPI and DLSS over MetalFX) |
 
 With `backend-dispatch`, `WineEnvironment` sets `WINHUB_GRAPHICS_BACKEND`, `WINHUB_COMPAT_RULES`, `WINHUB_HOME`
 and, when the user has D3DMetal, `WINHUB_D3DMETAL_DIR` and `CX_APPLEGPTK_LIBD3DSHARED_PATH`. How the engine uses

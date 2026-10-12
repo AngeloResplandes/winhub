@@ -14,7 +14,7 @@ Known gaps, ranked by how many people and games they block. Engine-only gaps are
 | 2 | **Small catalog** | finding a title and knowing it works: 31 titles, 1 recipe | add titles and recipes as they are tested; a [compatibility report](compat/README.md) per game |
 | 3 | **Empty rule database** | games that need a specific Direct3D, variable or argument to start | one rule per tested game in winhub-engine's `data/compatdb.json` |
 | 4 | **Game videos** | cutscenes and intros in many games | GStreamer and H.264 in the engine |
-| 5 | **16:9 display modes** | 1920×1080 and other modes that are not the Mac screen's own ratio | emulate modes in `winemac.drv` |
+| 5 | **16:9 display modes** | 1920×1080 and other modes that are not the Mac screen's own ratio | partly done: **Resoluções extras** turns on Wine's emulated modes (`EmulateModeset`), with 16:9 up to the screen size in points (1280×720 on a 1470×956 Mac); 1920×1080 there needs `RetinaMode` (prefix-wide) or a change in the engine's `win32u` |
 | 6 | **Interface only in Brazilian Portuguese** | people who do not read Portuguese | move the texts to String Catalogs and translate, starting with English |
 | 7 | **Bottle export and import** | moving a bottle to another Mac, backups | archive the bottle folder with its `bottle.json` |
 | 8 | **Program icons** | recognizing programs in the lists and shortcuts | extract the icon from the `.exe` |

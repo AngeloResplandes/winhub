@@ -96,6 +96,7 @@ Os motores declaram o que sabem fazer em `features` no `runtimes.json`:
 | `msync` | Oferece a chave de msync por garrafa (`WINEMSYNC=1`) |
 | `backend-dispatch` | O motor escolhe o Direct3D: o WinHub só define `WINHUB_GRAPHICS_BACKEND` e escreve as regras por programa; oferece Automático e D3DMetal |
 | `compatdb` | O motor lê arquivos de regras: o da garrafa (`WINHUB_COMPAT_RULES`) e o banco assinado (`WINHUB_HOME/compat/compatdb.json`) |
+| `nvext` | Oferece a chave por garrafa das extensões da NVIDIA do DXMT (`DXMT_ENABLE_NVEXT=1`: NVAPI e DLSS pelo MetalFX) |
 
 Com `backend-dispatch`, o `WineEnvironment` define `WINHUB_GRAPHICS_BACKEND`, `WINHUB_COMPAT_RULES`,
 `WINHUB_HOME` e, quando o usuário tem o D3DMetal, `WINHUB_D3DMETAL_DIR` e `CX_APPLEGPTK_LIBD3DSHARED_PATH`. Como o

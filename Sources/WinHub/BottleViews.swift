@@ -75,6 +75,8 @@ struct BottleDetailView: View {
     let bottle: Bottle
     let onDeleted: () -> Void
     @State private var isConfirmingDelete = false
+    /// A change that closes the bottle's programs, waiting for confirmation.
+    @State private var pendingChange: PendingChange?
     @State private var verbs = ""
 
     var body: some View {
@@ -118,10 +120,34 @@ struct BottleDetailView: View {
                 if wine.supportsMSync {
                     Toggle("Sincronização rápida (MSync)", isOn: Binding(
                         get: { bottle.msync },
-                        set: { wine.setMSync($0, for: bottle) }
+                        set: { enabled in
+                            if wine.msyncChangeClosesPrograms(enabled, for: bottle) {
+                                pendingChange = .msync(enabled)
+                            } else {
+                                Task { await wine.setMSync(enabled, for: bottle) }
+                            }
+                        }
                     ))
-                    .help("Reduz o custo de sincronização do Wine em jogos. Vale na próxima vez que um programa abrir.")
+                    .help("Reduz o custo de sincronização do Wine em jogos. Vale na próxima vez que um programa abrir; com a garrafa aberta, os programas dela são fechados para aplicar.")
                 }
+                if wine.supportsNVIDIAExtensions {
+                    Toggle("Recursos da NVIDIA (DLSS pelo MetalFX)", isOn: Binding(
+                        get: { bottle.nvidiaExtensions },
+                        set: { wine.setNVIDIAExtensions($0, for: bottle) }
+                    ))
+                    .help("Com o DXMT, faz os jogos verem uma placa NVIDIA e usarem o DLSS por cima do MetalFX. Deixe desligado se um jogo passar a falhar. Vale na próxima vez que um programa abrir.")
+                }
+                Toggle("Resoluções extras (16:9 e outras)", isOn: Binding(
+                    get: { bottle.extraDisplayModes },
+                    set: { enabled in
+                        if wine.activeBottles.contains(bottle.id) {
+                            pendingChange = .displayModes(enabled)
+                        } else {
+                            Task { await wine.setExtraDisplayModes(enabled, for: bottle) }
+                        }
+                    }
+                ))
+                .help("Deixa os jogos escolherem resoluções que o Mac não tem, como 1280×720 (até o tamanho da tela). O Wine simula a troca em vez de recusá-la. Com a garrafa aberta, os programas dela são fechados para aplicar.")
                 Toggle("Mostrar desempenho (FPS) nos jogos", isOn: Binding(
                     get: { bottle.performanceHUD },
                     set: { wine.setPerformanceHUD($0, for: bottle) }
@@ -208,6 +234,27 @@ struct BottleDetailView: View {
         } message: {
             Text("Todos os programas e arquivos dentro dela serão apagados. Esta ação não pode ser desfeita.")
         }
+        .confirmationDialog("Fechar os programas desta garrafa?", isPresented: Binding(
+            get: { pendingChange != nil },
+            set: { if !$0 { pendingChange = nil } }
+        )) {
+            Button("Encerrar e aplicar") {
+                switch pendingChange {
+                case .msync(let enabled): Task { await wine.setMSync(enabled, for: bottle) }
+                case .displayModes(let enabled): Task { await wine.setExtraDisplayModes(enabled, for: bottle) }
+                case nil: break
+                }
+                pendingChange = nil
+            }
+            Button("Cancelar", role: .cancel) { pendingChange = nil }
+        } message: {
+            Text("Esta opção só muda com a garrafa encerrada. Salve o que estiver aberto antes de continuar.")
+        }
+    }
+
+    enum PendingChange {
+        case msync(Bool)
+        case displayModes(Bool)
     }
 }
 

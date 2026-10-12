@@ -14,7 +14,7 @@ Faltas conhecidas, em ordem de quantas pessoas e jogos elas bloqueiam. As lacuna
 | 2 | **Catálogo pequeno** | achar um título e saber que funciona: 31 títulos, 1 receita | acrescentar títulos e receitas conforme forem testados; um [relatório de compatibilidade](compat/README.md) por jogo |
 | 3 | **Banco de regras vazio** | jogos que precisam de um Direct3D, uma variável ou um argumento específico para abrir | uma regra por jogo testado no `data/compatdb.json` do winhub-engine |
 | 4 | **Vídeos dos jogos** | cenas e vídeos de abertura de muitos jogos | GStreamer e H.264 no motor |
-| 5 | **Modos de tela 16:9** | 1920×1080 e outros modos fora da proporção da tela do Mac | emular modos no `winemac.drv` |
+| 5 | **Modos de tela 16:9** | 1920×1080 e outros modos fora da proporção da tela do Mac | feito em parte: **Resoluções extras** liga os modos emulados do Wine (`EmulateModeset`), com 16:9 até o tamanho da tela em pontos (1280×720 num Mac de 1470×956); o 1920×1080 nele exige o `RetinaMode` (da garrafa toda) ou uma mudança no `win32u` do motor |
 | 6 | **Interface só em português do Brasil** | quem não lê português | passar os textos para String Catalogs e traduzir, começando pelo inglês |
 | 7 | **Exportar e importar garrafas** | levar uma garrafa para outro Mac, backups | arquivar a pasta da garrafa com o `bottle.json` |
 | 8 | **Ícones dos programas** | reconhecer os programas nas listas e nos atalhos | extrair o ícone do `.exe` |

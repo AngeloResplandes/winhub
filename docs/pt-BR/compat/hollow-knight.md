@@ -54,7 +54,9 @@ o controle (Xbox 360) é reconhecido. As teclas injetadas com `SendInput` dentro
 
 - **Resoluções:** o jogo lista os modos que o Wine informa, e o driver de Mac do Wine só oferece os modos do
   próprio macOS. Nesta tela (1470×956 pontos) são 14 modos, de 960×600 a 2560×1664, todos na proporção da tela do
-  Mac. **Não há 1920×1080 nem outros modos 16:9.**
+  Mac. **Não há 1920×1080 nem outros modos 16:9.** Desde a opção de garrafa **Resoluções extras** (12/10/2026), o
+  Wine também oferece modos emulados; nesta tela, isso acrescenta 960×540 e 1280×720 (conferido com um programa de
+  teste que lista os modos; ainda não neste jogo).
 - **Tela cheia:** abrir o jogo já em tela cheia funciona nos dois modos do Unity: "tela cheia em janela" e
   exclusiva (a janela ocupa a tela toda, 1470×956). Trocar pelo menu Opções → Vídeo também funcionou: o Wine troca o
   modo do Mac (por exemplo, para 1280×800) e volta ao sair.

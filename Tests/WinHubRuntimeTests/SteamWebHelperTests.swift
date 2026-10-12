@@ -137,4 +137,12 @@ import Testing
                 == ["start", "/wait", "/unix", "/B/prefix/drive_c/Steam.lnk", "-noverifyfiles"])
         #expect(WineLauncher.shortcutArguments(shortcut, []) == ["start", "/wait", "/unix", "/B/prefix/drive_c/Steam.lnk"])
     }
+
+    @Test func switchesEmulatedDisplayModes() {
+        #expect(WineLauncher.displayModesArguments(true)
+                == ["reg", "add", #"HKCU\Software\Wine\X11 Driver"#, "/v", "EmulateModeset", "/d", "Y", "/f"])
+        // "N" instead of deleting the value: `reg delete` fails when it is not there.
+        #expect(WineLauncher.displayModesArguments(false)
+                == ["reg", "add", #"HKCU\Software\Wine\X11 Driver"#, "/v", "EmulateModeset", "/d", "N", "/f"])
+    }
 }

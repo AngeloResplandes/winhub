@@ -212,6 +212,39 @@ func makeFakeRuntimeArchive(in dir: URL) throws -> (archive: URL, manifest: Runt
         #expect(WineEnvironment.make(for: bottle, runtime: capable, base: [:])["WINEMSYNC"] == nil)
     }
 
+    @Test func nvidiaExtensionsNeedRuntimeAndBottle() {
+        var bottle = bottle()
+        bottle.nvidiaExtensions = true
+        #expect(WineEnvironment.make(for: bottle, runtime: runtime, base: [:])["DXMT_ENABLE_NVEXT"] == nil)
+
+        var capable = runtime
+        capable.manifest.features = ["nvext"]
+        #expect(WineEnvironment.make(for: bottle, runtime: capable, base: [:])["DXMT_ENABLE_NVEXT"] == "1")
+        bottle.nvidiaExtensions = false
+        #expect(WineEnvironment.make(for: bottle, runtime: capable, base: [:])["DXMT_ENABLE_NVEXT"] == nil)
+    }
+
+    @Test func msyncChangeNeedsServerRestart() {
+        var capable = runtime
+        capable.manifest.features = ["msync"]
+        let off = bottle()
+        var on = off
+        on.msync = true
+
+        #expect(WineEnvironment.needsServerRestart(from: off, to: on, runtime: capable))
+        #expect(WineEnvironment.needsServerRestart(from: on, to: off, runtime: capable))
+        #expect(!WineEnvironment.needsServerRestart(from: on, to: on, runtime: capable))
+        // Without msync in the engine, WINEMSYNC is never set, so nothing changes.
+        #expect(!WineEnvironment.needsServerRestart(from: off, to: on, runtime: runtime))
+        var hud = off
+        hud.performanceHUD = true
+        #expect(!WineEnvironment.needsServerRestart(from: off, to: hud, runtime: capable))
+        // The bottle's own variables count too.
+        var custom = off
+        custom.environment["WINEMSYNC"] = "1"
+        #expect(WineEnvironment.needsServerRestart(from: off, to: custom, runtime: capable))
+    }
+
     @Test func performanceHUDFollowsBackend() {
         var bottle = bottle()
         #expect(WineEnvironment.make(for: bottle, runtime: runtime, base: [:])["MTL_HUD_ENABLED"] == nil)
@@ -557,6 +590,8 @@ struct WineIntegrationTests {
         #expect(bottle.dllOverrides.isEmpty)
         #expect(!bottle.msync)
         #expect(!bottle.performanceHUD)
+        #expect(!bottle.nvidiaExtensions)
+        #expect(!bottle.extraDisplayModes)
     }
 }
 

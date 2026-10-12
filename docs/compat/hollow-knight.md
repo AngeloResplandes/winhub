@@ -54,7 +54,9 @@ Unity 6 (Input System), so gameplay has no automated test.
 
 - **Resolutions:** the game lists the modes Wine reports, and Wine's Mac driver only offers the macOS modes. On
   this screen (1470×956 points) that is 14 modes, from 960×600 to 2560×1664, all in the Mac screen's ratio.
-  **There is no 1920×1080 nor any other 16:9 mode.**
+  **There is no 1920×1080 nor any other 16:9 mode.** Since the bottle option **Resoluções extras** (2026-10-12),
+  Wine also offers emulated modes; on this screen that adds 960×540 and 1280×720 (checked with a test program that
+  lists the modes; not yet in this game).
 - **Fullscreen:** starting the game in fullscreen works in both Unity modes, "fullscreen window" and exclusive
   (the window fills the screen, 1470×956). Switching from Options → Video also worked: Wine changes the Mac's
   mode (for example to 1280×800) and restores it on exit.
