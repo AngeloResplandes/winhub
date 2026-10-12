@@ -1,161 +1,108 @@
+**English** · [Português (Brasil)](README.pt-BR.md)
+
 <p align="center">
-  <img src="docs/icon.svg" width="128" height="128" alt="Ícone do WinHub">
+  <img src="docs/icon.svg" width="128" height="128" alt="WinHub icon">
 </p>
 
 <h1 align="center">WinHub</h1>
 
-Precisa de um programa ou jogo que só existe para Windows? Com o WinHub você o encontra num catálogo,
-instala e abre no Mac como qualquer outro app, sem máquina virtual e sem instalar o Windows. Títulos com
-receita, como a Steam, instalam com um clique.
+<p align="center">
+  <b>Find, install and open Windows programs and games on the Mac, like any other app.</b>
+</p>
 
-O WinHub é um aplicativo nativo para macOS que cuida de tudo o que o [Wine](https://www.winehq.org/)
-precisa para rodar programas do Windows. Cada programa fica numa "garrafa", um Windows separado com as
-próprias configurações, e você escolhe o que cada uma usa: a versão do Windows, os gráficos (Wine ou DXVK)
-e as bibliotecas extras instaladas pelo winetricks. Os programas instalados ganham atalhos que abrem pelo
-Finder, pelo Spotlight ou pelo Dock.
+<p align="center">
+  <a href="https://github.com/AngeloResplandes/winhub/releases/latest/download/WinHub.zip">Download</a> ·
+  <a href="https://angeloresplandes.github.io/winhub/">Documentation</a> ·
+  <a href="ROADMAP.md">Roadmap</a> ·
+  <a href="docs/reverse-engineering.md">How CrossOver was studied</a> ·
+  <a href="docs/crossover-parity.md">Parity with CrossOver</a>
+</p>
 
-Na primeira vez, o WinHub baixa o Wine oficial do WineHQ e confere o arquivo antes de instalar; motores,
-componentes e instaladores vêm sempre das fontes oficiais. Depois disso, o app se mantém atualizado
-sozinho: o catálogo acompanha este repositório, e as versões novas do app são baixadas em segundo plano e
-instaladas com um clique.
+WinHub is a native macOS app that takes care of everything [Wine](https://www.winehq.org/) needs to run Windows
+programs, with no virtual machine and no Windows install. Find a title in the catalog and install it; titles with
+a recipe, like Steam, install with one click. Each program lives in a "bottle", a separate Windows with its own
+settings, and installed programs get shortcuts that open from the Finder, Spotlight or the Dock.
 
-## O que já faz
+WinHub was designed by studying **how CrossOver 26.3 behaves** (its catalog search, its bottles, how it picks
+each game's Direct3D) and reproducing that behaviour with open code. Its engine,
+[winhub-engine](https://github.com/AngeloResplandes/winhub-engine), is Wine 11 built from the sources CodeWeavers
+publishes under the LGPL, with DXMT, DXVK and an open module that picks the Direct3D of each process. No closed
+CrossOver code or data is used.
 
-- **Catálogo com busca**: palavras em ordem, sem diferenciar maiúsculas e acentos, nome no idioma do usuário.
-- **Motor Wine**: baixa o pacote oficial do WineHQ para macOS (11.18) na primeira vez.
-- **Garrafas**: cada garrafa é um "Windows" separado (prefixo Wine), com versão do Windows própria.
-- **Instalar pelo catálogo**: títulos com receita (por exemplo, a **Steam**) instalam com um clique e
-  depois mostram **Abrir**. Jogos com ID da Steam ganham **Jogar pela Steam**.
-- **Instalar app não listado** (⌘I): escolha um `.exe` ou `.msi` e a garrafa.
-- **Programas**: lista os atalhos instalados em todas as garrafas.
-- **Atalhos no Finder e no Dock**: "Criar atalho" gera `~/Applications/WinHub/<garrafa>/<programa>.app`,
-  que abre o programa pelo Finder, Spotlight ou Dock (arraste para o Dock).
-- **Gráficos**: Wine (padrão), **DXVK** (Direct3D 10/11 via Vulkan/MoltenVK) ou, com o motor do WinHub,
-  **DXMT** (Direct3D 10/11 direto no Metal), por garrafa ou **por programa**. No caso de um jogo da Steam,
-  só o jogo muda e a interface da Steam continua com o Wine.
-- **Desempenho**: chave por garrafa que mostra o painel de FPS do Metal (e o do DXVK).
-- **Componentes do Windows** via **winetricks** (`vcrun2022`, `corefonts`…), por garrafa ou nas receitas.
+## Features
 
-### Limitações conhecidas
+| | |
+|---|---|
+| **Catalog with search** | words in order, ignoring case and accents, names in your language; the same rules as CrossOver's search |
+| **One-click recipes** | Steam installs and opens with one click; Steam games get "Jogar pela Steam" |
+| **Any installer** | pick an `.exe` or `.msi` and a bottle (⌘I) |
+| **Bottles** | each with its Windows version, Direct3D, msync, performance HUD and winetricks components |
+| **Direct3D per bottle or per game** | Automático, Wine, DXMT (Metal), DXVK (Vulkan) or your own D3DMetal ([Graphics](docs/graphics.md)) |
+| **Steam that works** | a small wrapper fixes Steam's black window on Wine 11 for macOS |
+| **Shortcuts** | `~/Applications/WinHub/<bottle>/<program>.app`, for the Finder, Spotlight and the Dock |
+| **Updates by itself** | app, catalog, engine list and signed per-game rules, all checked before use |
 
-- **D3DMetal (Game Porting Toolkit da Apple)** não vem com o WinHub: a licença da Apple não permite
-  redistribuí-lo. Com o motor do WinHub ([winhub-engine](https://github.com/AngeloResplandes/winhub-engine)),
-  quem tiver o Game Porting Toolkit pode apontar a pasta dele em Ajustes → D3DMetal e escolher
-  "D3DMetal" na garrafa. Sem ele, o motor
-  usa o [DXMT](https://github.com/3Shain/dxmt), aberto, que leva o Direct3D 10/11 direto ao Metal.
-- O Direct3D do próprio Wine (wined3d) chega só ao feature level 9_3 no macOS. Jogos que exigem
-  Direct3D 11 (como os feitos em Unity 6) precisam de DXVK ou DXMT. Veja
-  [docs/compat/hollow-knight.md](docs/compat/hollow-knight.md).
-- **Resoluções:** o Wine para Mac oferece aos jogos só os modos de tela do macOS, na proporção da tela
-  do Mac. Resoluções 16:9 como 1920×1080 não aparecem.
-- **MSync** só com o motor do WinHub (r2 em diante), que é compilado das fontes LGPL do Wine do
-  CrossOver, onde ele já existe para o Wine 11.
-- Alguns verbos do winetricks exigem o `cabextract`, que não vem no macOS. Ele virá como componente do
-  winhub-engine.
-- O Wine para macOS é x86_64: em Macs com Apple Silicon é preciso o **Rosetta 2**, que a Apple mantém de
-  forma geral até o macOS 27.
+## Status
 
-## Instalar
+| | |
+|---|---|
+| Version | 0.2 (a release on every push to `main`) |
+| Parity with CrossOver | **~53%** (estimated, [details](docs/crossover-parity.md)) |
+| Tested | Steam with saved login; Hollow Knight (Direct3D 11) at 60 FPS through DXMT ([reports](docs/compat/README.md)) |
+| Biggest gaps | engine revision 2 not published yet, Direct3D 12 without D3DMetal, small catalog ([all gaps](docs/gaps.md)) |
 
-1. Baixe o [`WinHub.zip` da versão mais recente](https://github.com/AngeloResplandes/winhub/releases/latest/download/WinHub.zip)
-   (veja [todas as versões](https://github.com/AngeloResplandes/winhub/releases)) e mova o `WinHub.app` para
-   Aplicativos.
-2. Se o app não estiver notarizado, o macOS bloqueia a primeira abertura. Tente abrir uma vez e, em
-   **Ajustes do Sistema → Privacidade e Segurança**, clique em **Abrir Mesmo Assim** (desde o macOS 15,
-   o clique direito → Abrir não basta mais).
-3. No WinHub, clique em **Baixar o Wine** (191 MB, uma vez só).
+### Known limitations
 
-Depois disso o WinHub se atualiza sozinho: o catálogo acompanha cada commit do repositório e as versões
-novas do app são baixadas em segundo plano e instaladas quando você clica em **Reiniciar para atualizar**
-(desligue em **Ajustes → Atualizações**). Funciona se o app estiver numa pasta em que você pode gravar,
-como Aplicativos.
+- **D3DMetal** (Apple's Game Porting Toolkit) is not included: Apple's license does not allow redistributing it.
+  If you have it, point **Ajustes → D3DMetal** to it.
+- Wine's own Direct3D only reaches feature level 9_3 on macOS; Direct3D 11 games need DXMT, DXVK or D3DMetal.
+- Games only see the Mac screen's own display modes (no 1920×1080 on most Macs).
+- The engine is x86_64: Apple silicon Macs need **Rosetta 2**, whose general support Apple keeps until macOS 27.
+- The interface is in Brazilian Portuguese only.
 
-## Desenvolvimento
+## Install
 
-Requer macOS 14+, Xcode 16+ (Swift 6) e, em Macs com Apple Silicon, o Rosetta 2.
-Para abrir no Xcode: `open Package.swift`.
+1. Download [`WinHub.zip` from the latest release](https://github.com/AngeloResplandes/winhub/releases/latest/download/WinHub.zip)
+   and move `WinHub.app` to Applications.
+2. If the app is not notarized, macOS blocks the first launch. Try to open it once, then click **Open Anyway** in
+   **System Settings → Privacy & Security** (since macOS 15, right-click → Open is not enough).
+3. In WinHub, click **Baixar o Wine** (about 190 MB, once).
+
+From then on WinHub updates itself: the catalog follows this repository, and new app versions download in the
+background and install when you click **Reiniciar para atualizar** (turn it off in **Ajustes → Atualizações**).
+
+## Build
+
+macOS 14+, Xcode 16+ (Swift 6), Rosetta 2 on Apple silicon.
+
+```bash
+swift build && swift test
+```
 
 ```bash
 swift run WinHub
 ```
 
-```bash
-swift test
-```
+Packaging, Steam with `swift run`, tests with a real Wine and testing a local engine: [Development](docs/development.md).
 
-Testes com o Wine de verdade (opcionais; precisam do Wine já baixado pelo app):
+## Documentation
 
-```bash
-RUN_WINE_TESTS=1 WINHUB_DXVK_ARCHIVE=/caminho/dxvk.tar.gz WINHUB_WINETRICKS=/caminho/winetricks swift test --filter ComponentIntegrationTests
-```
+The full documentation is a book, in English and Brazilian Portuguese:
+**[angeloresplandes.github.io/winhub](https://angeloresplandes.github.io/winhub/)** (sources in [`docs/`](docs/)).
 
-Empacotar o `.app` (assinatura ad-hoc; com `DEVELOPER_ID` e `NOTARY_PROFILE` assina e notariza).
-O script também compila o wrapper da Steam (veja abaixo) e precisa do mingw-w64 (`brew install mingw-w64`):
+## Rules
 
-```bash
-./scripts/package-app.sh
-```
+- CrossOver was studied for behaviour only; its code, data, catalog and interface are never copied. See
+  [Reverse engineering](docs/reverse-engineering.md) and [CONTRIBUTING](CONTRIBUTING.md).
+- No third-party binaries in the repository: Wine, components and installers are downloaded from official sources
+  and checked by SHA-256.
+- Apple's D3DMetal is never redistributed.
 
-Cada push na `main` (fora mudanças só em `.md`) dispara o workflow de release, que publica a versão
-`<VERSION>.<número da execução>` (ex.: `0.2.57`) com o `WinHub.zip`; para mudar major/minor, edite o
-arquivo `VERSION`. Os segredos para assinatura e notarização estão descritos em
-`.github/workflows/release.yml`.
+## License
 
-## Catálogo e receitas
-
-O catálogo é um JSON (`Sources/WinHub/Resources/catalog.json`; as avaliações do exemplo são
-**ilustrativas**). Uma receita descreve como instalar e abrir um título:
-
-```json
-"recipe": {
-  "bottleName": "Steam",
-  "windowsVersion": "win10",
-  "dependencies": [],
-  "installer": { "url": "https://cdn.cloudflare.steamstatic.com/client/installer/SteamSetup.exe", "arguments": ["/S"] },
-  "launch": { "windowsPath": "C:\\Program Files (x86)\\Steam\\steam.exe" }
-}
-```
-
-Use apenas URLs oficiais de download e descreva só passos que você testou (veja [CONTRIBUTING.md](CONTRIBUTING.md)).
-
-### Steam e a janela preta
-
-No Wine 11 para macOS, a janela da Steam fica preta: a interface dela é um Chromium que desenha cada
-janela a partir de outro processo, e o driver de macOS do Wine não mostra esse desenho. O WinHub
-coloca na garrafa um pequeno programa próprio (`Support/steamwebhelper-wrapper/`) no lugar do
-`steamwebhelper.exe`; ele abre o original (renomeado para `steamwebhelper_real.exe`) com
-`--in-process-gpu`. Com o wrapper instalado, a Steam é aberta com `-noverifyfiles`, senão ela restaura
-o original. Logo depois de instalar a Steam, a primeira sessão ainda fica preta (é nela que a Steam baixa
-o cliente e o helper); feche-a (**Encerrar** na garrafa) e abra de novo pelo WinHub.
-O app empacotado já inclui o wrapper. Com `swift run`, compile-o e indique o caminho:
-
-```bash
-./scripts/build-steam-wrapper.sh
-WINHUB_STEAMWEBHELPER_WRAPPER=.build/steamwebhelper-wrapper.exe swift run WinHub
-```
-
-## Estrutura
-
-```
-Sources/WinHubCore/      catálogo, busca e receitas (sem interface)
-Sources/WinHubRuntime/   motor Wine, garrafas, execução, atalhos, DXVK e winetricks
-Sources/WinHub/          app SwiftUI
-Tests/                   testes unitários e de integração
-Support/                 wrapper do steamwebhelper (programa do Windows, compilado no empacotamento)
-scripts/package-app.sh   gera dist/WinHub.app e dist/WinHub.zip
-scripts/build-steam-wrapper.sh  compila o wrapper da Steam (mingw-w64)
-scripts/make-icon.swift  desenha o ícone do app (.icns no empacotamento, docs/icon.svg para o README)
-```
-
-Dados do usuário: `~/Library/Application Support/WinHub/` (motor, componentes e garrafas) e
-`~/Applications/WinHub/` (atalhos).
-
-## Licença
-
-MIT. Veja [LICENSE](LICENSE) e [CONTRIBUTING.md](CONTRIBUTING.md) (regra de "sala limpa").
+MIT ([LICENSE](LICENSE)). Third-party components: [THIRD_PARTY_NOTICES](THIRD_PARTY_NOTICES.md).
 
 ---
 
-**Projeto independente.** Sem relação com CodeWeavers, Apple, Microsoft ou Valve. Não contém código,
-dados nem binários do CrossOver. Componentes de terceiros são baixados pelo usuário a partir das fontes
-oficiais e conferidos por SHA-256. Veja [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
+**Independent project.** Not affiliated with CodeWeavers, Apple, Microsoft or Valve. CrossOver is a trademark of
+CodeWeavers; the name is used only to describe what was studied and where the engine's Wine sources come from.

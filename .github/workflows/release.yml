@@ -16,7 +16,7 @@ name: Release
 on:
   push:
     branches: [main]
-    paths-ignore: ["**.md", "docs/**"]
+    paths-ignore: ["**.md", "docs/**", "book/**", ".github/workflows/docs.yml"]
   workflow_dispatch:
 
 permissions:
