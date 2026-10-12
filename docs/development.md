@@ -13,7 +13,7 @@
 
 ```bash
 swift build
-swift test            # 105 tests; the ones that need a real Wine stay off
+swift test            # 110 tests; the ones that need a real Wine stay off
 swift run WinHub      # runs without packaging
 open Package.swift    # opens in Xcode
 ```

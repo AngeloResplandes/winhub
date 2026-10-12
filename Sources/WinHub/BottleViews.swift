@@ -1,24 +1,41 @@
 import SwiftUI
 import WinHubRuntime
 
+/// A program's own icon (from its `.exe`), or a generic one while it loads or if it has none.
+struct ProgramIconView: View {
+    @Environment(WineStore.self) private var wine
+    let program: InstalledProgram
+    let bottle: Bottle
+    var size: CGFloat = 44
+
+    var body: some View {
+        Group {
+            if let icon = wine.programIcons[program.id] {
+                Image(nsImage: icon).resizable().interpolation(.high).scaledToFit()
+            } else {
+                RoundedRectangle(cornerRadius: size * 0.23, style: .continuous)
+                    .fill(.blue.gradient)
+                    .overlay { Image(systemName: "macwindow").font(.system(size: size * 0.45)).foregroundStyle(.white) }
+            }
+        }
+        .frame(width: size, height: size)
+        .task(id: program.id) { wine.loadIcon(for: program, in: bottle) }
+    }
+}
+
 /// Icon tile for a Windows program.
 struct ProgramTile: View {
     let program: InstalledProgram
-    let bottleName: String?
+    let bottle: Bottle
     let action: () -> Void
 
     var body: some View {
         Button(action: action) {
             HStack(spacing: 12) {
-                RoundedRectangle(cornerRadius: 10, style: .continuous)
-                    .fill(.blue.gradient)
-                    .overlay { Image(systemName: "macwindow").font(.title2).foregroundStyle(.white) }
-                    .frame(width: 44, height: 44)
+                ProgramIconView(program: program, bottle: bottle)
                 VStack(alignment: .leading, spacing: 2) {
                     Text(program.name).font(.headline).lineLimit(2)
-                    if let bottleName {
-                        Text(bottleName).font(.caption).foregroundStyle(.secondary)
-                    }
+                    Text(bottle.name).font(.caption).foregroundStyle(.secondary)
                 }
                 Spacer(minLength: 0)
                 Image(systemName: "play.fill").foregroundStyle(.secondary)
@@ -45,7 +62,7 @@ struct ProgramsView: View {
         ScrollView {
             LazyVGrid(columns: columns, spacing: 12) {
                 ForEach(items, id: \.1.id) { bottle, program in
-                    ProgramTile(program: program, bottleName: bottle.name) { wine.open(program, in: bottle) }
+                    ProgramTile(program: program, bottle: bottle) { wine.open(program, in: bottle) }
                         .contextMenu { LauncherButton(program: program, bottle: bottle) }
                 }
             }
@@ -92,7 +109,7 @@ struct BottleDetailView: View {
                 }
                 ForEach(programs) { program in
                     HStack {
-                        Label(program.name, systemImage: "macwindow")
+                        Label { Text(program.name) } icon: { ProgramIconView(program: program, bottle: bottle, size: 20) }
                         Spacer()
                         LauncherButton(program: program, bottle: bottle)
                         Button("Abrir") { wine.open(program, in: bottle) }

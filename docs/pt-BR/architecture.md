@@ -25,6 +25,7 @@ interface.
 | | `Bottle`, `BottleStore` | Uma garrafa é uma pasta com `bottle.json` e `prefix/` (o `WINEPREFIX`) |
 | | `WineEnvironment` | Monta o ambiente dos processos do Wine (uma função pura) |
 | | `WineLauncher`, `ProgramScanner`, `WineServerStatus`, `WineOrphanReaper` | Roda o Wine, encontra os programas instalados, sabe se a garrafa está rodando, limpa processos órfãos |
+| | `ShellLink`, `ProgramIcon` | Lê o alvo de um atalho e o ícone do programa no `.exe` (remontado como `.ico`) |
 | | `ComponentManager`, `GraphicsBackend` | DXVK e winetricks; o Direct3D da garrafa e de cada programa ([Gráficos](graphics.md)) |
 | | `CompatRules`, `D3DMetal`, `CompatDatabaseSync` | Regras da garrafa para o motor, o D3DMetal do usuário, o banco de regras assinado |
 | | `AppLauncherBuilder`, `SteamWebHelperWrapper` | Atalhos `.app`; a correção da janela preta da Steam |

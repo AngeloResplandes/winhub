@@ -397,9 +397,28 @@ final class WineStore {
     }
 
     /// Creates `~/Applications/WinHub/<garrafa>/<programa>.app` and shows it in Finder.
+    /// Program icons read from their `.exe`, by shortcut; each is read once, off the main thread.
+    private(set) var programIcons: [InstalledProgram.ID: NSImage] = [:]
+    private var requestedIcons = Set<InstalledProgram.ID>()
+
+    func loadIcon(for program: InstalledProgram, in bottle: Bottle) {
+        guard requestedIcons.insert(program.id).inserted else { return }
+        Task.detached(priority: .utility) { [weak self] in
+            guard let data = ProgramIcon.icoData(for: program, in: bottle) else { return }
+            await self?.setIcon(data, for: program.id)
+        }
+    }
+
+    private func setIcon(_ data: Data, for id: InstalledProgram.ID) {
+        programIcons[id] = NSImage(data: data)
+    }
+
     func createLauncher(for program: InstalledProgram, in bottle: Bottle) {
         do {
             let app = try launchers.create(for: program, in: bottle)
+            if let data = ProgramIcon.icoData(for: program, in: bottle), let icon = NSImage(data: data) {
+                NSWorkspace.shared.setIcon(icon, forFile: app.path)
+            }
             refresh()
             NSWorkspace.shared.activateFileViewerSelecting([app])
         } catch {

@@ -17,6 +17,6 @@ Known gaps, ranked by how many people and games they block. Engine-only gaps are
 | 5 | **16:9 display modes** | 1920×1080 and other modes that are not the Mac screen's own ratio | partly done: **Resoluções extras** turns on Wine's emulated modes (`EmulateModeset`), with 16:9 up to the screen size in points (1280×720 on a 1470×956 Mac); 1920×1080 there needs `RetinaMode` (prefix-wide) or a change in the engine's `win32u` |
 | 6 | **Interface only in Brazilian Portuguese** | people who do not read Portuguese | move the texts to String Catalogs and translate, starting with English |
 | 7 | **Bottle export and import** | moving a bottle to another Mac, backups | archive the bottle folder with its `bottle.json` |
-| 8 | **Program icons** | recognizing programs in the lists and shortcuts | extract the icon from the `.exe` |
+| 8 | **Program icons** | recognizing programs in the lists and shortcuts | done: read from the `.exe` the shortcut points to, in the lists and on `.app` shortcuts |
 | 9 | **Unnotarized releases** | a smooth first launch (macOS asks for "Abrir Mesmo Assim") | sign and notarize with a Developer ID (the release workflow already supports it) |
 | 10 | **x86_64 only** | the future: Rosetta 2's general support ends in macOS 28 | follow upstream Wine's ARM64 work for macOS |

@@ -27,7 +27,7 @@ in [`docs/`](docs/) (English) and [`docs/pt-BR/`](docs/pt-BR/) (Brazilian Portug
 
 ```bash
 swift build                 # build
-swift test                  # 105 tests (unit; the ones with a real Wine stay off)
+swift test                  # 110 tests (unit; the ones with a real Wine stay off)
 swift run WinHub            # run without packaging (.app shortcuts and winhub:// links do not work this way)
 ./scripts/package-app.sh    # builds dist/WinHub.app (universal) and dist/WinHub.zip, ad-hoc signature;
                             # builds the Steam wrapper (needs: brew install mingw-w64)
@@ -61,6 +61,7 @@ Sources/WinHubRuntime/   everything that touches disk, network and Wine processe
   WineEnvironment                   builds the environment of Wine processes (pure function)
   WineLauncher                      wineboot, winecfg, installers, start /unix, wineserver -k
   ProgramScanner                    finds .lnk files in the bottle's Start Menu/Desktop
+  ShellLink, ProgramIcon            reads a .lnk's target (MS-SHLLINK) and the .exe's icon (PE resources) as .ico
   WineServerStatus                  "bottle running" = someone holds the wineserver `lock`
   WineOrphanReaper                  ends processes orphaned by a dead wineserver
   Components                        DXVK and winetricks (ComponentManager) + GraphicsBackend
