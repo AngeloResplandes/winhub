@@ -45,6 +45,9 @@ Se a pasta estiver num disco externo, o D3DMetal só funciona enquanto esse disc
   de salvar a mudança.
 - **Recursos da NVIDIA (DLSS pelo MetalFX)** (revisão 3): com o DXMT, os jogos veem uma placa NVIDIA (NVAPI) e
   podem ligar o DLSS, que o DXMT roda sobre o MetalFX. Vem desligado; desligue de novo se um jogo passar a falhar.
+- **Resoluções extras (16:9 e outras)**: os jogos podem escolher resoluções que o Mac não tem, como 1280×720, até o
+  tamanho da tela em pontos; o Wine simula a troca de modo em vez de recusá-la. Vale para a garrafa (o Wine monta uma
+  só lista de modos para todos os programas dela), e uma garrafa aberta é encerrada para aplicar.
 - **Mostrar desempenho (FPS) nos jogos**: o painel de desempenho do Metal (e o do DXVK, quando em uso).
 
 ## Como funciona

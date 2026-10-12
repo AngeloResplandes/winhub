@@ -326,6 +326,26 @@ final class WineStore {
         save(updated)
     }
 
+    /// Display modes are cached by the bottle's running processes, so a running bottle is ended first.
+    func setExtraDisplayModes(_ enabled: Bool, for bottle: Bottle) async {
+        guard let runtime else { return }
+        var updated = bottle
+        updated.extraDisplayModes = enabled
+        do {
+            try await perform(key: bottle.id.uuidString, "Aplicando as resoluções…") {
+                let launcher = WineLauncher(runtime: runtime)
+                if activeBottles.contains(bottle.id) {
+                    try await launcher.shutdown(bottle)
+                    updateActiveBottles()
+                }
+                try await launcher.applyDisplayModes(updated)
+            }
+            save(updated)
+        } catch {
+            errorMessage = error.localizedDescription
+        }
+    }
+
     func setNVIDIAExtensions(_ enabled: Bool, for bottle: Bottle) {
         var updated = bottle
         updated.nvidiaExtensions = enabled

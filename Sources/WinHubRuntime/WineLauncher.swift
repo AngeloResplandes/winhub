@@ -37,6 +37,20 @@ public struct WineLauncher: Sendable {
                              ["winecfg", "/v", bottle.windowsVersion.rawValue], logName: "winecfg")
     }
 
+    /// Applies `bottle.extraDisplayModes` (`EmulateModeset`, read by win32u whatever the driver).
+    /// The bottle's desktop process lists the display modes for every program and reads the setting
+    /// when it starts, so the session `reg` itself started (with the old value) is ended afterwards.
+    /// Programs already running keep the modes they saw; close the bottle first.
+    public func applyDisplayModes(_ bottle: Bottle) async throws {
+        try await runChecked("Mudar as resoluções da garrafa", bottle,
+                             Self.displayModesArguments(bottle.extraDisplayModes), logName: "reg")
+        try await shutdown(bottle)
+    }
+
+    static func displayModesArguments(_ enabled: Bool) -> [String] {
+        ["reg", "add", #"HKCU\Software\Wine\X11 Driver"#, "/v", "EmulateModeset", "/d", enabled ? "Y" : "N", "/f"]
+    }
+
     /// Runs a `.exe` or `.msi` from the Mac file system and waits for it to finish.
     public func runInstaller(_ bottle: Bottle, file: URL, arguments: [String] = []) async throws {
         let isMSI = file.pathExtension.lowercased() == "msi"

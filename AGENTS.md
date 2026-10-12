@@ -27,7 +27,7 @@ in [`docs/`](docs/) (English) and [`docs/pt-BR/`](docs/pt-BR/) (Brazilian Portug
 
 ```bash
 swift build                 # build
-swift test                  # 104 tests (unit; the ones with a real Wine stay off)
+swift test                  # 105 tests (unit; the ones with a real Wine stay off)
 swift run WinHub            # run without packaging (.app shortcuts and winhub:// links do not work this way)
 ./scripts/package-app.sh    # builds dist/WinHub.app (universal) and dist/WinHub.zip, ad-hoc signature;
                             # builds the Steam wrapper (needs: brew install mingw-w64)
@@ -163,7 +163,12 @@ Dated decisions are in `docs/decisions.md`. The pitfalls an agent must know:
   and which Direct3D worked best in our tests. The game's page only offers the button "Usar … neste jogo";
   nothing is applied without a click.
 - **Display modes on the Mac:** `winemac.drv` only lists the macOS modes (no 16:9) and only changes the mode while
-  the app is in front. See `docs/compat/hollow-knight.md`.
+  the app is in front. See `docs/compat/hollow-knight.md`. **Resoluções extras** (`Bottle.extraDisplayModes`) sets
+  `EmulateModeset` in `HKCU\Software\Wine\X11 Driver` (win32u reads it whatever the driver): Wine adds 16:9 and other
+  modes up to the screen size **in points** (1280×720 on a 1470×956 Mac) and fakes the change. It is bottle-wide on
+  purpose: the bottle's desktop process builds the mode list for every program when it starts, so per-program
+  `AppDefaults` keys give lists that depend on which process came first, and `applyDisplayModes` ends the session
+  `reg` started. Larger modes (1080p) need `RetinaMode`, which is prefix-wide and changes every program's screen.
 - **Per-program graphics on older engines** (`Bottle.programGraphics`, `applyProgramGraphics`): the DLLs go to the
   `.exe`'s folder (64- or 32-bit by the PE header) and the overrides to
   `HKCU\Software\Wine\AppDefaults\<exe>\DllOverrides`. The environment's `WINEDLLOVERRIDES` beats the registry, so

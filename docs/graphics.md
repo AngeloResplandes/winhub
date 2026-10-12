@@ -44,6 +44,9 @@ If the folder is on an external disk, D3DMetal only works while that disk is mou
   if the bottle is running WinHub asks to close its programs and ends the bottle before saving the change.
 - **Recursos da NVIDIA (DLSS pelo MetalFX)** (revision 3): with DXMT, games see an NVIDIA card (NVAPI) and can
   turn on DLSS, which DXMT runs on MetalFX. Off by default; turn it off again if a game starts to fail.
+- **Resoluções extras (16:9 e outras)**: games can pick display modes the Mac lacks, such as 1280×720, up to the
+  screen size in points; Wine fakes the mode change instead of refusing it. It is per bottle (Wine builds one mode
+  list for all of a bottle's programs), and a running bottle is closed to apply it.
 - **Mostrar desempenho (FPS) nos jogos**: Metal's performance HUD (and DXVK's, when in use).
 
 ## How it works

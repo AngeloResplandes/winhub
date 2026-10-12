@@ -34,6 +34,9 @@ public struct Bottle: Codable, Sendable, Identifiable, Hashable {
     public var performanceHUD: Bool
     /// Turn on DXMT's NVIDIA extensions (NVAPI, DLSS over MetalFX); only with a runtime that has them.
     public var nvidiaExtensions: Bool
+    /// Let programs pick display modes the Mac lacks (16:9 and others up to its size); Wine emulates
+    /// the change. Prefix-wide: the bottle's desktop process lists the modes for every program.
+    public var extraDisplayModes: Bool
     public var createdAt: Date
 
     /// Folder of this bottle; set when it is loaded, not stored in the JSON.
@@ -41,7 +44,7 @@ public struct Bottle: Codable, Sendable, Identifiable, Hashable {
 
     enum CodingKeys: String, CodingKey {
         case id, name, runtimeID, windowsVersion, environment, dllOverrides, graphics, programGraphics, msync, performanceHUD
-        case nvidiaExtensions, createdAt
+        case nvidiaExtensions, extraDisplayModes, createdAt
     }
 
     public init(from decoder: Decoder) throws {
@@ -59,6 +62,7 @@ public struct Bottle: Codable, Sendable, Identifiable, Hashable {
         msync = try c.decodeIfPresent(Bool.self, forKey: .msync) ?? false
         performanceHUD = try c.decodeIfPresent(Bool.self, forKey: .performanceHUD) ?? false
         nvidiaExtensions = try c.decodeIfPresent(Bool.self, forKey: .nvidiaExtensions) ?? false
+        extraDisplayModes = try c.decodeIfPresent(Bool.self, forKey: .extraDisplayModes) ?? false
         createdAt = try c.decodeIfPresent(Date.self, forKey: .createdAt) ?? .now
     }
 
@@ -77,6 +81,7 @@ public struct Bottle: Codable, Sendable, Identifiable, Hashable {
         self.msync = msync
         self.performanceHUD = performanceHUD
         self.nvidiaExtensions = false
+        self.extraDisplayModes = false
         self.createdAt = createdAt
     }
 

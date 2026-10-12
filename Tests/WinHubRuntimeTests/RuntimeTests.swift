@@ -591,6 +591,7 @@ struct WineIntegrationTests {
         #expect(!bottle.msync)
         #expect(!bottle.performanceHUD)
         #expect(!bottle.nvidiaExtensions)
+        #expect(!bottle.extraDisplayModes)
     }
 }
 
