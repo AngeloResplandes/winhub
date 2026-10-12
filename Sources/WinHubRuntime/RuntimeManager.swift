@@ -11,7 +11,7 @@ public enum RuntimeError: Error, LocalizedError, Equatable {
     public var errorDescription: String? {
         switch self {
         case .checksumMismatch(let expected, let actual):
-            String(localized: "O arquivo baixado não confere (SHA-256 esperado \(expected.prefix(12))…, obtido \(actual.prefix(12))…). Nada foi instalado.")
+            String(localized: "O arquivo baixado não confere (SHA-256 esperado \(String(expected.prefix(12)))…, obtido \(String(actual.prefix(12)))…). Nada foi instalado.")
         case .extractionFailed(let status, let output):
             String(localized: "Não foi possível extrair o motor (código \(status)). \(output)")
         case .missingBinary(let url):

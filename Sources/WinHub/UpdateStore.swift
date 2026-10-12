@@ -81,8 +81,8 @@ final class UpdateStore {
         switch phase {
         case .idle: String(localized: "Ainda não procurou.")
         case .checking: String(localized: "Procurando…")
-        case .downloading(let version): String(localized: "Baixando a versão \(version)…")
-        case .ready(let version, _, _): String(localized: "A versão \(version) está pronta para instalar.")
+        case .downloading(let version): String(localized: "Baixando a versão \(version.description)…")
+        case .ready(let version, _, _): String(localized: "A versão \(version.description) está pronta para instalar.")
         case .upToDate: String(localized: "O WinHub está atualizado.")
         case .unavailable(let reason): reason
         case .failed(let message): String(localized: "Não foi possível procurar atualizações: \(message)")
