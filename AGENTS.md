@@ -1,219 +1,228 @@
-# AGENTS.md — guia para agentes de código
+# AGENTS.md: guide for coding agents
 
-WinHub é um app nativo para macOS (SwiftUI) que encontra, instala e roda programas do Windows usando o
-Wine. Projeto **público e independente** (MIT). Leia este arquivo inteiro antes de mudar algo.
+WinHub is a native macOS app (SwiftUI) that finds, installs and runs Windows programs with Wine. It is a
+**public, independent** project (MIT). Read this whole file before changing anything. The full documentation is
+in [`docs/`](docs/) (English) and [`docs/pt-BR/`](docs/pt-BR/) (Brazilian Portuguese).
 
-## Regras que não podem ser quebradas
+## Rules that cannot be broken
 
-1. **Sala limpa.** Não copie código, scripts, textos, traduções, ícones, dados ou bancos de
-   compatibilidade de produtos comerciais, em especial do CrossOver (CodeWeavers). Não adicione ao
-   repositório resultados de engenharia reversa (código descompilado, endereços, símbolos internos).
-   Use só documentação pública (WineHQ, Apple, projetos abertos). Detalhes em `CONTRIBUTING.md`.
-2. **Nenhum binário de terceiros no repositório.** Wine, DXVK, winetricks e instaladores são baixados
-   em tempo de execução, da fonte oficial, e conferidos por SHA-256 (manifestos em `Sources/WinHub/Resources/`).
-   `dist/` e `.build/` ficam fora do Git.
-3. **D3DMetal / Game Porting Toolkit da Apple: nunca redistribuir** (licença da Apple). Só é usado
-   quando o próprio usuário põe a pasta `redist/lib` do toolkit em
-   `~/Library/Application Support/WinHub/D3DMetal` (`D3DMetal.installed()`), e só com um motor que
-   escolhe o Direct3D (feature `backend-dispatch`).
-4. **Marcas** (Windows, Mac, Steam, CrossOver) só de forma nominativa, sem logotipos.
-5. Ao adicionar um componente baixável, atualize `THIRD_PARTY_NOTICES.md`.
+1. **Clean room.** CrossOver (CodeWeavers) is studied for **behaviour only**, and findings are documented as
+   behaviour in `docs/reverse-engineering.md`. Never copy code, scripts, texts, translations, icons, data,
+   catalogs or compatibility databases from CrossOver or any commercial product. Never commit decompiled code,
+   addresses, internal symbol names or analysis logs. Code CodeWeavers publishes under the LGPL is used by
+   winhub-engine with attribution. Details in `CONTRIBUTING.md`.
+2. **No third-party binaries in the repository.** Wine, DXVK, winetricks and installers are downloaded at run
+   time from the official source and checked by SHA-256 (manifests in `Sources/WinHub/Resources/`). `dist/` and
+   `.build/` stay out of Git.
+3. **Apple's D3DMetal / Game Porting Toolkit: never redistribute** (Apple's license). It is used only from the
+   folder the user picks in the settings (`D3DMetal.location`, default
+   `~/Library/Application Support/WinHub/D3DMetal`), and only with an engine that picks the Direct3D
+   (`backend-dispatch` feature).
+4. **Trademarks** (Windows, Mac, Steam, CrossOver) only nominatively, never logos.
+5. When adding a downloadable component, update `THIRD_PARTY_NOTICES.md` and `THIRD_PARTY_NOTICES.pt-BR.md`.
+6. **Documentation in both languages.** Every page in `docs/` has its mirror in `docs/pt-BR/`, and every root page
+   its `.pt-BR.md` (except this file and `CLAUDE.md`). Change both together.
 
-## Comandos
+## Commands
 
 ```bash
-swift build                 # compilar
-swift test                  # 102 testes (unitários; os com Wine real ficam desligados)
-swift run WinHub            # rodar sem empacotar (atalhos .app e links winhub:// não funcionam assim)
-./scripts/package-app.sh    # gera dist/WinHub.app (universal) e dist/WinHub.zip, assinatura ad-hoc;
-                            # compila o wrapper da Steam (precisa de: brew install mingw-w64)
-swift scripts/make-icon.swift saida.icns  # desenha o ícone (o package-app.sh já chama)
-swift scripts/make-icon.swift docs/icon.svg   # mesmo desenho em SVG, usado no README (rode ao mudar o ícone)
-./scripts/build-steam-wrapper.sh   # só o wrapper, em .build/; para usar a Steam com swift run:
+swift build                 # build
+swift test                  # 102 tests (unit; the ones with a real Wine stay off)
+swift run WinHub            # run without packaging (.app shortcuts and winhub:// links do not work this way)
+./scripts/package-app.sh    # builds dist/WinHub.app (universal) and dist/WinHub.zip, ad-hoc signature;
+                            # builds the Steam wrapper (needs: brew install mingw-w64)
+swift scripts/make-icon.swift out.icns        # draws the icon (package-app.sh already calls it)
+swift scripts/make-icon.swift docs/icon.svg   # the same drawing as SVG, for the README (run when the icon changes)
+./scripts/build-steam-wrapper.sh   # only the wrapper, in .build/; to use Steam with swift run:
 WINHUB_STEAMWEBHELPER_WRAPPER=.build/steamwebhelper-wrapper.exe swift run WinHub
-open Package.swift          # abrir no Xcode
+open Package.swift          # open in Xcode
 ```
 
-Testes com o Wine de verdade (precisam do Wine já baixado pelo app em `~/Library/Application Support/WinHub/Runtimes`):
+Tests with a real Wine (they need the engine already downloaded by the app in `~/Library/Application Support/WinHub/Runtimes`):
 
 ```bash
-RUN_WINE_TESTS=1 swift test --filter ComponentIntegrationTests   # baixa DXVK e winetricks se faltarem
-# WINHUB_DXVK_ARCHIVE/WINHUB_WINETRICKS usam arquivos locais; WINHUB_CABEXTRACT_VERB=corefonts testa o cabextract
-# baixa e instala de verdade o 1º motor do runtimes.json (Wine oficial + overlay do winhub-engine) e o cabextract
+RUN_WINE_TESTS=1 swift test --filter ComponentIntegrationTests   # downloads DXVK and winetricks if missing
+# WINHUB_DXVK_ARCHIVE/WINHUB_WINETRICKS use local files; WINHUB_CABEXTRACT_VERB=corefonts tests cabextract
+# really downloads and installs the first engine in runtimes.json (official Wine + winhub-engine overlay) and cabextract
 RUN_WINE_TESTS=1 WINHUB_INSTALL_ENGINE=1 swift test --filter EngineInstallTests
 ```
 
-## Arquitetura
+Testing a local engine build before it is released: `docs/development.md`, "Testing a local engine".
+
+## Architecture
 
 ```
-Sources/WinHubCore/      dados puros, sem UI e sem processos (testável)
+Sources/WinHubCore/      pure data, no UI and no processes (testable)
   CatalogEntry, Rating, Recipe(+SteamClient), CatalogLoader(JSONCatalog),
   CatalogSearchEngine, WildcardMatcher
-Sources/WinHubRuntime/   tudo que toca disco, rede e processos do Wine
-  RuntimeManifest/RuntimeManager   baixa, confere e instala o motor Wine
-  Bottle/BottleStore                garrafa = pasta com bottle.json + prefix/ (WINEPREFIX)
-  WineEnvironment                   monta o ambiente dos processos Wine (função pura)
-  WineLauncher                      wineboot, winecfg, instaladores, start /unix, wineserver -k
-  ProgramScanner                    encontra .lnk no Menu Iniciar/Área de Trabalho da garrafa
-  WineServerStatus                  "garrafa em execução" = alguém segura o `lock` do wineserver
-  WineOrphanReaper                  encerra processos órfãos de um wineserver que morreu
-  Components                        DXVK e winetricks (ComponentManager) + GraphicsBackend
-  AppLauncherBuilder                atalhos ~/Applications/WinHub/<garrafa>/<programa>.app
-  SteamWebHelperWrapper             põe o wrapper no lugar do steamwebhelper.exe da Steam
-  AppUpdater                        acha a release mais nova no GitHub, baixa, confere e troca o .app
-  RemoteDataSync                    cópia local dos JSON de Resources/ da branch main
-  Downloader, ProcessRunner         utilitários
-Sources/WinHub/          app SwiftUI
-  WinHubApp (cenas, menus, Ajustes, onOpenURL), RootView (barra lateral + folhas),
-  CatalogStore (@Observable, catálogo e busca), WineStore (@Observable, motor/garrafas/tarefas),
-  UpdateStore (@Observable, atualizações; OfficialData = JSON baixado ou o do pacote),
-  CatalogView, EntryViews (cards, detalhe, ações Instalar/Abrir), BottleViews (garrafas, programas, folhas)
+Sources/WinHubRuntime/   everything that touches disk, network and Wine processes
+  RuntimeManifest/RuntimeManager   downloads, checks and installs the Wine engine (and overlays)
+  Bottle/BottleStore                bottle = folder with bottle.json + prefix/ (WINEPREFIX)
+  WineEnvironment                   builds the environment of Wine processes (pure function)
+  WineLauncher                      wineboot, winecfg, installers, start /unix, wineserver -k
+  ProgramScanner                    finds .lnk files in the bottle's Start Menu/Desktop
+  WineServerStatus                  "bottle running" = someone holds the wineserver `lock`
+  WineOrphanReaper                  ends processes orphaned by a dead wineserver
+  Components                        DXVK and winetricks (ComponentManager) + GraphicsBackend
+  CompatRules, D3DMetal             per-bottle engine rules; the user's D3DMetal folder
+  CompatDatabaseSync                downloads winhub-engine's signed rule database
+  AppLauncherBuilder                shortcuts ~/Applications/WinHub/<bottle>/<program>.app
+  SteamWebHelperWrapper             puts the wrapper in place of Steam's steamwebhelper.exe
+  AppUpdater                        finds the newest GitHub release, downloads, checks and swaps the .app
+  RemoteDataSync                    local copy of the Resources/ JSON from the main branch
+  Downloader, ProcessRunner         utilities
+Sources/WinHub/          SwiftUI app
+  WinHubApp (scenes, menus, Settings, onOpenURL), RootView (sidebar + sheets),
+  CatalogStore (@Observable, catalog and search), WineStore (@Observable, engine/bottles/tasks),
+  UpdateStore (@Observable, updates; OfficialData = downloaded JSON or the bundled one),
+  CatalogView, EntryViews (cards, detail, Install/Open actions), BottleViews (bottles, programs, sheets)
   Resources/: catalog.json, runtimes.json, components.json
-scripts/make-icon.swift  ícone do app desenhado em código (CoreGraphics → .icns); sem imagens no Git
-Support/steamwebhelper-wrapper/  programa do Windows (C, MIT) compilado pelo package-app.sh com mingw-w64
+scripts/make-icon.swift  app icon drawn in code (CoreGraphics → .icns); no images in Git
+Support/steamwebhelper-wrapper/  Windows program (C, MIT) built by package-app.sh with mingw-w64
 ```
 
-Dependências: `WinHub` → `WinHubCore` + `WinHubRuntime`. Core e Runtime não dependem um do outro nem da UI.
+Dependencies: `WinHub` → `WinHubCore` + `WinHubRuntime`. Core and Runtime depend on neither each other nor the UI.
 
-Dados do usuário: `~/Library/Application Support/WinHub/{Runtimes,Components,Bottles,Remote}`,
-`~/Library/Caches/WinHub/{Downloads,Updates}`, atalhos em `~/Applications/WinHub/`.
+User data: `~/Library/Application Support/WinHub/{Runtimes,Components,Bottles,Remote,compat}`,
+`~/Library/Caches/WinHub/{Downloads,Updates}`, shortcuts in `~/Applications/WinHub/`.
 
-## Fluxos principais
+## Main flows
 
-- **Motor:** `runtimes.json` → `RuntimeManager.install` (download → SHA-256 → `tar` → marcador
-  `.winhub-runtime.json` gravado por último). Hoje: WineHQ `wine-devel-11.18-osx64` (x86_64, precisa de Rosetta 2).
-- **Garrafa nova:** `BottleStore.create` → `WineLauncher.initialize` (`wineboot --init` com Mono/Gecko
-  desligados → `winecfg /v <versão>` → `wineserver -k`/`-w`).
-- **Receita** (`Recipe` no catálogo): garrafa por nome (reutiliza se existir) → dependências via
-  winetricks → baixa instalador → `runInstaller` → confere `launch.windowsPath` → abre.
-- **Abrir programa:** `WineStore.launch` dispara e não espera; o estado "em execução" vem do
-  `WineServerStatus`, não do processo iniciado (a Steam se reinicia sozinha).
-- **Atualizações** (`UpdateStore`, 10 s após abrir e depois a cada hora): (1) `RemoteDataSync` baixa
-  `catalog.json`, `runtimes.json` e `components.json` de `raw.githubusercontent.com/<repo>/main/Sources/WinHub/Resources/`
-  e só grava em `Application Support/WinHub/Remote/` se decodificar nesta versão do app; o catálogo
-  oficial e os manifestos são recarregados (um catálogo importado pelo usuário nunca é trocado). Um
-  `runtimes.json` com Wine novo não invalida o instalado (`RuntimeManager.installedRuntimes()`): a barra
-  lateral oferece "Atualizar o Wine". (2) `AppUpdater` lê `releases/latest` (com ETag), baixa o
-  `WinHub.zip`, confere o SHA-256 do `digest` que o GitHub calcula, valida identificador, versão,
-  `codesign --verify` e, com Developer ID, o mesmo TeamIdentifier. "Reiniciar para atualizar" roda um
-  `sh` que espera o PID sair, troca o `.app` (desfaz se falhar) e o abre. O repositório vem da chave
-  `WinHubUpdateRepository` do Info.plist (`GITHUB_REPOSITORY` no CI). Cada push na `main` gera a release
-  `v<VERSION>.<run_number>` (`release.yml`).
-- **Atalhos `.app`:** o script do atalho só faz `open "winhub://open?bottle=<uuid>&shortcut=<path>"`;
-  o `WineStore.handle(_:)` valida que o `.lnk` está dentro do `drive_c` da garrafa e o abre.
+- **Engine:** `runtimes.json` → `RuntimeManager.install` (download → SHA-256 → `tar` → overlay, if any → marker
+  `.winhub-runtime.json` written last). Today the first entry is `winhub-wine-11.18-r1` (WineHQ
+  `wine-devel-11.18-osx64` + winhub-engine overlay; x86_64, needs Rosetta 2).
+- **New bottle:** `BottleStore.create` → `WineLauncher.initialize` (`wineboot --init` with Mono/Gecko off →
+  `winecfg /v <version>` → `wineserver -k`/`-w`).
+- **Recipe** (`Recipe` in the catalog): bottle by name (reused if it exists) → dependencies via winetricks →
+  download the installer → `runInstaller` → check `launch.windowsPath` → open.
+- **Opening a program:** `WineStore.launch` fires and does not wait; "running" comes from `WineServerStatus`, not
+  from the started process (Steam restarts itself).
+- **Updates** (`UpdateStore`, 10 s after launch and then every hour): (1) `RemoteDataSync` downloads
+  `catalog.json`, `runtimes.json` and `components.json` from
+  `raw.githubusercontent.com/<repo>/main/Sources/WinHub/Resources/` and only writes them to
+  `Application Support/WinHub/Remote/` if they decode in this app version; the official catalog and manifests are
+  reloaded (a catalog imported by the user is never replaced). A `runtimes.json` with a newer Wine does not
+  invalidate the installed one (`RuntimeManager.installedRuntimes()`): the sidebar offers "Atualizar o Wine".
+  (2) `CompatDatabaseSync` (below). (3) `AppUpdater` reads `releases/latest` (with ETag), downloads `WinHub.zip`,
+  checks the SHA-256 of the `digest` GitHub computes, validates identifier, version, `codesign --verify` and, with
+  a Developer ID, the same TeamIdentifier. "Reiniciar para atualizar" runs an `sh` that waits for the PID to exit,
+  swaps the `.app` (rolls back on failure) and opens it. The repository comes from the `WinHubUpdateRepository`
+  Info.plist key (`GITHUB_REPOSITORY` in CI). Every push to `main` makes the release `v<VERSION>.<run_number>`
+  (`release.yml`).
+- **`.app` shortcuts:** the shortcut's script only runs `open "winhub://open?bottle=<uuid>&shortcut=<path>"`;
+  `WineStore.handle(_:)` checks that the `.lnk` is inside the bottle's `drive_c` and opens it.
 
-## Decisões e armadilhas (aprendidas na prática)
+## Decisions and pitfalls (learned in practice)
 
-- **Motor = Wine oficial do WineHQ.** O WineCX 24 (build aberto do código da CodeWeavers) quebra a Steam
-  no macOS 27: o sistema devolve vazia a lista de conexões TCP (`net.inet.tcp.pcblist`) para apps comuns,
-  e a Steam rejeita o `steamwebhelper` ("Erro de transporte inesperado"). O Wine ≥ 9.17 monta essa tabela
-  no wineserver e funciona. Não volte para um motor sem essa correção. O motor r2 (fontes do CrossOver
-  26, Wine 11.0) tem a correção (`nsiproxy.sys/tcp.c` pede `get_tcp_connections` ao wineserver), mas a
-  Steam precisa ser testada nele antes de ele virar o padrão.
-- **Janela preta da Steam (Wine 11 no macOS).** A interface da Steam é um Chromium (`steamwebhelper.exe`)
-  que desenha cada janela a partir de outro processo (o de GPU); o driver de macOS do Wine 11 não mostra o
-  que um processo desenha na janela de outro, então tudo fica preto (com ou sem GPU). Correção: o
-  `SteamWebHelperWrapper` troca o `steamwebhelper.exe` por `Support/steamwebhelper-wrapper` (o original vira
-  `steamwebhelper_real.exe`), que o abre com `--in-process-gpu`; `WINHUB_CEF_FLAGS` substitui as opções
-  para testes. A troca é feita só antes de cada abertura (a Steam repõe o helper ao se atualizar); com a
-  Steam rodando ela é sempre desfeita, porque a Steam se reinicia **sem argumentos** depois de se
-  atualizar e então confere os arquivos (uma troca periódica chegou a gerar um laço de reinícios).
-  Com o wrapper instalado, a abertura leva `-noverifyfiles` (`SteamClient.launchArguments(wrapperInstalled:)`;
-  no `.lnk`, `start /unix Steam.lnk -noverifyfiles` repassa a opção), senão ela detecta o tamanho
-  diferente e restaura o original. **Sem wrapper (primeira abertura após instalar) não use a opção:** o
-  instalador pula a etapa que baixa o cliente e fica parado. Por isso a primeira sessão depois de instalar
-  fica preta; da segunda em diante funciona (testado numa garrafa nova). Todo build do wrapper contém
-  `SteamWebHelperWrapper.marker`, para um wrapper antigo nunca ser tomado pelo helper da Steam (ele se
-  abriria em laço). Não funcionam: as opções `-cef-*` da Steam (ela não as repassa), `renderer=vulkan`
-  no wined3d (a janela nem aparece) e o DXVK (o D3D11 funciona, mas a janela continua preta). Não há
-  mais builds oficiais do Wine 10 para macOS. Com `swift run` o wrapper só existe se
-  `WINHUB_STEAMWEBHELPER_WRAPPER` apontar para ele (`scripts/build-steam-wrapper.sh`); sem isso, janela preta.
-- **Nunca rode o Wine de dentro do processo de um atalho `.app`.** Programas iniciados assim travam (a
-  Steam fica parada em "Verifying…"). Por isso os atalhos delegam ao WinHub via `winhub://`.
-- **Processos órfãos de wineserver morto.** Se o wineserver morre sem encerrar os clientes (ex.: SIGKILL),
-  o `winedevice.exe` do `winebus.sys` fica vivo para sempre (laço do IOHID que nunca fala com o servidor;
-  o Wine trata SIGTERM encerrando só uma thread). O próximo wineserver reusa a pasta
-  `/tmp/.wine-<uid>/server-<dev>-<inode>/` e o `-k` dele não alcança os órfãos. O `WineOrphanReaper` os
-  encerra (SIGKILL) quando ninguém segura o `lock` da pasta; roda após `shutdown` e antes de cada `launch`.
-  Use o `lock`, não o `socket`, para saber se o servidor vive: um servidor morto com SIGKILL deixa o socket.
-- **Atualização do app:** só com o `WinHub.app` empacotado, fora da translocação do Gatekeeper
-  (`/AppTranslocation/`) e numa pasta gravável; com `swift run` só os dados se atualizam. Asset sem
-  `digest` é ignorado. O zip baixado pelo `URLSession` não ganha o atributo de quarentena, por isso o app
-  novo abre sem novo aviso do Gatekeeper. Mudanças nos JSON precisam continuar decodificáveis pelas
-  versões anteriores (`decodeIfPresent`), senão os apps antigos ignoram a atualização até se atualizarem.
-- **`WINEDEBUG` padrão é `fixme-all`** (`err` não esconde os "fixme" e enche os logs).
-- **Ambiente isolado:** `WineEnvironment` só herda `HOME, USER, LOGNAME, LANG, LC_ALL, TMPDIR, SHELL`;
-  sempre define `ROSETTA_ADVERTISE_AVX=1` e `DOTNET_EnableWriteXorExecute=0`. Configurações da garrafa vencem.
-- **DXVK-macOS** só tem `d3d10core` e `d3d11` (o `dxgi` é do Wine). DXVK/DXMT → overrides `n,b`. Voltar
-  ao Wine copia de volta as DLLs do motor (`lib/wine/{x86_64,i386}-windows`; no Wine 11 o `system32` guarda
-  cópias exatas delas) e **remove** os overrides; só um motor sem esses arquivos recebe `b`.
-- **Catálogo de jogos da Steam:** `steamGame` (`installDir`, `executable`, `graphics`) diz onde o jogo
-  fica e qual Direct3D funcionou melhor nos nossos testes. A tela do jogo só oferece o botão
-  "Usar … neste jogo"; nada é aplicado sem clique.
-- **Resoluções no Mac:** o `winemac.drv` só lista os modos do macOS (sem 16:9) e só troca o modo com o app
-  em primeiro plano. Veja `docs/compat/hollow-knight.md`.
-- **Gráficos por programa** (`Bottle.programGraphics`, `applyProgramGraphics`): as DLLs vão para a pasta
-  do `.exe` (64 ou 32 bits pelo cabeçalho PE) e os overrides para
-  `HKCU\Software\Wine\AppDefaults\<exe>\DllOverrides`. O `WINEDLLOVERRIDES` do ambiente vence o
-  registro, por isso a garrafa não pode forçar `b` nessas DLLs. Só são apagadas DLLs idênticas às que o
-  WinHub copiou; se o jogo traz a própria, a troca é recusada.
-- **wined3d no macOS só chega ao D3D feature level 9_3** (OpenGL 4.1). Jogos Unity 6 em D3D11 (ex.:
-  Hollow Knight) falham ao criar o dispositivo. Precisam de DXVK ou DXMT (`docs/compat/`).
-- **Motor `winhub-engine` r2 (feature `backend-dispatch`):** Wine 11 das fontes LGPL do CrossOver
-  (com msync e os ganchos de Metal que o DXMT e o D3DMetal usam) instalado como **overlay** sobre o
-  pacote oficial do WineHQ: `overlay.replace` (`["bin", "lib/wine"]`) apaga essas pastas do pacote antes
-  de desempacotar, e o resto dele (bibliotecas, wine-mono, wine-gecko) fica. O `winhubcompat.so` do motor
-  escolhe o Direct3D de cada processo por `WINHUB_GRAPHICS_BACKEND` (`auto`, `wined3d`, `dxmt`, `dxvk`,
-  `d3dmetal`) e põe a pasta dele (`lib/dxmt`, `lib/dxvk` ou o D3DMetal do usuário) no começo do caminho de
-  DLLs do Wine: **nada é copiado** para a garrafa e os overrides `n,b` não são usados. Jogos com Direct3D
-  próprio viram regras em `<garrafa>/compat-rules.json` (`CompatRules`, `WINHUB_COMPAT_RULES`). Garrafas
-  da época em que o WinHub copiava DLLs são migradas antes de abrir um programa
-  (`migrateToDispatchedGraphics`): as DLLs do Wine voltam e as cópias e overrides saem.
-- **Banco de compatibilidade do motor:** `CompatDatabaseSync` (na verificação periódica do `UpdateStore`)
-  baixa `data/compatdb.json` e `compatdb.json.sig` da `main` do winhub-engine, confere a assinatura
-  Ed25519 com a chave embutida (`CompatDatabaseSync.publicKey`) e só grava em
-  `Application Support/WinHub/compat/compatdb.json` um banco com `timestamp` maior que o atual. A chave
-  privada fica fora dos repositórios (`~/.winhub-signing/` do mantenedor; veja `docs/compatdb.md` no
-  winhub-engine). Trocar a chave exige uma versão nova do app.
-- **D3DMetal:** a pasta vem dos Ajustes (`D3DMetal.location`, padrão `Application Support/WinHub/D3DMetal`);
-  o seletor aceita a pasta do Game Porting Toolkit ou a `redist/lib` dele (`D3DMetal.resolve`).
-- **Motores antigos (r1, sem `backend-dispatch`):** o DXMT vem como DLLs nativas em `lib/dxmt/{x64,x32}`,
-  copiadas por `applyGraphics(.dxmt)`, e o DXVK-macOS vem do componente. Esse caminho continua no código
-  para quem ainda usa esses motores. `.auto` e `.d3dmetal` não existem neles.
-- **MSync** não existe no Wine oficial; o motor r2 traz o da árvore do CrossOver (feature `msync`). O
-  ajuste é por garrafa (`Bottle.msync`); ao mudá-lo, encerre a garrafa: o `ntdll` recusa processos com um
-  `WINEMSYNC` diferente do `wineserver` que já está rodando.
-- **winetricks:** alguns verbos exigem `cabextract`, que não vem no macOS. Se `components.json` tiver um
-  componente `cabextract`, ele entra no `PATH` do winetricks.
-- **Compatibilidade com Swift 6.1 (Xcode 16.4, usado no CI):** closures `async` passados a métodos de
-  classes `@MainActor` precisam ser marcados `@MainActor` (ou ter resultado `Sendable`). O Swift local
-  pode ser mais novo e não acusar; o CI acusa.
-- `@State`, `#Preview` e `@Previewable` exigem Xcode (o plugin de macros não vem nas Command Line Tools).
+Dated decisions are in `docs/decisions.md`. The pitfalls an agent must know:
 
-## Convenções
+- **Engine = official WineHQ base.** WineCX 24 (the open build of CodeWeavers' code) breaks Steam on macOS 27: the
+  system returns an empty TCP connection list (`net.inet.tcp.pcblist`) to ordinary apps, and Steam rejects
+  `steamwebhelper` ("unexpected transport error"). Wine ≥ 9.17 builds that table in wineserver and works. Do not
+  go back to an engine without that fix. Engine revision 2 (CrossOver 26 sources, Wine 11.0) has it
+  (`nsiproxy.sys/tcp.c` asks wineserver for `get_tcp_connections`); Steam was tested on it on 2026-10-12 and opened
+  with its saved login.
+- **Steam's black window (Wine 11 on macOS).** Steam's interface is a Chromium (`steamwebhelper.exe`) that draws
+  each window from another process (the GPU one); Wine 11's macOS driver does not show what one process draws in
+  another's window, so everything is black (with or without GPU). Fix: `SteamWebHelperWrapper` replaces
+  `steamwebhelper.exe` with `Support/steamwebhelper-wrapper` (the original becomes `steamwebhelper_real.exe`),
+  which starts it with `--in-process-gpu`; `WINHUB_CEF_FLAGS` overrides the options for tests. The swap is done
+  only right before each launch (Steam restores the helper when it updates); while Steam runs it is always undone,
+  because Steam restarts itself **without arguments** after updating and then checks its files (a periodic swap
+  once caused a restart loop). With the wrapper installed, the launch carries `-noverifyfiles`
+  (`SteamClient.launchArguments(wrapperInstalled:)`; in the `.lnk`, `start /unix Steam.lnk -noverifyfiles` passes
+  it on), otherwise Steam notices the different size and restores the original. **Without the wrapper (first
+  launch after installing) do not use the option:** the installer skips the step that downloads the client and
+  stalls. That is why the first session after installing is black; from the second on it works (tested in a fresh
+  bottle). Every wrapper build contains `SteamWebHelperWrapper.marker`, so an old wrapper is never mistaken for
+  Steam's helper (it would start itself in a loop). These do not work: Steam's `-cef-*` options (it does not pass
+  them on), `renderer=vulkan` in wined3d (the window does not even appear) and DXVK (D3D11 works, the window stays
+  black). There are no more official Wine 10 builds for macOS. With `swift run` the wrapper only exists if
+  `WINHUB_STEAMWEBHELPER_WRAPPER` points to it (`scripts/build-steam-wrapper.sh`); without it, black window.
+- **Never run Wine from inside a shortcut `.app`'s process.** Programs started that way hang (Steam stops at
+  "Verifying…"). That is why shortcuts delegate to WinHub through `winhub://`.
+- **Orphans of a dead wineserver.** If wineserver dies without ending its clients (for example SIGKILL),
+  `winebus.sys`'s `winedevice.exe` lives forever (an IOHID loop that never talks to the server; Wine handles
+  SIGTERM by ending only one thread). The next wineserver reuses the folder `/tmp/.wine-<uid>/server-<dev>-<inode>/`
+  and its `-k` does not reach the orphans. `WineOrphanReaper` ends them (SIGKILL) when nobody holds the folder's
+  `lock`; it runs after `shutdown` and before each `launch`. Use the `lock`, not the `socket`, to know whether the
+  server lives: a server killed with SIGKILL leaves the socket behind.
+- **App updates:** only with the packaged `WinHub.app`, outside Gatekeeper's translocation (`/AppTranslocation/`)
+  and in a writable folder; with `swift run` only data updates. An asset without `digest` is ignored. The zip
+  downloaded by `URLSession` gets no quarantine attribute, so the new app opens without a new Gatekeeper prompt.
+  Changes to the JSON must stay decodable by older versions (`decodeIfPresent`), or old apps ignore the update
+  until they update themselves.
+- **Default `WINEDEBUG` is `fixme-all`** (`err` does not hide "fixme" lines and floods the logs).
+- **Isolated environment:** `WineEnvironment` only inherits `HOME, USER, LOGNAME, LANG, LC_ALL, TMPDIR, SHELL`;
+  always sets `ROSETTA_ADVERTISE_AVX=1` and `DOTNET_EnableWriteXorExecute=0`. The bottle's settings win.
+- **DXVK-macOS** only has `d3d10core` and `d3d11` (`dxgi` is Wine's). DXVK/DXMT → `n,b` overrides. Going back to
+  Wine copies the engine's DLLs back (`lib/wine/{x86_64,i386}-windows`; in Wine 11 `system32` holds exact copies
+  of them) and **removes** the overrides; only an engine without those files gets `b`.
+- **Steam games in the catalog:** `steamGame` (`installDir`, `executable`, `graphics`) says where the game lives
+  and which Direct3D worked best in our tests. The game's page only offers the button "Usar … neste jogo";
+  nothing is applied without a click.
+- **Display modes on the Mac:** `winemac.drv` only lists the macOS modes (no 16:9) and only changes the mode while
+  the app is in front. See `docs/compat/hollow-knight.md`.
+- **Per-program graphics on older engines** (`Bottle.programGraphics`, `applyProgramGraphics`): the DLLs go to the
+  `.exe`'s folder (64- or 32-bit by the PE header) and the overrides to
+  `HKCU\Software\Wine\AppDefaults\<exe>\DllOverrides`. The environment's `WINEDLLOVERRIDES` beats the registry, so
+  the bottle cannot force `b` on those DLLs. Only DLLs identical to the ones WinHub copied are deleted; if the game
+  ships its own, the change is refused.
+- **wined3d on macOS only reaches D3D feature level 9_3** (OpenGL 4.1). Unity 6 games in D3D11 (for example Hollow
+  Knight) fail to create the device. They need DXVK, DXMT or D3DMetal (`docs/compat/`).
+- **Engine revision 2 (`backend-dispatch` feature):** Wine 11 from CrossOver's LGPL sources (with msync and the
+  Metal hooks DXMT and D3DMetal use), installed as an **overlay** over the official WineHQ build:
+  `overlay.replace` (`["bin", "lib/wine"]`) deletes those folders of the base before unpacking, and the rest
+  (libraries, wine-mono, wine-gecko) stays. The engine's `winhubcompat.so` picks each process's Direct3D from
+  `WINHUB_GRAPHICS_BACKEND` (`auto`, `wined3d`, `dxmt`, `dxvk`, `d3dmetal`) and puts its folder (`lib/dxmt`,
+  `lib/dxvk` or the user's D3DMetal) first in Wine's DLL path: **nothing is copied** into the bottle and the `n,b`
+  overrides are not used. Programs with their own Direct3D become rules in `<bottle>/compat-rules.json`
+  (`CompatRules`, `WINHUB_COMPAT_RULES`). Bottles from the time WinHub copied DLLs are migrated before a program
+  opens (`migrateToDispatchedGraphics`): Wine's DLLs come back and the copies and overrides go away. Revision 2 is
+  not published yet; `runtimes.json` still lists revision 1 first.
+- **The engine's rule database:** `CompatDatabaseSync` (in `UpdateStore`'s periodic check) downloads
+  `data/compatdb.json` and `compatdb.json.sig` from winhub-engine's `main`, checks the Ed25519 signature with the
+  built-in key (`CompatDatabaseSync.publicKey`) and only writes to `Application Support/WinHub/compat/compatdb.json`
+  a database with a larger `timestamp` than the current one. The private key lives outside the repositories (the
+  maintainer's `~/.winhub-signing/`; see winhub-engine's `SECURITY.md`). Changing the key needs a new app version.
+- **D3DMetal:** the folder comes from the settings (`D3DMetal.location`); the picker accepts the Game Porting
+  Toolkit's folder, its `redist` or its `redist/lib` (`D3DMetal.resolve`).
+- **Older engines (r1, no `backend-dispatch`):** DXMT comes as native DLLs in `lib/dxmt/{x64,x32}`, copied by
+  `applyGraphics(.dxmt)`, and DXVK-macOS comes from the component. That path stays in the code for people still
+  on those engines. `.auto` and `.d3dmetal` do not exist there.
+- **msync** does not exist in official Wine; revision 2 brings CrossOver's (feature `msync`). It is per bottle
+  (`Bottle.msync`); after changing it, close the bottle: `ntdll` refuses processes whose `WINEMSYNC` differs from
+  the running `wineserver`.
+- **winetricks:** some verbs need `cabextract`, which macOS lacks. If `components.json` has a `cabextract`
+  component, it goes into winetricks' `PATH`.
+- **Testing games:** test on an APFS clone of the bottle and **never run two Steam instances of the same bottle at
+  once** (on 2026-10-11 that made Steam uninstall two games from the original bottle). Never risk a user's real
+  bottle.
+- **Swift 6.1 compatibility (Xcode 16.4, used in CI):** `async` closures passed to methods of `@MainActor` classes
+  must be marked `@MainActor` (or return a `Sendable` result). Local Swift may be newer and not complain; CI does.
+- `@State`, `#Preview` and `@Previewable` need Xcode (the macro plug-in is not in the Command Line Tools).
 
-- **Interface em português do Brasil**; código, identificadores e comentários em inglês.
-- Comentários curtos, só onde o "porquê" não é óbvio (siga a densidade do código vizinho).
-- Modelos `Codable` novos: use `decodeIfPresent` com padrão para manter compatibilidade com JSON antigo
-  (`bottle.json`, catálogos de usuários).
-- Testes com **Swift Testing** (`import Testing`, `@Suite`, `@Test`, `#expect`). Testes que precisam do
-  Wine real ficam atrás de `RUN_WINE_TESTS=1`.
-- Prefira lógica pura e testável no Core/Runtime; a UI só orquestra pelo `WineStore`/`CatalogStore`.
-- Instaladores e componentes: só URLs oficiais; SHA-256 obrigatório para componentes, opcional para
-  instaladores que o fabricante atualiza no mesmo endereço (ex.: `SteamSetup.exe`).
+## Conventions
 
-## CI e publicação
+- **Interface in Brazilian Portuguese**; code, identifiers and comments in English.
+- Short comments, only where the "why" is not obvious (follow the density of the surrounding code).
+- New `Codable` models: use `decodeIfPresent` with a default to stay compatible with old JSON (`bottle.json`, user
+  catalogs).
+- Tests with **Swift Testing** (`import Testing`, `@Suite`, `@Test`, `#expect`). Tests that need a real Wine stay
+  behind `RUN_WINE_TESTS=1`.
+- Prefer pure, testable logic in Core/Runtime; the UI only orchestrates through `WineStore`/`CatalogStore`.
+- Installers and components: official URLs only; SHA-256 required for components, optional for installers the
+  vendor updates at the same address (for example `SteamSetup.exe`).
 
-- `.github/workflows/ci.yml`: build + testes + empacotamento a cada push/PR (runner `macos-15`, Xcode 16.4).
-- `.github/workflows/release.yml`: cada push na `main` (exceto só `.md`) publica `v<VERSION>.<run_number>`
-  com `WinHub.zip`; assina/notariza se os segredos do Developer ID existirem (lista no próprio arquivo).
-- Commits: mensagens em inglês, no imperativo. O autor do repositório usa o e-mail noreply do GitHub.
+## CI and releases
 
-## Próximos passos possíveis
+- `.github/workflows/ci.yml`: build + tests + packaging on every push/PR (runner `macos-15`, Xcode 16.4).
+- `.github/workflows/release.yml`: every push to `main` (except docs-only changes) publishes `v<VERSION>.<run_number>`
+  with `WinHub.zip`; signs/notarizes if the Developer ID secrets exist (listed in the file).
+- `.github/workflows/docs.yml`: builds the documentation book (mdBook, `book/en` and `book/pt-BR`) and publishes it
+  to GitHub Pages from `main`.
+- Commits: English messages, imperative mood. The repository author uses the GitHub noreply e-mail.
 
-- Ícones reais dos programas (extrair do `.exe`) nos cards e atalhos.
-- Mais receitas testadas no catálogo; catálogo comunitário versionado.
-- Mais jogos D3D10/11 no relatório de compatibilidade (`docs/compat/`), com `steamGame` no catálogo.
-- Modos de tela 16:9 emulados no `winemac.drv` (hoje só os do macOS aparecem para os jogos).
-- Wine ARM64 nativo quando o suporte do upstream para macOS chegar (o Rosetta 2 perde o suporte geral no
-  macOS 28).
+## Possible next steps
+
+See `ROADMAP.md` and `docs/gaps.md`.

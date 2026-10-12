@@ -1,34 +1,35 @@
-# Componentes de terceiros
+**English** · [Português (Brasil)](THIRD_PARTY_NOTICES.pt-BR.md)
 
-O código do WinHub é MIT (veja `LICENSE`). O WinHub **não inclui** binários de terceiros no
-repositório nem no app: os componentes abaixo são **baixados pelo próprio usuário**, a partir das
-fontes oficiais, quando ele aciona o download no app. Cada download é conferido por SHA-256.
+# Third-party components
 
-| Componente | Para que serve | Licença | Código-fonte |
+WinHub's code is MIT (see `LICENSE`). WinHub **includes no** third-party binaries in the repository or in the app:
+the components below are **downloaded by the user**, from the official sources, when they start the download in
+the app. Every download is checked by SHA-256.
+
+| Component | What it is for | License | Source |
 |---|---|---|---|
-| Wine (pacote oficial do WineHQ para macOS) | Roda programas do Windows | LGPL-2.1 | https://gitlab.winehq.org/wine/wine · pacotes: https://github.com/Gcenx/macOS_Wine_builds |
-| Bibliotecas incluídas no pacote do Wine: FreeType, GnuTLS (+ nettle, gmp, libtasn1, libidn2, libunistring, p11-kit), SDL2, brotli, bzip2 | Fontes, HTTPS, controles | FreeType (FTL/GPL-2.0), GnuTLS (LGPL-2.1+), nettle (LGPL-3.0+/GPL-2.0+), gmp (LGPL-3.0+/GPL-2.0+), SDL2 (zlib), brotli (MIT), bzip2 (bzip2) | Ver os projetos de origem |
-| MoltenVK (incluído no pacote do Wine) | Vulkan sobre Metal | Apache-2.0 | https://github.com/KhronosGroup/MoltenVK |
-| Motor do WinHub ([winhub-engine](https://github.com/AngeloResplandes/winhub-engine)): overlay sobre o Wine oficial | Wine 11 compilado das fontes LGPL publicadas pela CodeWeavers para o CrossOver, o `winhubcompat` (escolhe o Direct3D), o DXMT v0.80 e o DXVK 1.10.3, compilados pelo CI do winhub-engine a partir das fontes | LGPL-2.1 (Wine, winhubcompat); MIT (DXMT, cJSON); zlib (DXVK); Apache-2.0 with LLVM Exceptions (partes do LLVM 15 no `winemetal.so`) | https://github.com/AngeloResplandes/winhub-engine · https://www.codeweavers.com/crossover/source · https://github.com/3Shain/dxmt |
-| cabextract 1.11 (compilado pelo winhub-engine) | Usado por alguns verbos do winetricks (opcional) | GPL-3.0-or-later (libmspack embutida: LGPL-2.1) | https://www.cabextract.org.uk · o código exato vai em cada release do winhub-engine |
-| DXVK-macOS 1.10.3 | Direct3D 10/11 sobre Vulkan (opcional, por garrafa) | zlib | https://github.com/Gcenx/DXVK-macOS |
-| winetricks 20260125 | Instala componentes do Windows (opcional) | LGPL-2.1 | https://github.com/Winetricks/winetricks |
-| Steam (instalador `SteamSetup.exe`) | Receita do catálogo | Licença da Valve | Baixado do CDN oficial da Valve só quando o usuário clica em Instalar |
+| Wine (official WineHQ build for macOS) | Runs Windows programs | LGPL-2.1 | https://gitlab.winehq.org/wine/wine · builds: https://github.com/Gcenx/macOS_Wine_builds |
+| Libraries in the Wine build: FreeType, GnuTLS (+ nettle, gmp, libtasn1, libidn2, libunistring, p11-kit), SDL2, brotli, bzip2 | Fonts, HTTPS, controllers | FreeType (FTL/GPL-2.0), GnuTLS (LGPL-2.1+), nettle (LGPL-3.0+/GPL-2.0+), gmp (LGPL-3.0+/GPL-2.0+), SDL2 (zlib), brotli (MIT), bzip2 (bzip2) | See the upstream projects |
+| MoltenVK (in the Wine build) | Vulkan over Metal | Apache-2.0 | https://github.com/KhronosGroup/MoltenVK |
+| WinHub engine ([winhub-engine](https://github.com/AngeloResplandes/winhub-engine)): overlay over the official Wine | Wine 11 built from the LGPL sources CodeWeavers publishes for CrossOver, `winhubcompat` (picks the Direct3D), DXMT v0.80 and DXVK 1.10.3, built by winhub-engine's CI from source | LGPL-2.1 (Wine, winhubcompat); MIT (DXMT, cJSON); zlib (DXVK); Apache-2.0 with LLVM Exceptions (parts of LLVM 15 in `winemetal.so`) | https://github.com/AngeloResplandes/winhub-engine · https://www.codeweavers.com/crossover/source · https://github.com/3Shain/dxmt |
+| cabextract 1.11 (built by winhub-engine) | Used by some winetricks verbs (optional) | GPL-3.0-or-later (bundled libmspack: LGPL-2.1) | https://www.cabextract.org.uk · the exact source ships with every winhub-engine release |
+| DXVK-macOS 1.10.3 | Direct3D 10/11 over Vulkan on older engines (optional, per bottle) | zlib | https://github.com/Gcenx/DXVK-macOS |
+| winetricks 20260125 | Installs Windows components (optional) | LGPL-2.1 | https://github.com/Winetricks/winetricks |
+| Steam (`SteamSetup.exe` installer) | Catalog recipe | Valve's license | Downloaded from Valve's official CDN only when the user clicks Install |
 
-O app empacotado inclui um único programa do Windows feito pelo próprio WinHub: o wrapper do
-`steamwebhelper.exe` (`Support/steamwebhelper-wrapper/`, MIT), que evita a janela preta da Steam. Ele é
-compilado no empacotamento com o mingw-w64, que fica só na máquina de build; o `.exe` resultante leva
-o código de inicialização do runtime do mingw-w64 (ZPL-2.1 / domínio público) e partes da libgcc (GPL-3.0
-com a GCC Runtime Library Exception, que permite distribuí-lo sob a licença do WinHub). Código-fonte:
-https://www.mingw-w64.org · https://gcc.gnu.org
+The packaged app includes a single Windows program, made by WinHub itself: the `steamwebhelper.exe` wrapper
+(`Support/steamwebhelper-wrapper/`, MIT), which avoids Steam's black window. It is built at packaging time with
+mingw-w64, which stays on the build machine; the resulting `.exe` carries the mingw-w64 runtime start-up code
+(ZPL-2.1 / public domain) and parts of libgcc (GPL-3.0 with the GCC Runtime Library Exception, which allows
+distributing it under WinHub's license). Source: https://www.mingw-w64.org · https://gcc.gnu.org
 
-Os componentes que o winetricks instala (como os redistribuíveis do Visual C++) vêm dos sites dos
-respectivos fabricantes e seguem as licenças deles. O D3DMetal (Game Porting Toolkit da Apple) **não** é
-distribuído pelo WinHub; ele só é usado se o próprio usuário o puser em
-`~/Library/Application Support/WinHub/D3DMetal`.
+The components winetricks installs (such as the Visual C++ redistributables) come from their vendors' sites and
+follow their licenses. D3DMetal (Apple's Game Porting Toolkit) is **not** distributed by WinHub; it is only used
+if the user points WinHub to their own copy (**Ajustes → D3DMetal**, by default
+`~/Library/Application Support/WinHub/D3DMetal`).
 
-## Marcas
+## Trademarks
 
-Windows é marca da Microsoft. Mac e macOS são marcas da Apple. Steam é marca da Valve.
-CrossOver é marca da CodeWeavers. Os nomes aparecem apenas para descrever compatibilidade.
-O WinHub é um projeto independente, sem relação com essas empresas.
+Windows and Direct3D are trademarks of Microsoft. Mac, macOS and Metal are trademarks of Apple. Steam is a
+trademark of Valve. CrossOver is a trademark of CodeWeavers. The names are used only to describe compatibility and
+origin. WinHub is an independent project, not affiliated with these companies.

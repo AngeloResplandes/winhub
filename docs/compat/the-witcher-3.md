@@ -1,35 +1,43 @@
-# The Witcher 3: Wild Hunt (Steam, app 292030): testes no WinHub
+**English** · [Português (Brasil)](../pt-BR/compat/the-witcher-3.md)
 
-Resultados nossos, medidos no WinHub.
+# The Witcher 3: Wild Hunt (Steam, app 292030): tests in WinHub
 
-## Ambiente
+Our own results, measured in WinHub.
 
-| Item | Valor |
+## Environment
+
+| Item | Value |
 |---|---|
-| Data | 2026-10-11 |
+| Date | 2026-10-11 |
 | Mac | Apple M5, macOS 27.0.1 |
-| Motor | `winhub-wine-11.18-r1` (WineHQ 11.18 + overlay do winhub-engine) |
-| Garrafa | Steam, Windows 10, gráficos da garrafa: Wine |
-| Jogo | "The Witcher 3: Wild Hunt — Remastered", build 25773555 (74 GB) |
+| Engine | `winhub-wine-11.18-r1` (WineHQ 11.18 + winhub-engine overlay) |
+| Bottle | Steam, Windows 10, bottle graphics: Wine |
+| Game | "The Witcher 3: Wild Hunt — Remastered", build 25773555 (74 GB) |
 
-## Resultado: instala, mas não abre
+## Result: installs, but does not start
 
-- **A versão atual é só DirectX 12.** O `launcher-configuration.json` lista apenas `bin\x64_dx12\witcher3.exe`,
-  e a pasta `bin\x64` (DX11) não existe. O modo DX11 só existe no ramo beta "classic" da Steam (1.32).
-- **Launcher da CD Projekt (`REDlauncher`, Qt WebEngine):** trava ao abrir, com
-  `Unhandled exception 0x80000003` (breakpoint), e cai no depurador do Wine. Isso lembra os problemas da
-  Steam com o próprio Chromium.
-- **Jogo aberto direto (`witcher3.exe` DX12, Steam aberta):** mostra "GPU does not meet minimal
-  requirements. Support for DirectX 12 is required." O D3D12 do Wine (vkd3d sobre MoltenVK) não oferece o
-  que o jogo exige, e o DXMT v0.80 do motor não tem D3D12.
+- **The current version is DirectX 12 only.** `launcher-configuration.json` lists only `bin\x64_dx12\witcher3.exe`,
+  and the `bin\x64` (DX11) folder does not exist. DX11 only exists in Steam's "classic" beta branch (1.32).
+- **CD Projekt's launcher (`REDlauncher`, Qt WebEngine):** crashes on start with `Unhandled exception 0x80000003`
+  (breakpoint) and falls into Wine's debugger. This resembles Steam's problems with its own Chromium.
+- **Game opened directly (`witcher3.exe` DX12, Steam open):** shows "GPU does not meet minimal requirements.
+  Support for DirectX 12 is required." Wine's D3D12 (vkd3d over MoltenVK) does not offer what the game needs, and
+  DXMT v0.80 has no D3D12.
 
-## O mesmo vale para
+## Engine revision 2
 
-Resident Evil 4 Remake e Hogwarts Legacy também são só D3D12 (não testados por isso).
+Not retested yet: the game was uninstalled on 2026-10-11 ([why](../decisions.md#2026-10-11-never-run-two-steam-instances-of-one-bottle)).
+On revision 2, the expected path is **D3DMetal** (Direct3D 12) for people who have the Game Porting Toolkit; without
+it, the result should stay the same.
 
-## Caminhos
+## The same applies to
 
-1. Ramo beta "classic" (1.32, DX11) na Steam, para testar o jogo com DXMT ou DXVK.
-2. D3D12 no motor: o DXMT trabalha num D3D12 experimental depois da v0.80 (licença LGPL a partir daí).
-3. O launcher que trava pode ser evitado com a opção de abertura `--launcher-skip` na Steam, quando o jogo
-   em si funcionar.
+Resident Evil 4 Remake and Hogwarts Legacy are also D3D12 only (not tested for that reason).
+
+## Paths
+
+1. Steam's "classic" beta branch (1.32, DX11), to test the game with DXMT or DXVK.
+2. D3D12 in the engine: DXMT works on an experimental D3D12 after v0.80 (LGPL from then on); or D3DMetal from the
+   user on revision 2.
+3. The crashing launcher can be skipped with the `--launcher-skip` launch option in Steam, once the game itself
+   works.

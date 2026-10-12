@@ -5,3 +5,4 @@ DerivedData/
 *.profraw
 .DS_Store
 dist/
+site/
