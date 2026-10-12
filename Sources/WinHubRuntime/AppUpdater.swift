@@ -86,10 +86,10 @@ public enum AppUpdateError: Error, LocalizedError, Equatable {
 
     public var errorDescription: String? {
         switch self {
-        case .badResponse(let status): "O GitHub respondeu com o código \(status)."
-        case .missingAsset: "A versão nova não tem um WinHub.zip com SHA-256 conferível."
-        case .extractionFailed(let output): "Não foi possível abrir o WinHub.zip baixado. \(output)"
-        case .invalidApp(let reason): "O app baixado foi recusado: \(reason)."
+        case .badResponse(let status): String(localized: "O GitHub respondeu com o código \(status).")
+        case .missingAsset: String(localized: "A versão nova não tem um WinHub.zip com SHA-256 conferível.")
+        case .extractionFailed(let output): String(localized: "Não foi possível abrir o WinHub.zip baixado. \(output)")
+        case .invalidApp(let reason): String(localized: "O app baixado foi recusado: \(reason).")
         }
     }
 }
@@ -159,7 +159,7 @@ public struct AppUpdater: Sendable {
         guard result.status == 0 else { throw AppUpdateError.extractionFailed(result.output) }
         let items = try FileManager.default.contentsOfDirectory(at: extracted, includingPropertiesForKeys: nil)
         guard let app = items.first(where: { $0.pathExtension == "app" }) else {
-            throw AppUpdateError.extractionFailed("Nenhum .app dentro do arquivo.")
+            throw AppUpdateError.extractionFailed(String(localized: "Nenhum .app dentro do arquivo."))
         }
         try? FileManager.default.removeItem(at: destination)
         try FileManager.default.moveItem(at: app, to: destination)
@@ -171,19 +171,19 @@ public struct AppUpdater: Sendable {
         let plist = app.appending(path: "Contents/Info.plist")
         guard let data = try? Data(contentsOf: plist),
               let info = try? PropertyListSerialization.propertyList(from: data, format: nil) as? [String: Any] else {
-            throw AppUpdateError.invalidApp("Info.plist ausente")
+            throw AppUpdateError.invalidApp(String(localized: "Info.plist ausente"))
         }
         guard info["CFBundleIdentifier"] as? String == bundleIdentifier else {
-            throw AppUpdateError.invalidApp("identificador diferente")
+            throw AppUpdateError.invalidApp(String(localized: "identificador diferente"))
         }
         guard (info["CFBundleShortVersionString"] as? String).flatMap(AppVersion.init) == version else {
-            throw AppUpdateError.invalidApp("versão diferente da anunciada")
+            throw AppUpdateError.invalidApp(String(localized: "versão diferente da anunciada"))
         }
         let verify = try ProcessRunner.run(URL(fileURLWithPath: "/usr/bin/codesign"),
                                            arguments: ["--verify", "--deep", "--strict", app.path])
-        guard verify.status == 0 else { throw AppUpdateError.invalidApp("assinatura inválida") }
+        guard verify.status == 0 else { throw AppUpdateError.invalidApp(String(localized: "assinatura inválida")) }
         if let current, let team = teamIdentifier(of: current), teamIdentifier(of: app) != team {
-            throw AppUpdateError.invalidApp("assinado por outro desenvolvedor")
+            throw AppUpdateError.invalidApp(String(localized: "assinado por outro desenvolvedor"))
         }
     }
 

@@ -123,7 +123,7 @@ struct EntryDetailView: View {
                 }
 
                 if !entry.summary.isEmpty {
-                    Text(entry.summary)
+                    Text(entry.displaySummary())
                         .font(.body)
                         .textSelection(.enabled)
                 }

@@ -5,7 +5,7 @@ public enum CatalogLoaderError: Error, LocalizedError {
 
     public var errorDescription: String? {
         switch self {
-        case .unreadable(let url, let error): "Não foi possível ler \(url.lastPathComponent): \(error.localizedDescription)"
+        case .unreadable(let url, let error): String(localized: "Não foi possível ler \(url.lastPathComponent): \(error.localizedDescription)")
         }
     }
 }

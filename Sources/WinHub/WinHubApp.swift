@@ -32,6 +32,7 @@ struct WinHubApp: App {
             CommandGroup(after: .newItem) {
                 Button("Instalar app não listado…") { wine.chooseInstaller() }
                     .keyboardShortcut("i")
+                Button("Importar garrafa…") { Task { await wine.importBottle() } }
                 Divider()
                 Button("Importar catálogo…") { presentImportPanel() }
                     .keyboardShortcut("o")
@@ -54,7 +55,7 @@ struct WinHubApp: App {
         let panel = NSOpenPanel()
         panel.allowedContentTypes = [.json]
         panel.allowsMultipleSelection = false
-        panel.message = "Escolha um catálogo do WinHub (.json)"
+        panel.message = String(localized: "Escolha um catálogo do WinHub (.json)")
         if panel.runModal() == .OK, let url = panel.url {
             Task { await store.importCatalog(from: url) }
         }
@@ -96,7 +97,7 @@ struct SettingsView: View {
             }
             Section("D3DMetal (opcional)") {
                 LabeledContent("Pasta", value: wine.d3dmetalLocation.path)
-                LabeledContent("Situação", value: wine.hasD3DMetal ? "Encontrado" : "Não encontrado")
+                LabeledContent("Situação", value: wine.hasD3DMetal ? String(localized: "Encontrado") : String(localized: "Não encontrado"))
                 HStack {
                     Button("Escolher pasta…") { wine.chooseD3DMetalFolder() }
                     if !wine.usesDefaultD3DMetalFolder {

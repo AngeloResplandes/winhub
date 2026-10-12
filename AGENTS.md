@@ -27,7 +27,7 @@ in [`docs/`](docs/) (English) and [`docs/pt-BR/`](docs/pt-BR/) (Brazilian Portug
 
 ```bash
 swift build                 # build
-swift test                  # 105 tests (unit; the ones with a real Wine stay off)
+swift test                  # 116 tests (unit; the ones with a real Wine stay off)
 swift run WinHub            # run without packaging (.app shortcuts and winhub:// links do not work this way)
 ./scripts/package-app.sh    # builds dist/WinHub.app (universal) and dist/WinHub.zip, ad-hoc signature;
                             # builds the Steam wrapper (needs: brew install mingw-w64)
@@ -58,9 +58,11 @@ Sources/WinHubCore/      pure data, no UI and no processes (testable)
 Sources/WinHubRuntime/   everything that touches disk, network and Wine processes
   RuntimeManifest/RuntimeManager   downloads, checks and installs the Wine engine (and overlays)
   Bottle/BottleStore                bottle = folder with bottle.json + prefix/ (WINEPREFIX)
+  BottleArchive                     export/import .winhubbottle (ditto zip); import = new id, free name, profile adopted
   WineEnvironment                   builds the environment of Wine processes (pure function)
   WineLauncher                      wineboot, winecfg, installers, start /unix, wineserver -k
   ProgramScanner                    finds .lnk files in the bottle's Start Menu/Desktop
+  ShellLink, ProgramIcon            reads a .lnk's target (MS-SHLLINK) and the .exe's icon (PE resources) as .ico
   WineServerStatus                  "bottle running" = someone holds the wineserver `lock`
   WineOrphanReaper                  ends processes orphaned by a dead wineserver
   Components                        DXVK and winetricks (ComponentManager) + GraphicsBackend
@@ -211,7 +213,13 @@ Dated decisions are in `docs/decisions.md`. The pitfalls an agent must know:
 
 ## Conventions
 
-- **Interface in Brazilian Portuguese**; code, identifiers and comments in English.
+- **Interface texts are written in Brazilian Portuguese** (the source language) and translated in
+  `Sources/WinHub/Resources/Localizable.xcstrings`; code, identifiers and comments in English. Text that is not a
+  SwiftUI literal (errors, progress, enum titles) uses `String(localized:)`, in any module. After changing the
+  interface, run `./scripts/update-strings.sh` and translate the new keys; `LocalizationTests` fails on a key without
+  English or with different arguments. `package-app.sh` copies the compiled `.lproj` folders into the app, so with
+  `swift run` the interface stays in Portuguese. Catalog entries translate through `localizedNames` and
+  `localizedSummaries`.
 - Short comments, only where the "why" is not obvious (follow the density of the surrounding code).
 - New `Codable` models: use `decodeIfPresent` with a default to stay compatible with old JSON (`bottle.json`, user
   catalogs).

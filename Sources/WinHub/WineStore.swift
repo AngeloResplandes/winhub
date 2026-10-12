@@ -156,7 +156,7 @@ final class WineStore {
             let bottle = try bottleStore.create(name: name, runtimeID: runtime.manifest.id, windowsVersion: windowsVersion,
                                                 graphics: runtime.dispatchesGraphics ? .auto : .wined3d)
             refresh()
-            try await perform(key: bottle.id.uuidString, "Criando a garrafa…") {
+            try await perform(key: bottle.id.uuidString, String(localized: "Criando a garrafa…")) {
                 try await WineLauncher(runtime: runtime).initialize(bottle)
             }
             refresh()
@@ -175,7 +175,7 @@ final class WineStore {
         do {
             try bottleStore.save(updated)
             refresh()
-            try await perform(key: bottle.id.uuidString, "Aplicando \(version.title)…") {
+            try await perform(key: bottle.id.uuidString, String(localized: "Aplicando \(version.title)…")) {
                 try await WineLauncher(runtime: runtime).applyWindowsVersion(updated)
             }
         } catch {
@@ -185,7 +185,7 @@ final class WineStore {
 
     func shutdown(_ bottle: Bottle) async {
         guard let runtime else { return }
-        try? await perform(key: bottle.id.uuidString, "Encerrando os programas…") {
+        try? await perform(key: bottle.id.uuidString, String(localized: "Encerrando os programas…")) {
             try await WineLauncher(runtime: runtime).shutdown(bottle)
         }
     }
@@ -223,7 +223,7 @@ final class WineStore {
         }
         if let installed = componentManager.installed(manifest) { return installed }
         let manager = componentManager
-        return try await perform(key: key, "Baixando \(manifest.name) \(manifest.version)…") {
+        return try await perform(key: key, String(localized: "Baixando \(manifest.name) \(manifest.version)…")) {
             try await Task.detached { try await manager.install(manifest) }.value
         }
     }
@@ -250,7 +250,7 @@ final class WineStore {
             let dxvk = runtime.dispatchesGraphics ? nil
                 : backend == .dxvk ? try await ensureComponent(named: "DXVK-macOS", key: key)
                 : component(named: "DXVK-macOS").flatMap(componentManager.installed)
-            let updated = try await perform(key: key, "Aplicando os gráficos do programa…") {
+            let updated = try await perform(key: key, String(localized: "Aplicando os gráficos do programa…")) {
                 try await WineLauncher(runtime: runtime).applyProgramGraphics(backend, program: program, in: bottle, dxvk: dxvk)
             }
             try bottleStore.save(updated)
@@ -265,12 +265,12 @@ final class WineStore {
     func chooseProgramForGraphics(in bottle: Bottle) async {
         let panel = NSOpenPanel()
         panel.allowedContentTypes = [.exe].compactMap { $0 }
-        panel.message = "Escolha o .exe do programa ou do jogo"
+        panel.message = String(localized: "Escolha o .exe do programa ou do jogo")
         let steamGames = bottle.driveC.appending(path: "Program Files (x86)/Steam/steamapps/common", directoryHint: .isDirectory)
         panel.directoryURL = FileManager.default.fileExists(atPath: steamGames.path) ? steamGames : bottle.driveC
         guard panel.runModal() == .OK, let url = panel.url else { return }
         guard let program = bottle.windowsPath(forUnixPath: url) else {
-            errorMessage = "Escolha um programa que esteja dentro do disco C: da garrafa “\(bottle.name)”."
+            errorMessage = String(localized: "Escolha um programa que esteja dentro do disco C: da garrafa “\(bottle.name)”.")
             return
         }
         await setProgramGraphics(graphicsBackends.contains(.dxmt) ? .dxmt : .dxvk, program: program, in: bottle)
@@ -286,14 +286,14 @@ final class WineStore {
         let panel = NSOpenPanel()
         panel.canChooseDirectories = true
         panel.canChooseFiles = false
-        panel.message = "Escolha a pasta do Game Porting Toolkit da Apple (ou a pasta redist/lib dele)"
+        panel.message = String(localized: "Escolha a pasta do Game Porting Toolkit da Apple (ou a pasta redist/lib dele)")
         guard panel.runModal() == .OK, let url = panel.url else { return }
         guard let found = D3DMetal.resolve(url) else {
-            errorMessage = "Não há D3DMetal em “\(url.lastPathComponent)”. Escolha a pasta do Game Porting Toolkit ou a pasta redist/lib dele."
+            errorMessage = String(localized: "Não há D3DMetal em “\(url.lastPathComponent)”. Escolha a pasta do Game Porting Toolkit ou a pasta redist/lib dele.")
             return
         }
         if found.path.hasPrefix("/Volumes/") {
-            errorMessage = "O D3DMetal está num disco (\(found.path)). Ele só funciona enquanto esse disco estiver montado; copie a pasta lib para o Mac para usar sempre."
+            errorMessage = String(localized: "O D3DMetal está num disco (\(found.path)). Ele só funciona enquanto esse disco estiver montado; copie a pasta lib para o Mac para usar sempre.")
         }
         D3DMetal.location = found
         d3dmetalLocation = found
@@ -318,7 +318,7 @@ final class WineStore {
         var updated = bottle
         updated.msync = enabled
         if msyncChangeClosesPrograms(enabled, for: bottle), let runtime {
-            try? await perform(key: bottle.id.uuidString, "Encerrando a garrafa para aplicar…") {
+            try? await perform(key: bottle.id.uuidString, String(localized: "Encerrando a garrafa para aplicar…")) {
                 try await WineLauncher(runtime: runtime).shutdown(bottle)
             }
             updateActiveBottles()
@@ -332,7 +332,7 @@ final class WineStore {
         var updated = bottle
         updated.extraDisplayModes = enabled
         do {
-            try await perform(key: bottle.id.uuidString, "Aplicando as resoluções…") {
+            try await perform(key: bottle.id.uuidString, String(localized: "Aplicando as resoluções…")) {
                 let launcher = WineLauncher(runtime: runtime)
                 if activeBottles.contains(bottle.id) {
                     try await launcher.shutdown(bottle)
@@ -374,7 +374,7 @@ final class WineStore {
         let key = key ?? bottle.id.uuidString
         let winetricks = try await ensureComponent(named: "winetricks", key: key)
         let cabextract = hasCabextract ? try await ensureComponent(named: "cabextract", key: key) : nil
-        try await perform(key: key, "Instalando \(verbs.joined(separator: ", "))…") {
+        try await perform(key: key, String(localized: "Instalando \(verbs.joined(separator: ", "))…")) {
             try await WineLauncher(runtime: runtime).runWinetricks(verbs, in: bottle, winetricks: winetricks,
                                                                    cabextract: cabextract)
         }
@@ -397,9 +397,72 @@ final class WineStore {
     }
 
     /// Creates `~/Applications/WinHub/<garrafa>/<programa>.app` and shows it in Finder.
+    /// Program icons read from their `.exe`, by shortcut; each is read once, off the main thread.
+    private(set) var programIcons: [InstalledProgram.ID: NSImage] = [:]
+    private var requestedIcons = Set<InstalledProgram.ID>()
+
+    func loadIcon(for program: InstalledProgram, in bottle: Bottle) {
+        guard requestedIcons.insert(program.id).inserted else { return }
+        Task.detached(priority: .utility) { [weak self] in
+            guard let data = ProgramIcon.icoData(for: program, in: bottle) else { return }
+            await self?.setIcon(data, for: program.id)
+        }
+    }
+
+    private func setIcon(_ data: Data, for id: InstalledProgram.ID) {
+        programIcons[id] = NSImage(data: data)
+    }
+
+    /// Key of the import in `activity`; the sidebar shows it while a bottle is being imported.
+    static let importActivity = "bottle-import"
+
+    /// Saves the bottle as a `.winhubbottle` file. The bottle must be closed: a running Wine may be writing
+    /// the registry.
+    func exportBottle(_ bottle: Bottle) async {
+        guard !activeBottles.contains(bottle.id) else {
+            errorMessage = String(localized: "Encerre os programas da garrafa “\(bottle.name)” antes de exportá-la.")
+            return
+        }
+        let panel = NSSavePanel()
+        panel.nameFieldStringValue = "\(bottle.name).\(BottleArchive.fileExtension)"
+        panel.allowedContentTypes = [.winhubBottle].compactMap { $0 }
+        panel.message = String(localized: "Exportar a garrafa “\(bottle.name)” para um arquivo")
+        guard panel.runModal() == .OK, let url = panel.url else { return }
+        do {
+            try await perform(key: bottle.id.uuidString, String(localized: "Exportando a garrafa…")) {
+                try await BottleArchive.export(bottle, to: url)
+            }
+            NSWorkspace.shared.activateFileViewerSelecting([url])
+        } catch {
+            errorMessage = error.localizedDescription
+        }
+    }
+
+    /// Adds a bottle from a `.winhubbottle` file, as a new bottle (new id, and a new name if it is taken).
+    func importBottle() async {
+        let panel = NSOpenPanel()
+        panel.allowedContentTypes = [.winhubBottle].compactMap { $0 }
+        panel.allowsOtherFileTypes = true
+        panel.message = String(localized: "Escolha uma garrafa exportada pelo WinHub (.winhubbottle)")
+        guard panel.runModal() == .OK, let url = panel.url else { return }
+        do {
+            try FileManager.default.createDirectory(at: bottleStore.root, withIntermediateDirectories: true)
+            let store = bottleStore
+            _ = try await perform(key: Self.importActivity, String(localized: "Importando “\(url.deletingPathExtension().lastPathComponent)”…")) {
+                try await BottleArchive.importBottle(from: url, into: store)
+            }
+            refresh()
+        } catch {
+            errorMessage = error.localizedDescription
+        }
+    }
+
     func createLauncher(for program: InstalledProgram, in bottle: Bottle) {
         do {
             let app = try launchers.create(for: program, in: bottle)
+            if let data = ProgramIcon.icoData(for: program, in: bottle), let icon = NSImage(data: data) {
+                NSWorkspace.shared.setIcon(icon, forFile: app.path)
+            }
             refresh()
             NSWorkspace.shared.activateFileViewerSelecting([app])
         } catch {
@@ -418,7 +481,7 @@ final class WineStore {
         let panel = NSOpenPanel()
         panel.allowedContentTypes = [.exe, .msi].compactMap { $0 }
         panel.allowsOtherFileTypes = true
-        panel.message = "Escolha o instalador do Windows (.exe ou .msi)"
+        panel.message = String(localized: "Escolha o instalador do Windows (.exe ou .msi)")
         if panel.runModal() == .OK, let url = panel.url {
             pendingInstall = PendingInstall(file: url, bottleID: bottleID)
         }
@@ -434,7 +497,7 @@ final class WineStore {
         }
         guard let bottle = target, let runtime else { return }
         do {
-            try await perform(key: bottle.id.uuidString, "Instalando \(file.lastPathComponent)…") {
+            try await perform(key: bottle.id.uuidString, String(localized: "Instalando \(file.lastPathComponent)…")) {
                 try await WineLauncher(runtime: runtime).runInstaller(bottle, file: file)
             }
         } catch {
@@ -456,23 +519,23 @@ final class WineStore {
         do {
             var bottle = bottle(named: recipe.bottleName)
             if bottle == nil {
-                activity[entryID] = "Criando a garrafa “\(recipe.bottleName)”…"
+                activity[entryID] = String(localized: "Criando a garrafa “\(recipe.bottleName)”…")
                 bottle = await createBottle(name: recipe.bottleName, windowsVersion: version)
             }
             guard let bottle else { activity[entryID] = nil; return }
 
             try await installDependencies(recipe.dependencies, in: bottle, key: entryID)
-            let installer = try await perform(key: entryID, "Baixando o instalador…") {
+            let installer = try await perform(key: entryID, String(localized: "Baixando o instalador…")) {
                 try await self.downloader.download(recipe.installer.url, fileName: recipe.installer.fileName,
                                                    sha256: recipe.installer.sha256)
             }
-            try await perform(key: entryID, "Instalando…") {
+            try await perform(key: entryID, String(localized: "Instalando…")) {
                 try await WineLauncher(runtime: runtime).runInstaller(bottle, file: installer,
                                                                     arguments: recipe.installer.arguments)
             }
             refresh()
             guard isInstalled(recipe) else {
-                errorMessage = "O instalador terminou, mas o programa não foi encontrado em \(recipe.launch.windowsPath)."
+                errorMessage = String(localized: "O instalador terminou, mas o programa não foi encontrado em \(recipe.launch.windowsPath).")
                 return
             }
             open(recipe)
@@ -494,13 +557,13 @@ final class WineStore {
               let path = items.first(where: { $0.name == "shortcut" })?.value else { return }
         refresh()
         guard let bottle = bottle(id: id) else {
-            errorMessage = "A garrafa deste atalho não existe mais."
+            errorMessage = String(localized: "A garrafa deste atalho não existe mais.")
             return
         }
         let shortcut = URL(fileURLWithPath: path).standardizedFileURL
         guard shortcut.path.hasPrefix(bottle.driveC.standardizedFileURL.path + "/"),
               let program = programs[bottle.id]?.first(where: { $0.shortcut.standardizedFileURL == shortcut }) else {
-            errorMessage = "O programa deste atalho não foi encontrado na garrafa “\(bottle.name)”."
+            errorMessage = String(localized: "O programa deste atalho não foi encontrado na garrafa “\(bottle.name)”.")
             return
         }
         open(program, in: bottle)
@@ -566,7 +629,7 @@ final class WineStore {
         do {
             return try steamWrapper?.install(in: bottle) ?? false
         } catch {
-            errorMessage = "Não foi possível preparar a janela da Steam: \(error.localizedDescription)"
+            errorMessage = String(localized: "Não foi possível preparar a janela da Steam: \(error.localizedDescription)")
             return false
         }
     }
@@ -605,4 +668,5 @@ import UniformTypeIdentifiers
 extension UTType {
     static let exe = UTType(filenameExtension: "exe")
     static let msi = UTType(filenameExtension: "msi")
+    static let winhubBottle = UTType(filenameExtension: BottleArchive.fileExtension)
 }

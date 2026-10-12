@@ -1,0 +1,2284 @@
+{
+  "sourceLanguage" : "pt",
+  "strings" : {
+    "%@ %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ %2$@"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@ %2$@"
+          }
+        }
+      }
+    },
+    "%@ terminou com erro (código %d). Veja o log em %@." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ failed (code %2$d). See the log at %3$@."
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@ terminou com erro (código %2$d). Veja o log em %3$@."
+          }
+        }
+      }
+    },
+    "%lld títulos" : {
+      "localizations" : {
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld title"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld titles"
+                }
+              }
+            }
+          }
+        },
+        "pt" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld título"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld títulos"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "%lld títulos no catálogo" : {
+      "localizations" : {
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld title in the catalog"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld titles in the catalog"
+                }
+              }
+            }
+          }
+        },
+        "pt" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld título no catálogo"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld títulos no catálogo"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "A Steam instala o jogo se ainda não estiver instalado." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Steam installs the game if it is not installed yet."
+          }
+        }
+      }
+    },
+    "A garrafa deste atalho não existe mais." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "This shortcut's bottle no longer exists."
+          }
+        }
+      }
+    },
+    "A versão %@ está pronta para instalar." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Version %@ is ready to install."
+          }
+        }
+      }
+    },
+    "A versão nova não tem um WinHub.zip com SHA-256 conferível." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The new version has no WinHub.zip with a SHA-256 to check."
+          }
+        }
+      }
+    },
+    "Abrir" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Open"
+          }
+        }
+      }
+    },
+    "Abrir %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Open %@"
+          }
+        }
+      }
+    },
+    "Abrir os logs" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Open the Logs"
+          }
+        }
+      }
+    },
+    "Agora não" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Not Now"
+          }
+        }
+      }
+    },
+    "Aguarde as tarefas em andamento terminarem." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wait for the running tasks to finish."
+          }
+        }
+      }
+    },
+    "Ainda não procurou." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Not checked yet."
+          }
+        }
+      }
+    },
+    "Algo deu errado" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Something went wrong"
+          }
+        }
+      }
+    },
+    "Apagar a garrafa “%@”?" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Delete the bottle “%@”?"
+          }
+        }
+      }
+    },
+    "Apagar garrafa e programas" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Delete Bottle and Programs"
+          }
+        }
+      }
+    },
+    "Apagar garrafa…" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Delete Bottle…"
+          }
+        }
+      }
+    },
+    "Aplicando %@…" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Applying %@…"
+          }
+        }
+      }
+    },
+    "Aplicando as resoluções…" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Applying the resolutions…"
+          }
+        }
+      }
+    },
+    "Aplicando os gráficos do programa…" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Applying the program's graphics…"
+          }
+        }
+      }
+    },
+    "Atualizar" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Update"
+          }
+        }
+      }
+    },
+    "Atualizar o Wine" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Update Wine"
+          }
+        }
+      }
+    },
+    "Atualizar o Wine para %@…" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Update Wine to %@…"
+          }
+        }
+      }
+    },
+    "Atualizações" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Updates"
+          }
+        }
+      }
+    },
+    "Automático" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Automatic"
+          }
+        }
+      }
+    },
+    "Automático (o melhor que funcionar)" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Automatic (the best that works)"
+          }
+        }
+      }
+    },
+    "Baixando %@ %@…" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Downloading %1$@ %2$@…"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Baixando %1$@ %2$@…"
+          }
+        }
+      }
+    },
+    "Baixando a versão %@…" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Downloading version %@…"
+          }
+        }
+      }
+    },
+    "Baixando o Wine…" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Downloading Wine…"
+          }
+        }
+      }
+    },
+    "Baixando o instalador…" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Downloading the installer…"
+          }
+        }
+      }
+    },
+    "Baixando… %lld%%" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Downloading… %lld%%"
+          }
+        }
+      }
+    },
+    "Baixar e instalar" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Download and Install"
+          }
+        }
+      }
+    },
+    "Baixar o Wine" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Download Wine"
+          }
+        }
+      }
+    },
+    "Baixar o Wine…" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Download Wine…"
+          }
+        }
+      }
+    },
+    "Bom" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Good"
+          }
+        }
+      }
+    },
+    "Buscar jogos e apps" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Search games and apps"
+          }
+        }
+      }
+    },
+    "Cancelar" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cancel"
+          }
+        }
+      }
+    },
+    "Carregando catálogo…" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Loading catalog…"
+          }
+        }
+      }
+    },
+    "Categoria" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Category"
+          }
+        }
+      }
+    },
+    "Catálogo" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Catalog"
+          }
+        }
+      }
+    },
+    "Catálogo do WinHub" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "WinHub catalog"
+          }
+        }
+      }
+    },
+    "Com o DXMT, faz os jogos verem uma placa NVIDIA e usarem o DLSS por cima do MetalFX. Deixe desligado se um jogo passar a falhar. Vale na próxima vez que um programa abrir." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "With DXMT, games see an NVIDIA card and can use DLSS on top of MetalFX. Turn it off if a game starts to fail. Takes effect the next time a program opens."
+          }
+        }
+      }
+    },
+    "Componentes" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Components"
+          }
+        }
+      }
+    },
+    "Componentes do Windows" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Windows Components"
+          }
+        }
+      }
+    },
+    "Conferindo e instalando…" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Checking and installing…"
+          }
+        }
+      }
+    },
+    "Configuração" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Settings"
+          }
+        }
+      }
+    },
+    "Cria a garrafa “%@” e baixa o instalador oficial." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Creates the bottle “%@” and downloads the official installer."
+          }
+        }
+      }
+    },
+    "Cria um app em Aplicativos › WinHub que abre este programa pelo Finder, Spotlight ou Dock." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Creates an app in Applications › WinHub that opens this program from the Finder, Spotlight or the Dock."
+          }
+        }
+      }
+    },
+    "Criando a garrafa “%@”…" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Creating the bottle “%@”…"
+          }
+        }
+      }
+    },
+    "Criando a garrafa…" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Creating the bottle…"
+          }
+        }
+      }
+    },
+    "Criar" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Create"
+          }
+        }
+      }
+    },
+    "Criar a garrafa" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Creating the bottle"
+          }
+        }
+      }
+    },
+    "Criar atalho" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Create Shortcut"
+          }
+        }
+      }
+    },
+    "Código-fonte" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Source Code"
+          }
+        }
+      }
+    },
+    "D3DMetal (Direct3D 11/12, da Apple)" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "D3DMetal (Direct3D 11/12, by Apple)"
+          }
+        }
+      }
+    },
+    "D3DMetal (opcional)" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "D3DMetal (Optional)"
+          }
+        }
+      }
+    },
+    "DXVK e DXMT costumam ser mais rápidos em jogos Direct3D 10/11. O DXVK é baixado na primeira vez (2,8 MB); o DXMT vem com o motor do WinHub." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "DXVK and DXMT are usually faster in Direct3D 10/11 games. DXVK is downloaded the first time (2.8 MB); DXMT comes with WinHub's engine."
+          }
+        }
+      }
+    },
+    "Definir a versão do Windows" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Setting the Windows version"
+          }
+        }
+      }
+    },
+    "Deixa os jogos escolherem resoluções que o Mac não tem, como 1280×720 (até o tamanho da tela). O Wine simula a troca em vez de recusá-la. Com a garrafa aberta, os programas dela são fechados para aplicar." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lets games pick resolutions the Mac does not have, such as 1280×720 (up to the screen size). Wine fakes the change instead of refusing it. If the bottle is running, its programs are closed to apply this."
+          }
+        }
+      }
+    },
+    "Destaques" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Featured"
+          }
+        }
+      }
+    },
+    "Dê um nome à garrafa." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Give the bottle a name."
+          }
+        }
+      }
+    },
+    "Em destaque" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Featured"
+          }
+        }
+      }
+    },
+    "Em execução" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Running"
+          }
+        }
+      }
+    },
+    "Encerrando a garrafa para aplicar…" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Closing the bottle to apply…"
+          }
+        }
+      }
+    },
+    "Encerrando os programas…" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Closing the programs…"
+          }
+        }
+      }
+    },
+    "Encerrar e aplicar" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Close and Apply"
+          }
+        }
+      }
+    },
+    "Encerrar todos os programas" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Quit All Programs"
+          }
+        }
+      }
+    },
+    "Encerre os programas da garrafa “%@” antes de exportá-la." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Quit the programs of the bottle “%@” before exporting it."
+          }
+        }
+      }
+    },
+    "Encontrado" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Found"
+          }
+        }
+      }
+    },
+    "Erro ao carregar catálogo" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Could not load the catalog"
+          }
+        }
+      }
+    },
+    "Escolha a pasta do Game Porting Toolkit da Apple (ou a pasta redist/lib dele)" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Choose the folder of Apple's Game Porting Toolkit (or its redist/lib folder)"
+          }
+        }
+      }
+    },
+    "Escolha o .exe do programa ou do jogo" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Choose the program's or game's .exe"
+          }
+        }
+      }
+    },
+    "Escolha o instalador do Windows (.exe ou .msi)" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Choose the Windows installer (.exe or .msi)"
+          }
+        }
+      }
+    },
+    "Escolha um catálogo do WinHub (.json)" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Choose a WinHub catalog (.json)"
+          }
+        }
+      }
+    },
+    "Escolha um programa que esteja dentro do disco C: da garrafa “%@”." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Choose a program inside the C: drive of the bottle “%@”."
+          }
+        }
+      }
+    },
+    "Escolha uma garrafa exportada pelo WinHub (.winhubbottle)" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Choose a bottle exported by WinHub (.winhubbottle)"
+          }
+        }
+      }
+    },
+    "Escolher pasta…" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Choose Folder…"
+          }
+        }
+      }
+    },
+    "Escolher programa…" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Choose Program…"
+          }
+        }
+      }
+    },
+    "Esta opção só muda com a garrafa encerrada. Salve o que estiver aberto antes de continuar." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "This option only changes with the bottle closed. Save your open work before continuing."
+          }
+        }
+      }
+    },
+    "Este Mac precisa do Rosetta 2, da Apple, para rodar o Wine." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "This Mac needs Apple's Rosetta 2 to run Wine."
+          }
+        }
+      }
+    },
+    "Este Mac precisa do Rosetta 2. Instale com: softwareupdate --install-rosetta --agree-to-license" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "This Mac needs Rosetta 2. Install it with: softwareupdate --install-rosetta --agree-to-license"
+          }
+        }
+      }
+    },
+    "Ex.: Jogos" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "E.g. Games"
+          }
+        }
+      }
+    },
+    "Excelente" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Excellent"
+          }
+        }
+      }
+    },
+    "Executar instalador…" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Run Installer…"
+          }
+        }
+      }
+    },
+    "Execute apenas instaladores de fontes em que você confia." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Only run installers from sources you trust."
+          }
+        }
+      }
+    },
+    "Exportando a garrafa…" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Exporting the bottle…"
+          }
+        }
+      }
+    },
+    "Exportar a garrafa “%@” para um arquivo" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Export the bottle “%@” to a file"
+          }
+        }
+      }
+    },
+    "Exportar garrafa…" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Export Bottle…"
+          }
+        }
+      }
+    },
+    "Fechar" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Close"
+          }
+        }
+      }
+    },
+    "Fechar os programas desta garrafa?" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Close this bottle's programs?"
+          }
+        }
+      }
+    },
+    "Fonte não confiável" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Untrusted source"
+          }
+        }
+      }
+    },
+    "Funciona com limitações" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Works with limitations"
+          }
+        }
+      }
+    },
+    "Garrafa" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bottle"
+          }
+        }
+      }
+    },
+    "Garrafa não encontrada" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bottle not found"
+          }
+        }
+      }
+    },
+    "Garrafas" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bottles"
+          }
+        }
+      }
+    },
+    "Gráficos" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Graphics"
+          }
+        }
+      }
+    },
+    "Gráficos (Direct3D)" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Graphics (Direct3D)"
+          }
+        }
+      }
+    },
+    "Gráficos por programa" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Graphics per Program"
+          }
+        }
+      }
+    },
+    "Importando “%@”…" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Importing “%@”…"
+          }
+        }
+      }
+    },
+    "Importar catálogo…" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Import Catalog…"
+          }
+        }
+      }
+    },
+    "Importar garrafa…" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Import Bottle…"
+          }
+        }
+      }
+    },
+    "Inclui títulos sem avaliação ou marcados como “Não instala”." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Includes titles without a rating or marked “Does not install”."
+          }
+        }
+      }
+    },
+    "Info.plist ausente" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "missing Info.plist"
+          }
+        }
+      }
+    },
+    "Instala, mas não abre" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Installs, but does not open"
+          }
+        }
+      }
+    },
+    "Instalado" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Installed"
+          }
+        }
+      }
+    },
+    "Instalador" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Installer"
+          }
+        }
+      }
+    },
+    "Instalados com o winetricks (baixado na primeira vez). Alguns componentes exigem o cabextract." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Installed with winetricks (downloaded the first time). Some components need cabextract."
+          }
+        }
+      }
+    },
+    "Instalados com o winetricks (baixado na primeira vez, com o cabextract)." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Installed with winetricks (downloaded the first time, with cabextract)."
+          }
+        }
+      }
+    },
+    "Instalando %@…" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Installing %@…"
+          }
+        }
+      }
+    },
+    "Instalando o Rosetta…" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Installing Rosetta…"
+          }
+        }
+      }
+    },
+    "Instalando…" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Installing…"
+          }
+        }
+      }
+    },
+    "Instalar" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Install"
+          }
+        }
+      }
+    },
+    "Instalar app não listado" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Install Unlisted App"
+          }
+        }
+      }
+    },
+    "Instalar app não listado…" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Install Unlisted App…"
+          }
+        }
+      }
+    },
+    "Instalar o Rosetta" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Install Rosetta"
+          }
+        }
+      }
+    },
+    "Instalar um programa do Windows a partir de um arquivo .exe ou .msi" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Install a Windows program from an .exe or .msi file"
+          }
+        }
+      }
+    },
+    "Instale a Steam pelo catálogo para jogar este título." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Install Steam from the catalog to play this title."
+          }
+        }
+      }
+    },
+    "Instale um título pelo Catálogo ou use “Instalar app não listado”." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Install a title from the Catalog or use “Install Unlisted App”."
+          }
+        }
+      }
+    },
+    "Jogar pela Steam" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Play on Steam"
+          }
+        }
+      }
+    },
+    "Já existe uma garrafa chamada “%@”." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "There is already a bottle named “%@”."
+          }
+        }
+      }
+    },
+    "Licença" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "License"
+          }
+        }
+      }
+    },
+    "Manutenção" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Maintenance"
+          }
+        }
+      }
+    },
+    "Mostra o painel de desempenho do Metal (e o do DXVK, se ele estiver em uso)." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Shows Metal's performance HUD (and DXVK's, when it is in use)."
+          }
+        }
+      }
+    },
+    "Mostrando %lld de %lld — refine a busca" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Showing %1$lld of %2$lld — refine the search"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Mostrando %1$lld de %2$lld — refine a busca"
+          }
+        }
+      }
+    },
+    "Mostrar apps sem teste" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Show untested apps"
+          }
+        }
+      }
+    },
+    "Mostrar atalho" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Show Shortcut"
+          }
+        }
+      }
+    },
+    "Mostrar desempenho (FPS) nos jogos" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Show Performance (FPS) in Games"
+          }
+        }
+      }
+    },
+    "Mostrar o atalho em Aplicativos › WinHub. Arraste-o para o Dock para abrir com um clique." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Show the shortcut in Applications › WinHub. Drag it to the Dock to open with one click."
+          }
+        }
+      }
+    },
+    "Mostrar o disco C: no Finder" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Show the C: Drive in the Finder"
+          }
+        }
+      }
+    },
+    "Motor" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Engine"
+          }
+        }
+      }
+    },
+    "Mova o WinHub para a pasta Aplicativos para que ele se atualize sozinho." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Move WinHub to the Applications folder so it can update itself."
+          }
+        }
+      }
+    },
+    "Mudar as resoluções da garrafa" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Changing the bottle's resolutions"
+          }
+        }
+      }
+    },
+    "Na garrafa “%@”." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "In the bottle “%@”."
+          }
+        }
+      }
+    },
+    "Nenhum .app dentro do arquivo." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No .app inside the archive."
+          }
+        }
+      }
+    },
+    "Nenhum atalho encontrado nesta garrafa." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No shortcuts found in this bottle."
+          }
+        }
+      }
+    },
+    "Nenhum programa instalado" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No programs installed"
+          }
+        }
+      }
+    },
+    "Nenhum resultado para “%@”" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No results for “%@”"
+          }
+        }
+      }
+    },
+    "Neste Mac, o Wine roda pelo Rosetta 2 da Apple. A Apple mantém o Rosetta para todos os apps até o macOS 27; a partir do macOS 28 ele fica restrito a jogos antigos, e o WinHub vai precisar de um Wine nativo para Apple silicon." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "On this Mac, Wine runs through Apple's Rosetta 2. Apple keeps Rosetta for all apps until macOS 27; from macOS 28 it is limited to older games, and WinHub will need a native Wine for Apple silicon."
+          }
+        }
+      }
+    },
+    "Nome" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Name"
+          }
+        }
+      }
+    },
+    "Nome da nova garrafa" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Name of the new bottle"
+          }
+        }
+      }
+    },
+    "Nova garrafa" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "New Bottle"
+          }
+        }
+      }
+    },
+    "Nova garrafa…" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "New Bottle…"
+          }
+        }
+      }
+    },
+    "Novidades" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "What's New"
+          }
+        }
+      }
+    },
+    "Não" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No"
+          }
+        }
+      }
+    },
+    "Não encontrado" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Not found"
+          }
+        }
+      }
+    },
+    "Não foi possível abrir o WinHub.zip baixado. %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Could not open the downloaded WinHub.zip. %@"
+          }
+        }
+      }
+    },
+    "Não foi possível criar o arquivo da garrafa. %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Could not create the bottle's file. %@"
+          }
+        }
+      }
+    },
+    "Não foi possível extrair o motor (código %d). %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Could not unpack the engine (code %1$d). %2$@"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Não foi possível extrair o motor (código %1$d). %2$@"
+          }
+        }
+      }
+    },
+    "Não foi possível instalar o Rosetta 2. %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Could not install Rosetta 2. %@"
+          }
+        }
+      }
+    },
+    "Não foi possível ler %@: %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Could not read %1$@: %2$@"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Não foi possível ler %1$@: %2$@"
+          }
+        }
+      }
+    },
+    "Não foi possível preparar a janela da Steam: %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Could not prepare Steam's window: %@"
+          }
+        }
+      }
+    },
+    "Não foi possível procurar atualizações: %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Could not check for updates: %@"
+          }
+        }
+      }
+    },
+    "Não foi possível saber se %@ é de 32 ou 64 bits." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Could not tell whether %@ is 32- or 64-bit."
+          }
+        }
+      }
+    },
+    "Não há D3DMetal em “%@”. Escolha a pasta do Game Porting Toolkit ou a pasta redist/lib dele." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "There is no D3DMetal in “%@”. Choose the Game Porting Toolkit's folder or its redist/lib folder."
+          }
+        }
+      }
+    },
+    "Não instala" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Does not install"
+          }
+        }
+      }
+    },
+    "O D3DMetal (Direct3D 11/12) é da Apple e não vem com o WinHub. Se você tem o Game Porting Toolkit, aponte a pasta dele; o motor do WinHub passa a oferecer “D3DMetal” nas garrafas." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "D3DMetal (Direct3D 11/12) is Apple's and does not come with WinHub. If you have the Game Porting Toolkit, point to its folder; WinHub's engine then offers “D3DMetal” in bottles."
+          }
+        }
+      }
+    },
+    "O D3DMetal está num disco (%@). Ele só funciona enquanto esse disco estiver montado; copie a pasta lib para o Mac para usar sempre." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "D3DMetal is on a disk (%@). It only works while that disk is mounted; copy the lib folder to the Mac to use it all the time."
+          }
+        }
+      }
+    },
+    "O GitHub respondeu com o código %lld." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "GitHub answered with code %lld."
+          }
+        }
+      }
+    },
+    "O WinHub está atualizado." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "WinHub is up to date."
+          }
+        }
+      }
+    },
+    "O app baixado foi recusado: %@." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The downloaded app was refused: %@."
+          }
+        }
+      }
+    },
+    "O app só se atualiza sozinho quando empacotado (WinHub.app)." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The app only updates itself when packaged (WinHub.app)."
+          }
+        }
+      }
+    },
+    "O arquivo baixado não confere (SHA-256 esperado %@…, obtido %@…). Nada foi instalado." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The downloaded file does not match (SHA-256 expected %1$@…, got %2$@…). Nothing was installed."
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "O arquivo baixado não confere (SHA-256 esperado %1$@…, obtido %2$@…). Nada foi instalado."
+          }
+        }
+      }
+    },
+    "O arquivo não é uma garrafa exportada pelo WinHub." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The file is not a bottle exported by WinHub."
+          }
+        }
+      }
+    },
+    "O catálogo e os dados acompanham o repositório no GitHub; versões novas do app são baixadas e instaladas ao reiniciar." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The catalog and data follow the GitHub repository; new versions of the app are downloaded and installed on restart."
+          }
+        }
+      }
+    },
+    "O instalador" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The installer"
+          }
+        }
+      }
+    },
+    "O instalador terminou, mas o programa não foi encontrado em %@." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The installer finished, but the program was not found at %@."
+          }
+        }
+      }
+    },
+    "O macOS pede a senha de administrador." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "macOS asks for an administrator password."
+          }
+        }
+      }
+    },
+    "O motor instalado não oferece %@." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The installed engine does not offer %@."
+          }
+        }
+      }
+    },
+    "O motor não contém %@ no local esperado." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The engine does not contain %@ where expected."
+          }
+        }
+      }
+    },
+    "O programa %@ não foi encontrado na garrafa." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The program %@ was not found in the bottle."
+          }
+        }
+      }
+    },
+    "O programa deste atalho não foi encontrado na garrafa “%@”." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "This shortcut's program was not found in the bottle “%@”."
+          }
+        }
+      }
+    },
+    "O programa já traz o próprio %@.dll; o WinHub não vai substituí-lo." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The program ships its own %@.dll; WinHub will not replace it."
+          }
+        }
+      }
+    },
+    "OK" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "OK"
+          }
+        }
+      }
+    },
+    "Para rodar programas do Windows, o WinHub usa o Wine, um projeto de código aberto. Ele é baixado uma vez, direto da fonte oficial, e conferido antes de ser instalado." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "To run Windows programs, WinHub uses Wine, an open-source project. It is downloaded once, straight from the official source, and checked before it is installed."
+          }
+        }
+      }
+    },
+    "Pasta" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Folder"
+          }
+        }
+      }
+    },
+    "Pasta inválida no motor: %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Invalid folder in the engine: %@"
+          }
+        }
+      }
+    },
+    "Procurando…" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Checking…"
+          }
+        }
+      }
+    },
+    "Procurar Atualizações…" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Check for Updates…"
+          }
+        }
+      }
+    },
+    "Procurar agora" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Check Now"
+          }
+        }
+      }
+    },
+    "Procurar atualizações automaticamente" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Check for Updates Automatically"
+          }
+        }
+      }
+    },
+    "Programa aberto" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Program opened"
+          }
+        }
+      }
+    },
+    "Programas" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Programs"
+          }
+        }
+      }
+    },
+    "Recursos da NVIDIA (DLSS pelo MetalFX)" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "NVIDIA Features (DLSS via MetalFX)"
+          }
+        }
+      }
+    },
+    "Reduz o custo de sincronização do Wine em jogos. Vale na próxima vez que um programa abrir; com a garrafa aberta, os programas dela são fechados para aplicar." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lowers the cost of Wine's synchronization in games. Takes effect the next time a program opens; if the bottle is running, its programs are closed to apply it."
+          }
+        }
+      }
+    },
+    "Registrar %@ para %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Registering %1$@ for %2$@"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Registrar %1$@ para %2$@"
+          }
+        }
+      }
+    },
+    "Reiniciar para atualizar" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Restart to Update"
+          }
+        }
+      }
+    },
+    "Resoluções extras (16:9 e outras)" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Extra Resolutions (16:9 and Others)"
+          }
+        }
+      }
+    },
+    "Restaurar catálogo oficial" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Restore Official Catalog"
+          }
+        }
+      }
+    },
+    "Resultados" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Results"
+          }
+        }
+      }
+    },
+    "Salva a garrafa inteira num arquivo .winhubbottle, para backup ou para levar a outro Mac." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Saves the whole bottle in a .winhubbottle file, as a backup or to take it to another Mac."
+          }
+        }
+      }
+    },
+    "Sem teste" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Untested"
+          }
+        }
+      }
+    },
+    "Sim" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Yes"
+          }
+        }
+      }
+    },
+    "Sincronização rápida (MSync)" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fast Synchronization (MSync)"
+          }
+        }
+      }
+    },
+    "Situação" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Status"
+          }
+        }
+      }
+    },
+    "Tamanho" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Size"
+          }
+        }
+      }
+    },
+    "Tente outras palavras ou ative “Mostrar apps sem teste”." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Try other words or turn on “Show untested apps”."
+          }
+        }
+      }
+    },
+    "Tente outras palavras." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Try other words."
+          }
+        }
+      }
+    },
+    "Testado pelo WinHub. Vale só para este jogo; a Steam continua como está." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tested by WinHub. Applies only to this game; Steam stays as it is."
+          }
+        }
+      }
+    },
+    "Todos os programas e arquivos dentro dela serão apagados. Esta ação não pode ser desfeita." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "All programs and files inside it will be deleted. This cannot be undone."
+          }
+        }
+      }
+    },
+    "Usar %@ neste jogo (recomendado)" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Use %@ for This Game (Recommended)"
+          }
+        }
+      }
+    },
+    "Usar a pasta padrão" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Use the Default Folder"
+          }
+        }
+      }
+    },
+    "Vale só para o .exe escolhido, como um jogo da Steam. O resto da garrafa (a própria Steam, por exemplo) continua com a opção acima." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Applies only to the chosen .exe, such as a Steam game. The rest of the bottle (Steam itself, for example) keeps the option above."
+          }
+        }
+      }
+    },
+    "Ver na Steam" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "View on Steam"
+          }
+        }
+      }
+    },
+    "Versão" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Version"
+          }
+        }
+      }
+    },
+    "Versão do Windows" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Windows Version"
+          }
+        }
+      }
+    },
+    "Voltar aos gráficos da garrafa" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Back to the bottle's graphics"
+          }
+        }
+      }
+    },
+    "WinHub" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "WinHub"
+          }
+        }
+      }
+    },
+    "WinHub %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "WinHub %@"
+          }
+        }
+      }
+    },
+    "Wine" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wine"
+          }
+        }
+      }
+    },
+    "Wine (padrão)" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wine (default)"
+          }
+        }
+      }
+    },
+    "assinado por outro desenvolvedor" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "signed by another developer"
+          }
+        }
+      }
+    },
+    "assinatura inválida" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "invalid signature"
+          }
+        }
+      }
+    },
+    "ex.: vcrun2022 corefonts" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "e.g. vcrun2022 corefonts"
+          }
+        }
+      }
+    },
+    "identificador diferente" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "different identifier"
+          }
+        }
+      }
+    },
+    "versão diferente da anunciada" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "a version other than the announced one"
+          }
+        }
+      }
+    },
+    "Última verificação" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Last check"
+          }
+        }
+      }
+    }
+  },
+  "version" : "1.0"
+}

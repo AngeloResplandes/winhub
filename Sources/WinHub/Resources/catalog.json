@@ -4,6 +4,9 @@
     "name": "Half-Life 2",
     "category": "Games/First Person Shooter",
     "summary": "Clássico de tiro em primeira pessoa com física inovadora.",
+    "localizedSummaries": {
+      "en": "Classic first-person shooter with groundbreaking physics."
+    },
     "rating": 5,
     "isFeatured": true,
     "steamID": 220
@@ -13,6 +16,9 @@
     "name": "Half-Life",
     "category": "Games/First Person Shooter",
     "summary": "O FPS original que apresentou Gordon Freeman.",
+    "localizedSummaries": {
+      "en": "The original FPS that introduced Gordon Freeman."
+    },
     "rating": 4,
     "isFeatured": false,
     "steamID": 70
@@ -22,6 +28,9 @@
     "name": "Portal 2",
     "category": "Games/Puzzle Games",
     "summary": "Quebra-cabeças com portais em modo solo e cooperativo.",
+    "localizedSummaries": {
+      "en": "Portal puzzles in single-player and co-op."
+    },
     "rating": 5,
     "isFeatured": true,
     "steamID": 620
@@ -31,6 +40,9 @@
     "name": "The Elder Scrolls V: Skyrim Special Edition",
     "category": "Games/Role Playing Games",
     "summary": "RPG de mundo aberto em Tamriel.",
+    "localizedSummaries": {
+      "en": "Open-world RPG in Tamriel."
+    },
     "rating": 4,
     "isFeatured": true,
     "steamID": 489830
@@ -40,6 +52,9 @@
     "name": "The Witcher 3: Wild Hunt",
     "category": "Games/Role Playing Games",
     "summary": "RPG de fantasia sombria com Geralt de Rívia.",
+    "localizedSummaries": {
+      "en": "Dark fantasy RPG with Geralt of Rivia."
+    },
     "rating": 2,
     "isFeatured": true,
     "steamID": 292030
@@ -49,6 +64,9 @@
     "name": "Pokémon Trading Card Game Live",
     "category": "Games/Casual Games",
     "summary": "Versão digital do jogo de cartas colecionáveis.",
+    "localizedSummaries": {
+      "en": "Digital version of the collectible card game."
+    },
     "rating": 3,
     "isFeatured": false
   },
@@ -57,6 +75,9 @@
     "name": "Elite Dangerous",
     "category": "Games/Simulation Games",
     "summary": "Simulador espacial em uma galáxia em escala real.",
+    "localizedSummaries": {
+      "en": "Space simulator in a full-scale galaxy."
+    },
     "rating": 3,
     "isFeatured": false,
     "steamID": 359320
@@ -66,6 +87,9 @@
     "name": "Age of Empires II: Definitive Edition",
     "category": "Games/Strategy Games",
     "summary": "Estratégia em tempo real remasterizada.",
+    "localizedSummaries": {
+      "en": "Remastered real-time strategy."
+    },
     "rating": 5,
     "isFeatured": true,
     "steamID": 813780
@@ -75,6 +99,9 @@
     "name": "StarCraft II",
     "category": "Games/Strategy Games",
     "summary": "Estratégia em tempo real de ficção científica.",
+    "localizedSummaries": {
+      "en": "Science-fiction real-time strategy."
+    },
     "rating": 4,
     "isFeatured": false
   },
@@ -83,6 +110,9 @@
     "name": "Diablo IV",
     "category": "Games/Role Playing Games",
     "summary": "RPG de ação no santuário infernal.",
+    "localizedSummaries": {
+      "en": "Action RPG in the hellish Sanctuary."
+    },
     "rating": 2,
     "isFeatured": false,
     "steamID": 2344520
@@ -92,6 +122,9 @@
     "name": "Fallout: New Vegas",
     "category": "Games/Role Playing Games",
     "summary": "RPG pós-apocalíptico no deserto de Mojave.",
+    "localizedSummaries": {
+      "en": "Post-apocalyptic RPG in the Mojave Desert."
+    },
     "rating": 4,
     "isFeatured": false,
     "steamID": 22380
@@ -101,6 +134,9 @@
     "name": "Fallout 4",
     "category": "Games/Role Playing Games",
     "summary": "RPG pós-apocalíptico em Boston.",
+    "localizedSummaries": {
+      "en": "Post-apocalyptic RPG in Boston."
+    },
     "rating": 3,
     "isFeatured": false,
     "steamID": 377160
@@ -110,6 +146,9 @@
     "name": "Grand Theft Auto V",
     "category": "Games/Action Games",
     "summary": "Ação em mundo aberto em Los Santos.",
+    "localizedSummaries": {
+      "en": "Open-world action in Los Santos."
+    },
     "rating": 1,
     "isFeatured": false,
     "steamID": 271590
@@ -119,6 +158,9 @@
     "name": "Cyberpunk 2077",
     "category": "Games/Role Playing Games",
     "summary": "RPG futurista em Night City.",
+    "localizedSummaries": {
+      "en": "Futuristic RPG in Night City."
+    },
     "rating": 3,
     "isFeatured": true,
     "steamID": 1091500
@@ -128,6 +170,9 @@
     "name": "Hades",
     "category": "Games/Action Games",
     "summary": "Roguelike de ação no submundo grego.",
+    "localizedSummaries": {
+      "en": "Action roguelike in the Greek underworld."
+    },
     "rating": 5,
     "isFeatured": false,
     "steamID": 1145360
@@ -137,6 +182,9 @@
     "name": "Hollow Knight",
     "category": "Games/Action Games",
     "summary": "Metroidvania em um reino de insetos.",
+    "localizedSummaries": {
+      "en": "Metroidvania in a kingdom of insects."
+    },
     "rating": 4,
     "isFeatured": false,
     "steamID": 367520,
@@ -151,6 +199,9 @@
     "name": "Stardew Valley",
     "category": "Games/Simulation Games",
     "summary": "Simulador de fazenda e vida no campo.",
+    "localizedSummaries": {
+      "en": "Farming and country life simulator."
+    },
     "rating": 5,
     "isFeatured": false,
     "steamID": 413150
@@ -160,6 +211,9 @@
     "name": "Counter-Strike 2",
     "category": "Games/First Person Shooter",
     "summary": "FPS competitivo por equipes.",
+    "localizedSummaries": {
+      "en": "Competitive team FPS."
+    },
     "rating": 1,
     "isFeatured": false,
     "steamID": 730
@@ -169,6 +223,9 @@
     "name": "Baldur's Gate 3",
     "category": "Games/Role Playing Games",
     "summary": "RPG baseado em Dungeons & Dragons.",
+    "localizedSummaries": {
+      "en": "RPG based on Dungeons & Dragons."
+    },
     "rating": 4,
     "isFeatured": true,
     "steamID": 1086940
@@ -178,6 +235,9 @@
     "name": "Baldur's Gate II: Enhanced Edition",
     "category": "Games/Role Playing Games",
     "summary": "Clássico RPG da Infinity Engine.",
+    "localizedSummaries": {
+      "en": "Classic Infinity Engine RPG."
+    },
     "rating": 5,
     "isFeatured": false,
     "steamID": 257350
@@ -187,6 +247,9 @@
     "name": "Microsoft Office 2016",
     "category": "Productivity/Office Suites",
     "summary": "Suíte de escritório com Word, Excel e PowerPoint.",
+    "localizedSummaries": {
+      "en": "Office suite with Word, Excel and PowerPoint."
+    },
     "rating": 3,
     "isFeatured": false
   },
@@ -195,6 +258,9 @@
     "name": "Notepad++",
     "category": "Programming/Text Editors",
     "summary": "Editor de texto e código-fonte leve.",
+    "localizedSummaries": {
+      "en": "Light text and source code editor."
+    },
     "rating": 5,
     "isFeatured": true
   },
@@ -203,6 +269,9 @@
     "name": "Quicken Classic",
     "category": "Productivity/Finance & Accounting",
     "summary": "Gerenciamento de finanças pessoais.",
+    "localizedSummaries": {
+      "en": "Personal finance management."
+    },
     "rating": 4,
     "isFeatured": false
   },
@@ -211,6 +280,9 @@
     "name": "Steam",
     "category": "Games/Game Tools",
     "summary": "Loja e plataforma de jogos para Windows. Depois de instalada, os jogos com Steam aparecem aqui com o botão “Jogar pela Steam”.",
+    "localizedSummaries": {
+      "en": "Game store and platform for Windows. Once it is installed, Steam games show up here with the “Play on Steam” button."
+    },
     "rating": 4,
     "isFeatured": true,
     "recipe": {
@@ -232,6 +304,9 @@
     "name": "Epic Games Store",
     "category": "Games/Game Tools",
     "summary": "Loja de jogos e inicializador.",
+    "localizedSummaries": {
+      "en": "Game store and launcher."
+    },
     "rating": 3,
     "isFeatured": false
   },
@@ -240,6 +315,9 @@
     "name": "Mass Effect Legendary Edition",
     "category": "Games/Role Playing Games",
     "summary": "Trilogia de ficção científica remasterizada.",
+    "localizedSummaries": {
+      "en": "Remastered science-fiction trilogy."
+    },
     "rating": 4,
     "isFeatured": false,
     "steamID": 1328670
@@ -249,6 +327,9 @@
     "name": "Dark Souls III",
     "category": "Games/Role Playing Games",
     "summary": "RPG de ação desafiador.",
+    "localizedSummaries": {
+      "en": "Challenging action RPG."
+    },
     "rating": 3,
     "isFeatured": false,
     "steamID": 374320
@@ -258,6 +339,9 @@
     "name": "Elden Ring",
     "category": "Games/Role Playing Games",
     "summary": "RPG de ação em mundo aberto.",
+    "localizedSummaries": {
+      "en": "Open-world action RPG."
+    },
     "rating": 3,
     "isFeatured": false,
     "steamID": 1245620
@@ -267,6 +351,9 @@
     "name": "Sid Meier's Civilization VI",
     "category": "Games/Strategy Games",
     "summary": "Estratégia por turnos para construir um império.",
+    "localizedSummaries": {
+      "en": "Turn-based strategy to build an empire."
+    },
     "rating": 0,
     "isFeatured": false,
     "steamID": 289070
@@ -276,6 +363,9 @@
     "name": "Microsoft Visio 2013",
     "category": "Productivity/Diagramming",
     "summary": "Diagramas e fluxogramas.",
+    "localizedSummaries": {
+      "en": "Diagrams and flowcharts."
+    },
     "rating": 2,
     "isFeatured": false
   },
@@ -284,6 +374,9 @@
     "name": "DirectX 9 Runtime",
     "category": "Non-Applications/Components",
     "summary": "Componente de runtime gráfico.",
+    "localizedSummaries": {
+      "en": "Graphics runtime component."
+    },
     "rating": 4,
     "isFeatured": false
   }

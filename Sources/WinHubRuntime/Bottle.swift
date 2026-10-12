@@ -114,8 +114,8 @@ public enum BottleError: Error, LocalizedError, Equatable {
 
     public var errorDescription: String? {
         switch self {
-        case .nameTaken(let name): "Já existe uma garrafa chamada “\(name)”."
-        case .invalidName: "Dê um nome à garrafa."
+        case .nameTaken(let name): String(localized: "Já existe uma garrafa chamada “\(name)”.")
+        case .invalidName: String(localized: "Dê um nome à garrafa.")
         }
     }
 }
@@ -163,6 +163,15 @@ public struct BottleStore: Sendable {
 
     public func save(_ bottle: Bottle) throws {
         try Self.encoder.encode(bottle).write(to: bottle.folder.appending(path: Self.fileName), options: .atomic)
+    }
+
+    /// `name`, or `name (2)`, `name (3)`… when a bottle already has it (names compare without case).
+    public func uniqueName(_ name: String) -> String {
+        let taken = Set(list().map { $0.name.lowercased() })
+        guard taken.contains(name.lowercased()) else { return name }
+        var number = 2
+        while taken.contains("\(name) (\(number))".lowercased()) { number += 1 }
+        return "\(name) (\(number))"
     }
 
     public func delete(_ bottle: Bottle) throws {
