@@ -94,6 +94,19 @@ struct SettingsView: View {
                     Button("Baixar o Wine…") { wine.isShowingRuntimeSetup = true }
                 }
             }
+            Section("D3DMetal (opcional)") {
+                LabeledContent("Pasta", value: wine.d3dmetalLocation.path)
+                LabeledContent("Situação", value: wine.hasD3DMetal ? "Encontrado" : "Não encontrado")
+                HStack {
+                    Button("Escolher pasta…") { wine.chooseD3DMetalFolder() }
+                    if !wine.usesDefaultD3DMetalFolder {
+                        Button("Usar a pasta padrão") { wine.useDefaultD3DMetalFolder() }
+                    }
+                }
+                Text("O D3DMetal (Direct3D 11/12) é da Apple e não vem com o WinHub. Se você tem o Game Porting Toolkit, aponte a pasta dele; o motor do WinHub passa a oferecer “D3DMetal” nas garrafas.")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
             Section("Atualizações") {
                 LabeledContent("Versão", value: updates.currentVersion?.description ?? "desenvolvimento")
                 Toggle("Procurar atualizações automaticamente", isOn: $updates.automaticChecks)

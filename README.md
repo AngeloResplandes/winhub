@@ -38,18 +38,18 @@ instaladas com um clique.
 
 ### Limitações conhecidas
 
-- **D3DMetal (Game Porting Toolkit da Apple)** não é suportado: a licença da Apple não permite
-  redistribuí-lo, e ele não funciona com o Wine oficial do WineHQ. No lugar dele, o motor do WinHub
-  ([winhub-engine](https://github.com/AngeloResplandes/winhub-engine), em preparação) traz o
-  [DXMT](https://github.com/3Shain/dxmt), aberto, que leva o Direct3D 10/11 direto ao Metal.
+- **D3DMetal (Game Porting Toolkit da Apple)** não vem com o WinHub: a licença da Apple não permite
+  redistribuí-lo. Com o motor do WinHub ([winhub-engine](https://github.com/AngeloResplandes/winhub-engine)),
+  quem tiver o Game Porting Toolkit pode apontar a pasta dele em Ajustes → D3DMetal e escolher
+  "D3DMetal" na garrafa. Sem ele, o motor
+  usa o [DXMT](https://github.com/3Shain/dxmt), aberto, que leva o Direct3D 10/11 direto ao Metal.
 - O Direct3D do próprio Wine (wined3d) chega só ao feature level 9_3 no macOS. Jogos que exigem
   Direct3D 11 (como os feitos em Unity 6) precisam de DXVK ou DXMT. Veja
   [docs/compat/hollow-knight.md](docs/compat/hollow-knight.md).
 - **Resoluções:** o Wine para Mac oferece aos jogos só os modos de tela do macOS, na proporção da tela
   do Mac. Resoluções 16:9 como 1920×1080 não aparecem.
-- Sem **MSync**: os patches abertos ([wine-msync](https://github.com/marzent/wine-msync)) param no
-  Wine 9.15. O porte para o Wine 11 está
-  planejado em [winhub-engine/docs/msync-plan.md](https://github.com/AngeloResplandes/winhub-engine/blob/main/docs/msync-plan.md).
+- **MSync** só com o motor do WinHub (r2 em diante), que é compilado das fontes LGPL do Wine do
+  CrossOver, onde ele já existe para o Wine 11.
 - Alguns verbos do winetricks exigem o `cabextract`, que não vem no macOS. Ele virá como componente do
   winhub-engine.
 - O Wine para macOS é x86_64: em Macs com Apple Silicon é preciso o **Rosetta 2**, que a Apple mantém de

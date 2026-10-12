@@ -23,8 +23,15 @@ public enum WineEnvironment {
     /// user's shell configuration cannot leak into Windows programs.
     static let inherited = ["HOME", "USER", "LOGNAME", "LANG", "LC_ALL", "TMPDIR", "SHELL"]
 
+    /// WinHub's data folder, passed to engines that read the downloaded compatibility database.
+    public static var winhubHome: URL {
+        URL.applicationSupportDirectory.appending(path: "WinHub", directoryHint: .isDirectory)
+    }
+
+    /// `d3dmetal`: the user's D3DMetal folder (see `D3DMetal`), if any.
     public static func make(for bottle: Bottle, runtime: InstalledRuntime, debug: DebugLevel = .errors,
-                            extraOverrides: [String: String] = [:],
+                            extraOverrides: [String: String] = [:], d3dmetal: URL? = nil,
+                            winhubHome: URL = winhubHome,
                             base: [String: String] = ProcessInfo.processInfo.environment) -> [String: String] {
         var env = base.filter { inherited.contains($0.key) }
         env["PATH"] = "\(runtime.binDirectory.path):/usr/bin:/bin:/usr/sbin:/sbin"
@@ -37,6 +44,16 @@ public enum WineEnvironment {
 
         if bottle.msync && runtime.manifest.supports(.msync) {
             env["WINEMSYNC"] = "1"
+        }
+        if runtime.dispatchesGraphics {
+            // The engine's winhubcompat picks the Direct3D and reads the compatibility rules.
+            env["WINHUB_GRAPHICS_BACKEND"] = bottle.graphics.rawValue
+            env["WINHUB_COMPAT_RULES"] = CompatRules.url(for: bottle).path
+            env["WINHUB_HOME"] = winhubHome.path
+            if let d3dmetal {
+                env["WINHUB_D3DMETAL_DIR"] = d3dmetal.path
+                env["CX_APPLEGPTK_LIBD3DSHARED_PATH"] = D3DMetal.sharedLibrary(in: d3dmetal).path
+            }
         }
         if bottle.performanceHUD {
             env["MTL_HUD_ENABLED"] = "1"

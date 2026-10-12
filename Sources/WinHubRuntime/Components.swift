@@ -112,29 +112,41 @@ public struct ComponentManager: Sendable {
 
 /// Direct3D implementation used by a bottle.
 public enum GraphicsBackend: String, Codable, Sendable, CaseIterable {
+    /// The engine picks the best one that runs here (D3DMetal, then DXMT, then Wine's).
+    /// Only with engines that pick the Direct3D themselves.
+    case auto
     /// Wine's own Direct3D (OpenGL/Vulkan). Works everywhere.
     case wined3d
     /// DXVK-macOS: Direct3D 10/11 over Vulkan (MoltenVK). Often faster in games.
     case dxvk
     /// DXMT: Direct3D 10/11 straight over Metal. Needs a runtime built for it.
     case dxmt
+    /// Apple's D3DMetal (Direct3D 11/12), only when the user installed the Game Porting Toolkit.
+    case d3dmetal
 
     public var title: String {
         switch self {
+        case .auto: "Automático (o melhor que funcionar)"
         case .wined3d: "Wine (padrão)"
         case .dxvk: "DXVK (Direct3D 10/11 via Vulkan)"
         case .dxmt: "DXMT (Direct3D 10/11 via Metal)"
+        case .d3dmetal: "D3DMetal (Direct3D 11/12, da Apple)"
         }
     }
 
     /// Short name for buttons and lists.
     public var shortTitle: String {
         switch self {
+        case .auto: "Automático"
         case .wined3d: "Wine"
         case .dxvk: "DXVK"
         case .dxmt: "DXMT"
+        case .d3dmetal: "D3DMetal"
         }
     }
+
+    /// Only engines that pick the Direct3D themselves offer it.
+    public var needsDispatchingEngine: Bool { self == .auto || self == .d3dmetal }
 
     /// DLLs DXVK-macOS replaces.
     static let dxvkDLLs = ["d3d10core", "d3d11"]
@@ -144,10 +156,11 @@ public enum GraphicsBackend: String, Codable, Sendable, CaseIterable {
     /// Every DLL any backend puts in place of Wine's.
     static let replacedDLLs = ["d3d10core", "d3d11", "dxgi"]
 
-    /// DLLs to copy and to load "native, then builtin"; empty for Wine's own Direct3D.
+    /// DLLs to copy and to load "native, then builtin"; empty for Wine's own Direct3D and for the
+    /// backends only an engine that picks the Direct3D can use.
     var files: [String] {
         switch self {
-        case .wined3d: []
+        case .auto, .wined3d, .d3dmetal: []
         case .dxvk: Self.dxvkDLLs
         case .dxmt: Self.dxmtFiles
         }
@@ -155,7 +168,7 @@ public enum GraphicsBackend: String, Codable, Sendable, CaseIterable {
 
     var overriddenDLLs: [String] {
         switch self {
-        case .wined3d: []
+        case .auto, .wined3d, .d3dmetal: []
         case .dxvk: Self.dxvkDLLs
         case .dxmt: Self.dxmtDLLs
         }
@@ -190,12 +203,14 @@ public enum GraphicsError: Error, LocalizedError, Equatable {
     case programNotFound(String)
     case unknownArchitecture(String)
     case programShipsDLL(String)
+    case unsupported(GraphicsBackend)
 
     public var errorDescription: String? {
         switch self {
         case .programNotFound(let path): "O programa \(path) não foi encontrado na garrafa."
         case .unknownArchitecture(let name): "Não foi possível saber se \(name) é de 32 ou 64 bits."
         case .programShipsDLL(let dll): "O programa já traz o próprio \(dll).dll; o WinHub não vai substituí-lo."
+        case .unsupported(let backend): "O motor instalado não oferece \(backend.shortTitle)."
         }
     }
 }
@@ -203,7 +218,9 @@ public enum GraphicsError: Error, LocalizedError, Equatable {
 extension WineLauncher {
     /// Switches the bottle's Direct3D. For DXVK and DXMT the DLLs are copied into the
     /// prefix and loaded "native, then builtin"; for Wine's own, its DLLs are put back.
+    /// Engines that pick the Direct3D themselves only need the setting (and Wine's DLLs back).
     public func applyGraphics(_ backend: GraphicsBackend, to bottle: Bottle, dxvk: InstalledComponent?) throws -> Bottle {
+        if runtime.dispatchesGraphics { return removeCopiedGraphics(from: bottle, keeping: backend) }
         var updated = bottle
         let source = try graphicsSource(backend, dxvk: dxvk)
         restoreWineDLLs(GraphicsBackend.replacedDLLs.filter { !backend.overriddenDLLs.contains($0) }, in: &updated)
@@ -223,6 +240,8 @@ extension WineLauncher {
     /// Folder with the backend's `x64/` and `x32/` DLLs; `nil` for Wine's own Direct3D.
     private func graphicsSource(_ backend: GraphicsBackend, dxvk: InstalledComponent?) throws -> URL? {
         switch backend {
+        case .auto, .d3dmetal:
+            throw GraphicsError.unsupported(backend)
         case .wined3d:
             return nil
         case .dxvk:
@@ -279,12 +298,19 @@ extension WineLauncher {
 
     /// Gives one program its own Direct3D (`nil`: the bottle's). The DLLs go next to the
     /// `.exe` and the program gets "native, then builtin" overrides in the registry, so the
-    /// rest of the bottle (the Steam client, say) keeps the bottle's setting.
+    /// rest of the bottle (the Steam client, say) keeps the bottle's setting. Engines that pick the
+    /// Direct3D themselves get a rule in the bottle's `CompatRules` instead.
     public func applyProgramGraphics(_ backend: GraphicsBackend?, program windowsPath: String, in bottle: Bottle,
                                      dxvk: InstalledComponent?) async throws -> Bottle {
         guard let exe = bottle.unixPath(forWindowsPath: windowsPath),
               FileManager.default.fileExists(atPath: exe.path) else {
             throw GraphicsError.programNotFound(windowsPath)
+        }
+        if runtime.dispatchesGraphics {
+            var updated = try await removeCopiedProgramGraphics(windowsPath, in: bottle)
+            try CompatRules.setProgramBackend(backend, program: windowsPath, in: updated)
+            updated.programGraphics[windowsPath] = backend == .auto ? nil : backend
+            return updated
         }
         guard let arch = PEArchitecture.of(exe) else { throw GraphicsError.unknownArchitecture(exe.lastPathComponent) }
         let folder = exe.deletingLastPathComponent()
@@ -320,6 +346,59 @@ extension WineLauncher {
         }
         updated.programGraphics[windowsPath] = backend
         return updated
+    }
+
+    /// Settles a bottle set up for an engine that had DLLs copied once the installed engine picks the
+    /// Direct3D itself: Wine's DLLs go back, the copied ones and their overrides go away, and programs
+    /// with their own Direct3D get rules instead. Returns the bottle when something changed.
+    public func migrateToDispatchedGraphics(_ bottle: Bottle) async throws -> Bottle? {
+        guard runtime.dispatchesGraphics else { return nil }
+        var updated = bottle
+        if needsCleanup(bottle) { updated = removeCopiedGraphics(from: updated, keeping: updated.graphics) }
+        for (program, backend) in bottle.programGraphics where CompatRules.programBackend(program, in: bottle) != backend {
+            updated = try await removeCopiedProgramGraphics(program, in: updated)
+            try CompatRules.setProgramBackend(backend, program: program, in: updated)
+        }
+        return updated == bottle ? nil : updated
+    }
+
+    /// DXVK/DXMT were copied into the prefix for an earlier engine, or the prefix does not have the
+    /// engine's own `winemetal.dll` (Wine finds that builtin only through its file in system32, which
+    /// a prefix made by an older engine lacks or holds a copied DXMT build of).
+    private func needsCleanup(_ bottle: Bottle) -> Bool {
+        GraphicsBackend.replacedDLLs.contains { bottle.dllOverrides[$0] == "n,b" } ||
+            Self.prefixFolders.contains { folder, wineFolder in
+                let prefixFolder = bottle.driveC.appending(path: "windows/\(folder)", directoryHint: .isDirectory)
+                let engine = runtime.wineDirectory.appending(path: "lib/wine/\(wineFolder)/winemetal.dll")
+                guard FileManager.default.fileExists(atPath: prefixFolder.path),
+                      FileManager.default.fileExists(atPath: engine.path) else { return false }
+                return !FileManager.default.contentsEqual(atPath: prefixFolder.appending(path: "winemetal.dll").path,
+                                                         andPath: engine.path)
+            }
+    }
+
+    private static let prefixFolders = [("system32", "x86_64-windows"), ("syswow64", "i386-windows")]
+
+    /// Puts the engine's Direct3D DLLs and DXMT bridge back into the prefix, drops their overrides
+    /// and records `backend`.
+    private func removeCopiedGraphics(from bottle: Bottle, keeping backend: GraphicsBackend) -> Bottle {
+        var updated = bottle
+        restoreWineDLLs(GraphicsBackend.replacedDLLs + ["winemetal"], in: &updated)
+        updated.graphics = backend
+        return updated
+    }
+
+    /// Removes the DLLs WinHub copied next to a program for an earlier engine and their registry overrides.
+    /// A choice that already has a rule was made with this engine, so nothing was copied for it.
+    private func removeCopiedProgramGraphics(_ windowsPath: String, in bottle: Bottle) async throws -> Bottle {
+        guard let previous = bottle.programGraphics[windowsPath], !previous.files.isEmpty,
+              CompatRules.programBackend(windowsPath, in: bottle) == nil,
+              let folder = bottle.unixPath(forWindowsPath: windowsPath)?.deletingLastPathComponent() else { return bottle }
+        // Only copies are here: WinHub refused to replace DLLs a program brings itself.
+        for dll in previous.files { try? FileManager.default.removeItem(at: folder.appending(path: "\(dll).dll")) }
+        let program = windowsPath.split(whereSeparator: { $0 == "\\" || $0 == "/" }).last.map(String.init) ?? windowsPath
+        _ = try await run(bottle, ["reg", "delete", Self.appDefaultsKey(for: program), "/f"], logName: "reg")
+        return bottle
     }
 
     /// Contents of every DLL the WinHub may have put next to a program, to recognize them later.

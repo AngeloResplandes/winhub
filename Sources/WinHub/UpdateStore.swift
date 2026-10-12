@@ -119,6 +119,8 @@ final class UpdateStore {
         let changed = await sync.sync(OfficialData.files)
         if changed.contains(OfficialData.catalog) { await catalog?.reloadOfficial() }
         if !changed.isDisjoint(with: [OfficialData.runtimes, OfficialData.components]) { wine?.reloadManifests() }
+        // Compatibility rules for the engine, checked against the project's signing key.
+        await CompatDatabaseSync().sync()
     }
 
     private func checkApp() async {
