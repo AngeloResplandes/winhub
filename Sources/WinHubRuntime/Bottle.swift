@@ -165,6 +165,15 @@ public struct BottleStore: Sendable {
         try Self.encoder.encode(bottle).write(to: bottle.folder.appending(path: Self.fileName), options: .atomic)
     }
 
+    /// `name`, or `name (2)`, `name (3)`… when a bottle already has it (names compare without case).
+    public func uniqueName(_ name: String) -> String {
+        let taken = Set(list().map { $0.name.lowercased() })
+        guard taken.contains(name.lowercased()) else { return name }
+        var number = 2
+        while taken.contains("\(name) (\(number))".lowercased()) { number += 1 }
+        return "\(name) (\(number))"
+    }
+
     public func delete(_ bottle: Bottle) throws {
         try FileManager.default.removeItem(at: bottle.folder)
     }

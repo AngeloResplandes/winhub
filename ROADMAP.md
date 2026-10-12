@@ -30,14 +30,14 @@ One-page summary. Detail: [parity with CrossOver](docs/crossover-parity.md) (wei
 - Engine revision 2 (`wine-11.0-r2`) is the default engine.
 - Program icons, read from each program's `.exe`, in the lists and on `.app` shortcuts.
 - English interface (String Catalog), following the macOS language; English summaries in the catalog.
+- Bottle export and import (`.winhubbottle`).
 - Resoluções extras: Wine's emulated display modes (16:9 and others up to the screen size) per bottle.
 
 ## Next
 
 1. **More tested titles:** catalog entries, recipes and a compatibility report per game.
-2. **Bottle export and import.**
-3. **Notarized releases.**
-4. **More interface languages** in the same String Catalog.
+2. **Notarized releases.**
+3. **More interface languages** in the same String Catalog.
 
 ## Revision history
 
@@ -47,3 +47,4 @@ One-page summary. Detail: [parity with CrossOver](docs/crossover-parity.md) (wei
 | 2026-10-12 | Engine revision 2 is the default. |
 | 2026-10-12 | Program icons and extra display modes done. |
 | 2026-10-12 | English interface done. |
+| 2026-10-12 | Bottle export and import done. |

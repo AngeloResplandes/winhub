@@ -37,7 +37,7 @@ código ou dado fechado do CrossOver é usado.
 | **Catálogo com busca** | palavras em ordem, sem diferenciar maiúsculas e acentos, nomes no seu idioma; as mesmas regras da busca do CrossOver |
 | **Receitas com um clique** | a Steam instala e abre com um clique; jogos da Steam ganham "Jogar pela Steam" |
 | **Qualquer instalador** | escolha um `.exe` ou `.msi` e a garrafa (⌘I) |
-| **Garrafas** | cada uma com versão do Windows, Direct3D, msync, painel de desempenho e componentes do winetricks |
+| **Garrafas** | cada uma com versão do Windows, Direct3D, msync, painel de desempenho e componentes do winetricks; exportar e importar (`.winhubbottle`) |
 | **Direct3D por garrafa ou por jogo** | Automático, Wine, DXMT (Metal), DXVK (Vulkan) ou o seu D3DMetal ([Gráficos](docs/pt-BR/graphics.md)) |
 | **Steam que funciona** | um pequeno wrapper corrige a janela preta da Steam no Wine 11 para macOS |
 | **Atalhos** | `~/Applications/WinHub/<garrafa>/<programa>.app`, para o Finder, o Spotlight e o Dock |

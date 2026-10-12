@@ -233,6 +233,10 @@ struct BottleDetailView: View {
                 Button { Task { await wine.shutdown(bottle) } } label: {
                     Label("Encerrar todos os programas", systemImage: "stop.circle")
                 }
+                Button { Task { await wine.exportBottle(bottle) } } label: {
+                    Label("Exportar garrafa…", systemImage: "square.and.arrow.up")
+                }
+                .help("Salva a garrafa inteira num arquivo .winhubbottle, para backup ou para levar a outro Mac.")
                 Button(role: .destructive) { isConfirmingDelete = true } label: {
                     Label("Apagar garrafa…", systemImage: "trash")
                 }

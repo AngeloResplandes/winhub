@@ -175,7 +175,7 @@ final class WineStore {
         do {
             try bottleStore.save(updated)
             refresh()
-            try await perform(key: bottle.id.uuidString, "Aplicando \(version.title)…") {
+            try await perform(key: bottle.id.uuidString, String(localized: "Aplicando \(version.title)…")) {
                 try await WineLauncher(runtime: runtime).applyWindowsVersion(updated)
             }
         } catch {
@@ -223,7 +223,7 @@ final class WineStore {
         }
         if let installed = componentManager.installed(manifest) { return installed }
         let manager = componentManager
-        return try await perform(key: key, "Baixando \(manifest.name) \(manifest.version)…") {
+        return try await perform(key: key, String(localized: "Baixando \(manifest.name) \(manifest.version)…")) {
             try await Task.detached { try await manager.install(manifest) }.value
         }
     }
@@ -374,7 +374,7 @@ final class WineStore {
         let key = key ?? bottle.id.uuidString
         let winetricks = try await ensureComponent(named: "winetricks", key: key)
         let cabextract = hasCabextract ? try await ensureComponent(named: "cabextract", key: key) : nil
-        try await perform(key: key, "Instalando \(verbs.joined(separator: ", "))…") {
+        try await perform(key: key, String(localized: "Instalando \(verbs.joined(separator: ", "))…")) {
             try await WineLauncher(runtime: runtime).runWinetricks(verbs, in: bottle, winetricks: winetricks,
                                                                    cabextract: cabextract)
         }
@@ -411,6 +411,50 @@ final class WineStore {
 
     private func setIcon(_ data: Data, for id: InstalledProgram.ID) {
         programIcons[id] = NSImage(data: data)
+    }
+
+    /// Key of the import in `activity`; the sidebar shows it while a bottle is being imported.
+    static let importActivity = "bottle-import"
+
+    /// Saves the bottle as a `.winhubbottle` file. The bottle must be closed: a running Wine may be writing
+    /// the registry.
+    func exportBottle(_ bottle: Bottle) async {
+        guard !activeBottles.contains(bottle.id) else {
+            errorMessage = String(localized: "Encerre os programas da garrafa “\(bottle.name)” antes de exportá-la.")
+            return
+        }
+        let panel = NSSavePanel()
+        panel.nameFieldStringValue = "\(bottle.name).\(BottleArchive.fileExtension)"
+        panel.allowedContentTypes = [.winhubBottle].compactMap { $0 }
+        panel.message = String(localized: "Exportar a garrafa “\(bottle.name)” para um arquivo")
+        guard panel.runModal() == .OK, let url = panel.url else { return }
+        do {
+            try await perform(key: bottle.id.uuidString, String(localized: "Exportando a garrafa…")) {
+                try await BottleArchive.export(bottle, to: url)
+            }
+            NSWorkspace.shared.activateFileViewerSelecting([url])
+        } catch {
+            errorMessage = error.localizedDescription
+        }
+    }
+
+    /// Adds a bottle from a `.winhubbottle` file, as a new bottle (new id, and a new name if it is taken).
+    func importBottle() async {
+        let panel = NSOpenPanel()
+        panel.allowedContentTypes = [.winhubBottle].compactMap { $0 }
+        panel.allowsOtherFileTypes = true
+        panel.message = String(localized: "Escolha uma garrafa exportada pelo WinHub (.winhubbottle)")
+        guard panel.runModal() == .OK, let url = panel.url else { return }
+        do {
+            try FileManager.default.createDirectory(at: bottleStore.root, withIntermediateDirectories: true)
+            let store = bottleStore
+            _ = try await perform(key: Self.importActivity, String(localized: "Importando “\(url.deletingPathExtension().lastPathComponent)”…")) {
+                try await BottleArchive.importBottle(from: url, into: store)
+            }
+            refresh()
+        } catch {
+            errorMessage = error.localizedDescription
+        }
     }
 
     func createLauncher(for program: InstalledProgram, in bottle: Bottle) {
@@ -453,7 +497,7 @@ final class WineStore {
         }
         guard let bottle = target, let runtime else { return }
         do {
-            try await perform(key: bottle.id.uuidString, "Instalando \(file.lastPathComponent)…") {
+            try await perform(key: bottle.id.uuidString, String(localized: "Instalando \(file.lastPathComponent)…")) {
                 try await WineLauncher(runtime: runtime).runInstaller(bottle, file: file)
             }
         } catch {
@@ -481,11 +525,11 @@ final class WineStore {
             guard let bottle else { activity[entryID] = nil; return }
 
             try await installDependencies(recipe.dependencies, in: bottle, key: entryID)
-            let installer = try await perform(key: entryID, "Baixando o instalador…") {
+            let installer = try await perform(key: entryID, String(localized: "Baixando o instalador…")) {
                 try await self.downloader.download(recipe.installer.url, fileName: recipe.installer.fileName,
                                                    sha256: recipe.installer.sha256)
             }
-            try await perform(key: entryID, "Instalando…") {
+            try await perform(key: entryID, String(localized: "Instalando…")) {
                 try await WineLauncher(runtime: runtime).runInstaller(bottle, file: installer,
                                                                     arguments: recipe.installer.arguments)
             }
@@ -624,4 +668,5 @@ import UniformTypeIdentifiers
 extension UTType {
     static let exe = UTType(filenameExtension: "exe")
     static let msi = UTType(filenameExtension: "msi")
+    static let winhubBottle = UTType(filenameExtension: BottleArchive.fileExtension)
 }

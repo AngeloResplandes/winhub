@@ -27,7 +27,7 @@ in [`docs/`](docs/) (English) and [`docs/pt-BR/`](docs/pt-BR/) (Brazilian Portug
 
 ```bash
 swift build                 # build
-swift test                  # 112 tests (unit; the ones with a real Wine stay off)
+swift test                  # 116 tests (unit; the ones with a real Wine stay off)
 swift run WinHub            # run without packaging (.app shortcuts and winhub:// links do not work this way)
 ./scripts/package-app.sh    # builds dist/WinHub.app (universal) and dist/WinHub.zip, ad-hoc signature;
                             # builds the Steam wrapper (needs: brew install mingw-w64)
@@ -58,6 +58,7 @@ Sources/WinHubCore/      pure data, no UI and no processes (testable)
 Sources/WinHubRuntime/   everything that touches disk, network and Wine processes
   RuntimeManifest/RuntimeManager   downloads, checks and installs the Wine engine (and overlays)
   Bottle/BottleStore                bottle = folder with bottle.json + prefix/ (WINEPREFIX)
+  BottleArchive                     export/import .winhubbottle (ditto zip); import = new id, free name, profile adopted
   WineEnvironment                   builds the environment of Wine processes (pure function)
   WineLauncher                      wineboot, winecfg, installers, start /unix, wineserver -k
   ProgramScanner                    finds .lnk files in the bottle's Start Menu/Desktop

@@ -36,7 +36,7 @@ CrossOver code or data is used.
 | **Catalog with search** | words in order, ignoring case and accents, names in your language; the same rules as CrossOver's search |
 | **One-click recipes** | Steam installs and opens with one click; Steam games get "Jogar pela Steam" |
 | **Any installer** | pick an `.exe` or `.msi` and a bottle (⌘I) |
-| **Bottles** | each with its Windows version, Direct3D, msync, performance HUD and winetricks components |
+| **Bottles** | each with its Windows version, Direct3D, msync, performance HUD and winetricks components; export and import (`.winhubbottle`) |
 | **Direct3D per bottle or per game** | Automático, Wine, DXMT (Metal), DXVK (Vulkan) or your own D3DMetal ([Graphics](docs/graphics.md)) |
 | **Steam that works** | a small wrapper fixes Steam's black window on Wine 11 for macOS |
 | **Shortcuts** | `~/Applications/WinHub/<bottle>/<program>.app`, for the Finder, Spotlight and the Dock |

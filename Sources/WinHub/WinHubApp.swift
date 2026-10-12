@@ -32,6 +32,7 @@ struct WinHubApp: App {
             CommandGroup(after: .newItem) {
                 Button("Instalar app não listado…") { wine.chooseInstaller() }
                     .keyboardShortcut("i")
+                Button("Importar garrafa…") { Task { await wine.importBottle() } }
                 Divider()
                 Button("Importar catálogo…") { presentImportPanel() }
                     .keyboardShortcut("o")

@@ -253,6 +253,16 @@
         }
       }
     },
+    "Aplicando %@…" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Applying %@…"
+          }
+        }
+      }
+    },
     "Aplicando as resoluções…" : {
       "localizations" : {
         "en" : {
@@ -333,6 +343,22 @@
         }
       }
     },
+    "Baixando %@ %@…" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Downloading %1$@ %2$@…"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Baixando %1$@ %2$@…"
+          }
+        }
+      }
+    },
     "Baixando a versão %@…" : {
       "localizations" : {
         "en" : {
@@ -349,6 +375,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Downloading Wine…"
+          }
+        }
+      }
+    },
+    "Baixando o instalador…" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Downloading the installer…"
           }
         }
       }
@@ -723,6 +759,16 @@
         }
       }
     },
+    "Encerre os programas da garrafa “%@” antes de exportá-la." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Quit the programs of the bottle “%@” before exporting it."
+          }
+        }
+      }
+    },
     "Encontrado" : {
       "localizations" : {
         "en" : {
@@ -789,6 +835,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Choose a program inside the C: drive of the bottle “%@”."
+          }
+        }
+      }
+    },
+    "Escolha uma garrafa exportada pelo WinHub (.winhubbottle)" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Choose a bottle exported by WinHub (.winhubbottle)"
           }
         }
       }
@@ -879,6 +935,36 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Only run installers from sources you trust."
+          }
+        }
+      }
+    },
+    "Exportando a garrafa…" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Exporting the bottle…"
+          }
+        }
+      }
+    },
+    "Exportar a garrafa “%@” para um arquivo" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Export the bottle “%@” to a file"
+          }
+        }
+      }
+    },
+    "Exportar garrafa…" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Export Bottle…"
           }
         }
       }
@@ -983,12 +1069,32 @@
         }
       }
     },
+    "Importando “%@”…" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Importing “%@”…"
+          }
+        }
+      }
+    },
     "Importar catálogo…" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Import Catalog…"
+          }
+        }
+      }
+    },
+    "Importar garrafa…" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Import Bottle…"
           }
         }
       }
@@ -1063,12 +1169,32 @@
         }
       }
     },
+    "Instalando %@…" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Installing %@…"
+          }
+        }
+      }
+    },
     "Instalando o Rosetta…" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Installing Rosetta…"
+          }
+        }
+      }
+    },
+    "Instalando…" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Installing…"
           }
         }
       }
@@ -1429,6 +1555,16 @@
         }
       }
     },
+    "Não foi possível criar o arquivo da garrafa. %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Could not create the bottle's file. %@"
+          }
+        }
+      }
+    },
     "Não foi possível extrair o motor (código %d). %@" : {
       "localizations" : {
         "en" : {
@@ -1593,6 +1729,16 @@
           "stringUnit" : {
             "state" : "new",
             "value" : "O arquivo baixado não confere (SHA-256 esperado %1$@…, obtido %2$@…). Nada foi instalado."
+          }
+        }
+      }
+    },
+    "O arquivo não é uma garrafa exportada pelo WinHub." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The file is not a bottle exported by WinHub."
           }
         }
       }
@@ -1859,6 +2005,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Results"
+          }
+        }
+      }
+    },
+    "Salva a garrafa inteira num arquivo .winhubbottle, para backup ou para levar a outro Mac." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Saves the whole bottle in a .winhubbottle file, as a backup or to take it to another Mac."
           }
         }
       }
