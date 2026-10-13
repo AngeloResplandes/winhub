@@ -18,7 +18,10 @@
 # Compatibility
 
 - [Compatibility reports](compat/README.md)
+  - [Dark Souls Remastered](compat/dark-souls-remastered.md)
   - [Hollow Knight](compat/hollow-knight.md)
+  - [Lethal Company](compat/lethal-company.md)
+  - [PEAK](compat/peak.md)
   - [The Witcher 3](compat/the-witcher-3.md)
 
 # Project

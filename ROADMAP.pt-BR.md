@@ -17,7 +17,7 @@ Resumo em uma página. Detalhes: [paridade com o CrossOver](docs/pt-BR/crossover
 | Busca do catálogo | os mesmos resultados do CrossOver nos casos comparados | medido |
 | Steam | instala com um clique; login salvo mantido entre motores | medido |
 | Jogo Direct3D 11 | Hollow Knight a 60 FPS pelo DXMT | medido |
-| Catálogo | 31 títulos, 1 receita | medido |
+| Catálogo | 34 títulos, 1 receita, 6 relatórios de compatibilidade | medido |
 
 ## Feito
 

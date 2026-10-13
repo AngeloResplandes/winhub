@@ -22,7 +22,7 @@ are judgement, with the reason next to them. The engine has its own, more detail
 | Dimension | Weight | CrossOver 26.3 | WinHub | % | Kind |
 |---|---:|---|---|---:|---|
 | Catalog search | 10% | local, `*a*b*` pattern, localized names, 128 results | the same rules ([Catalog search](catalog-search.md)) | 100% | measured: same 8 featured titles and same 16 results for `excel` |
-| Catalog content | 10% | about 4,500 applications with ratings per version | 31 titles, 9 featured, ratings from WinHub's own tests | 5% | measured count, weight estimated |
+| Catalog content | 10% | about 4,500 applications with ratings per version | 34 titles, 9 featured, ratings from WinHub's own tests (6 compatibility reports) | 5% | measured count, weight estimated |
 | Install recipes | 10% | recipes for thousands of applications | 1 recipe (Steam), any `.exe`/`.msi`, winetricks components | 15% | estimated |
 | Bottles | 10% | create, Windows version, settings, templates, archives | create, Windows version, Direct3D, msync, HUD, components, export and import; no templates | 85% | estimated |
 | Steam | 10% | works | works: black-window wrapper, saved login, games opened through Steam | 90% | measured |

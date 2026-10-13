@@ -66,6 +66,23 @@ o controle (Xbox 360) é reconhecido. As teclas injetadas com `SendInput` dentro
   para depois. Para investigar, reabra a Steam com `WINEDEBUG=fixme-all,+display,warn+win` e veja as linhas de
   `macdrv_ChangeDisplaySettings` e "Setting display mode" (do DXMT).
 
+### 13/10/2026: revisão 2 do motor com D3DMetal, testado por script
+
+Mesmo Mac, motor `winhub-wine-11.0-r2`, D3DMetal do Game Porting Toolkit 3.0 da Apple, um clone da garrafa da Steam
+com Resoluções extras ligado, conduzido pelo [`scripts/game-test.swift`](README.md#testar-com-o-scriptsgame-testswift).
+
+| Backend | Resultado |
+|---|---|
+| D3DMetal ("Automático") | **Jogável.** Menu a cerca de 117 FPS (tela de 120 Hz, limite de 120); um jogo novo num espaço vazio, andar, pular e atacar a 104–120 FPS, GPU de 5 a 7 ms por quadro. |
+| DXMT, DXVK | O menu principal aparece (revisão 2). |
+
+- **Modos de tela:** com Resoluções extras, a lista agora tem **1280×720** e **960×540** (16 modos, de 1470×956 a
+  640×480). Escolher 1280×720 ocupa a tela, escalado, com faixas finas em cima e embaixo.
+- **Entrada:** teclas mandadas como eventos do macOS chegam ao jogo (Input System do Unity), ao contrário do
+  `SendInput` dentro do Wine.
+- **A cinemática de abertura fica preta:** o Unity registra `WindowsVideoMedia error 0xc00d36bb` para o vídeo; o jogo
+  segue depois dela. O motor ainda não decodifica vídeo H.264 (lacuna "Vídeos dos jogos" do winhub-engine).
+
 ## Como reproduzir
 
 - O jogo precisa ser aberto pela Steam. Aberto direto, ele encerra com "Application was not launched through

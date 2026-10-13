@@ -379,5 +379,54 @@
     },
     "rating": 4,
     "isFeatured": false
+  },
+  {
+    "id": "winhub.sample.32",
+    "name": "Dark Souls Remastered",
+    "category": "Games/Role Playing Games",
+    "summary": "RPG de ação sombrio em Lordran, remasterizado.",
+    "localizedSummaries": {
+      "en": "Dark action RPG in Lordran, remastered."
+    },
+    "rating": 5,
+    "isFeatured": false,
+    "steamID": 570940,
+    "steamGame": {
+      "installDir": "DARK SOULS REMASTERED",
+      "executable": "DarkSoulsRemastered.exe",
+      "graphics": "dxvk"
+    }
+  },
+  {
+    "id": "winhub.sample.33",
+    "name": "Lethal Company",
+    "category": "Games/Action Games",
+    "summary": "Terror cooperativo coletando sucata em luas abandonadas.",
+    "localizedSummaries": {
+      "en": "Co-op horror collecting scrap on abandoned moons."
+    },
+    "rating": 4,
+    "isFeatured": false,
+    "steamID": 1966720,
+    "steamGame": {
+      "installDir": "Lethal Company",
+      "executable": "Lethal Company.exe"
+    }
+  },
+  {
+    "id": "winhub.sample.34",
+    "name": "PEAK",
+    "category": "Games/Casual Games",
+    "summary": "Escalada cooperativa numa ilha misteriosa.",
+    "localizedSummaries": {
+      "en": "Co-op climbing on a mysterious island."
+    },
+    "rating": 4,
+    "isFeatured": false,
+    "steamID": 3527290,
+    "steamGame": {
+      "installDir": "PEAK",
+      "executable": "PEAK.exe"
+    }
   }
 ]

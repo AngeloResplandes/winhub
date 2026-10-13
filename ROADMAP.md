@@ -17,7 +17,7 @@ One-page summary. Detail: [parity with CrossOver](docs/crossover-parity.md) (wei
 | Catalog search | same results as CrossOver in the cases compared | measured |
 | Steam | installs with one click; saved login kept across engines | measured |
 | Direct3D 11 game | Hollow Knight at 60 FPS through DXMT | measured |
-| Catalog | 31 titles, 1 recipe | measured |
+| Catalog | 34 titles, 1 recipe, 6 compatibility reports | measured |
 
 ## Done
 

@@ -66,6 +66,22 @@ Unity 6 (Input System), so gameplay has no automated test.
   later. To investigate, reopen Steam with `WINEDEBUG=fixme-all,+display,warn+win` and look at the
   `macdrv_ChangeDisplaySettings` and "Setting display mode" (DXMT) lines.
 
+### 2026-10-13: engine revision 2 with D3DMetal, tested by script
+
+Same Mac, engine `winhub-wine-11.0-r2`, D3DMetal from Apple's Game Porting Toolkit 3.0, a clone of the Steam bottle
+with Resoluções extras on, driven by [`scripts/game-test.swift`](README.md#testing-with-scriptsgame-testswift).
+
+| Backend | Result |
+|---|---|
+| D3DMetal ("Automático") | **Playable.** Menu about 117 FPS (120 Hz screen, frame limit 120); a new game in an empty slot, walking, jumping and attacking at 104–120 FPS, GPU 5–7 ms per frame. |
+| DXMT, DXVK | The main menu renders (revision 2). |
+
+- **Display modes:** with Resoluções extras the list now has **1280×720** and **960×540** (16 modes from 1470×956 to
+  640×480). Choosing 1280×720 fills the screen, scaled, with thin bars above and below.
+- **Input:** keys sent as macOS events reach the game (Unity's Input System), unlike `SendInput` inside Wine.
+- **The intro cinematic is black:** Unity logs `WindowsVideoMedia error 0xc00d36bb` for the video; the game goes on
+  after it. The engine has no H.264 video decoding yet (winhub-engine's gap "Game videos").
+
 ## How to reproduce
 
 - The game must be opened through Steam. Opened directly, it quits with "Application was not launched through

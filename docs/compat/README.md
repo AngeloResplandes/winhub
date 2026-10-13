@@ -8,7 +8,10 @@ from these reports.
 
 | Game | Direct3D | Result | Best choice |
 |---|---|---|---|
-| [Hollow Knight](hollow-knight.md) | 11 (Unity 6) | runs, 60 FPS | DXMT for the game only |
+| [Dark Souls Remastered](dark-souls-remastered.md) | 11 | playable with D3DMetal and DXVK; DXMT freezes | DXVK (rule) or D3DMetal |
+| [Hollow Knight](hollow-knight.md) | 11 (Unity 6) | playable; intro video black | DXMT for the game only, or D3DMetal |
+| [Lethal Company](lethal-company.md) | 11 (Unity 2022) | playable (needs the microphone fix) | Automático |
+| [PEAK](peak.md) | 11 (Unity 6) | playable (needs the microphone fix) | Automático |
 | [The Witcher 3](the-witcher-3.md) | 12 only | installs, does not start | needs D3DMetal or Direct3D 12 in the engine |
 
 ## Writing a report

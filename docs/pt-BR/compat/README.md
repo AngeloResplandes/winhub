@@ -8,7 +8,10 @@ vêm destes relatórios.
 
 | Jogo | Direct3D | Resultado | Melhor escolha |
 |---|---|---|---|
-| [Hollow Knight](hollow-knight.md) | 11 (Unity 6) | roda, 60 FPS | DXMT só no jogo |
+| [Dark Souls Remastered](dark-souls-remastered.md) | 11 | jogável com D3DMetal e DXVK; o DXMT trava | DXVK (regra) ou D3DMetal |
+| [Hollow Knight](hollow-knight.md) | 11 (Unity 6) | jogável; vídeo de abertura preto | DXMT só no jogo, ou D3DMetal |
+| [Lethal Company](lethal-company.md) | 11 (Unity 2022) | jogável (precisa da correção do microfone) | Automático |
+| [PEAK](peak.md) | 11 (Unity 6) | jogável (precisa da correção do microfone) | Automático |
 | [The Witcher 3](the-witcher-3.md) | só 12 | instala, não abre | precisa do D3DMetal ou de Direct3D 12 no motor |
 
 ## Como escrever um relatório
