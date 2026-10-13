@@ -56,3 +56,88 @@ import Testing
         #expect(current.appPath == WineServerStatus.executablePath(pid: getpid()))
     }
 }
+
+@Suite struct BottleGuardTests {
+    let engine = "/Users/me/Library/Application Support/WinHub/Runtimes/r3/Wine.app/Contents/Resources/wine/bin/wineserver"
+    let otherEngine = "/Users/me/Library/Application Support/WinHub/Runtimes/r2/Wine.app/Contents/Resources/wine/bin/wineserver"
+    let installed = "/Applications/WinHub.app/Contents/MacOS/WinHub"
+
+    func conflict(server: String?, session: BottleSession?, sessionExecutable: String?, ownPID: pid_t = 20) -> BottleConflict? {
+        BottleGuard.conflict(serverPath: server, ownWineserver: engine, session: session,
+                             sessionExecutable: sessionExecutable, ownPID: ownPID)
+    }
+
+    @Test func aStoppedBottleIsFreeWhateverItsRecord() {
+        #expect(conflict(server: nil, session: BottleSession(pid: 10, appPath: installed), sessionExecutable: installed) == nil)
+        #expect(conflict(server: nil, session: nil, sessionExecutable: nil) == nil)
+    }
+
+    @Test func anotherOpenWinHubHoldsTheBottle() {
+        #expect(conflict(server: engine, session: BottleSession(pid: 10, appPath: installed), sessionExecutable: installed)
+                == .otherWinHub(appPath: installed))
+    }
+
+    @Test func aWinHubThatQuitNoLongerHoldsIt() {
+        #expect(conflict(server: engine, session: BottleSession(pid: 10, appPath: installed), sessionExecutable: nil) == nil)
+    }
+
+    @Test func aReusedPidDoesNotHoldIt() {
+        #expect(conflict(server: engine, session: BottleSession(pid: 10, appPath: installed), sessionExecutable: "/bin/zsh") == nil)
+    }
+
+    @Test func thisWinHubsOwnRecordIsFree() {
+        #expect(conflict(server: engine, session: BottleSession(pid: 20, appPath: installed), sessionExecutable: installed) == nil)
+    }
+
+    @Test func anotherEngineHoldsTheBottle() {
+        #expect(conflict(server: otherEngine, session: nil, sessionExecutable: nil) == .otherEngine(wineserver: otherEngine))
+    }
+
+    @Test func anotherWinHubIsReportedBeforeTheEngine() {
+        #expect(conflict(server: otherEngine, session: BottleSession(pid: 10, appPath: installed), sessionExecutable: installed)
+                == .otherWinHub(appPath: installed))
+    }
+
+    @Test func theSameEngineSpelledDifferentlyIsFree() {
+        let found = BottleGuard.conflict(serverPath: "/private/tmp/w/bin/wineserver", ownWineserver: "/tmp/w/bin/../bin/wineserver",
+                                         session: nil, sessionExecutable: nil, ownPID: 20)
+        #expect(found == nil)
+    }
+
+    func state(_ id: UUID, _ name: String, steam: Bool, running: Bool) -> BottleGuard.BottleState {
+        BottleGuard.BottleState(id: id, name: name, hasSteam: steam, isRunning: running)
+    }
+
+    @Test func steamInAnotherRunningBottleBlocksOpening() {
+        let target = UUID(), other = UUID()
+        let found = BottleGuard.steamConflict(opening: target, bottles: [
+            state(target, "Steam", steam: true, running: false),
+            state(other, "Steam-teste", steam: true, running: true),
+        ])
+        #expect(found == .steamRunning(bottleName: "Steam-teste", bottleID: other))
+    }
+
+    @Test func steamInAStoppedBottleDoesNotBlock() {
+        let target = UUID()
+        #expect(BottleGuard.steamConflict(opening: target, bottles: [
+            state(target, "Steam", steam: true, running: false),
+            state(UUID(), "Steam-teste", steam: true, running: false),
+        ]) == nil)
+    }
+
+    @Test func aBottleWithoutSteamIsNeverBlocked() {
+        let target = UUID()
+        #expect(BottleGuard.steamConflict(opening: target, bottles: [
+            state(target, "Office", steam: false, running: false),
+            state(UUID(), "Steam", steam: true, running: true),
+        ]) == nil)
+    }
+
+    @Test func theTargetsOwnSteamDoesNotBlock() {
+        let target = UUID()
+        #expect(BottleGuard.steamConflict(opening: target, bottles: [
+            state(target, "Steam", steam: true, running: true),
+            state(UUID(), "Office", steam: false, running: true),
+        ]) == nil)
+    }
+}
