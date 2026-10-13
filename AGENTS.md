@@ -142,6 +142,11 @@ Dated decisions are in `docs/decisions.md`. The pitfalls an agent must know:
   them on), `renderer=vulkan` in wined3d (the window does not even appear) and DXVK (D3D11 works, the window stays
   black). There are no more official Wine 10 builds for macOS. With `swift run` the wrapper only exists if
   `WINHUB_STEAMWEBHELPER_WRAPPER` points to it (`scripts/build-steam-wrapper.sh`); without it, black window.
+- **Privacy (TCC) belongs to WinHub:** macOS treats Wine processes started by WinHub as WinHub. Without a usage
+  description in the app's `Info.plist`, a protected resource is refused **without a prompt** and the asking thread is
+  killed (games with voice chat hung on the microphone). `package-app.sh` declares `NSMicrophoneUsageDescription`;
+  add the matching key before supporting another resource (camera, for example). With `swift run`, a `winhub://` link
+  goes to whichever WinHub macOS picks (possibly `/Applications/WinHub.app`); use `open -a <app> <url>` in tests.
 - **Never run Wine from inside a shortcut `.app`'s process.** Programs started that way hang (Steam stops at
   "Verifying…"). That is why shortcuts delegate to WinHub through `winhub://`.
 - **Orphans of a dead wineserver.** If wineserver dies without ending its clients (for example SIGKILL),

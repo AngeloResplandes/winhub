@@ -30,6 +30,10 @@ for lproj in "$BIN_DIR/WinHub_WinHub.bundle/"*.lproj "$BIN_DIR/WinHub_WinHub.bun
     if [ -d "$lproj" ]; then cp -R "$lproj" "$APP/Contents/Resources/"; fi
 done
 test -f "$APP/Contents/Resources/en.lproj/Localizable.strings" || { echo "English strings missing from the app" >&2; exit 1; }
+# Wine processes count as WinHub for macOS privacy checks: without a usage description, macOS refuses the
+# microphone without asking and ends the thread that asked (games with voice chat hang).
+printf '"NSMicrophoneUsageDescription" = "Windows programs and games opened by WinHub can use the microphone, for example for voice chat.";\n' \
+    > "$APP/Contents/Resources/en.lproj/InfoPlist.strings"
 
 # App icon, drawn from code (see scripts/make-icon.swift).
 swift scripts/make-icon.swift "$APP/Contents/Resources/AppIcon.icns"
@@ -55,6 +59,7 @@ cat > "$APP/Contents/Info.plist" <<PLIST
     <key>LSMinimumSystemVersion</key><string>14.0</string>
     <key>LSApplicationCategoryType</key><string>public.app-category.games</string>
     <key>NSHighResolutionCapable</key><true/>
+    <key>NSMicrophoneUsageDescription</key><string>Programas e jogos do Windows abertos pelo WinHub podem usar o microfone, por exemplo para chat de voz.</string>
     <key>WinHubUpdateRepository</key><string>$REPOSITORY</string>
     <key>CFBundleURLTypes</key>
     <array>
