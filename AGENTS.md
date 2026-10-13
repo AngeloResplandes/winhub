@@ -91,9 +91,9 @@ User data: `~/Library/Application Support/WinHub/{Runtimes,Components,Bottles,Re
 ## Main flows
 
 - **Engine:** `runtimes.json` → `RuntimeManager.install` (download → SHA-256 → `tar` → overlay, if any → marker
-  `.winhub-runtime.json` written last). Today the first entry is `winhub-wine-11.0-r2` (WineHQ
+  `.winhub-runtime.json` written last). Today the first entry is `winhub-wine-11.0-r3` (WineHQ
   `wine-devel-11.18-osx64` as the base + winhub-engine overlay with Wine 11.0 from CrossOver's sources; x86_64,
-  needs Rosetta 2); `winhub-wine-11.18-r1` stays listed for bottles that use it.
+  needs Rosetta 2); `winhub-wine-11.0-r2` and `winhub-wine-11.18-r1` stay listed for bottles that use them.
 - **New bottle:** `BottleStore.create` → `WineLauncher.initialize` (`wineboot --init` with Mono/Gecko off →
   `winecfg /v <version>` → `wineserver -k`/`-w`).
 - **Recipe** (`Recipe` in the catalog): bottle by name (reused if it exists) → dependencies via winetricks →
@@ -191,8 +191,9 @@ Dated decisions are in `docs/decisions.md`. The pitfalls an agent must know:
   `lib/dxvk` or the user's D3DMetal) first in Wine's DLL path: **nothing is copied** into the bottle and the `n,b`
   overrides are not used. Programs with their own Direct3D become rules in `<bottle>/compat-rules.json`
   (`CompatRules`, `WINHUB_COMPAT_RULES`). Bottles from the time WinHub copied DLLs are migrated before a program
-  opens (`migrateToDispatchedGraphics`): Wine's DLLs come back and the copies and overrides go away. Revision 2 is
-  the first engine in `runtimes.json` (release `wine-11.0-r2`).
+  opens (`migrateToDispatchedGraphics`): Wine's DLLs come back and the copies and overrides go away. Revision 3
+  (release `wine-11.0-r3`, the first engine in `runtimes.json`) adds `replace_exe_path` rules and the `nvext`
+  feature (DXMT's NVAPI, "Recursos da NVIDIA").
 - **The engine's rule database:** `CompatDatabaseSync` (in `UpdateStore`'s periodic check) downloads
   `data/compatdb.json` and `compatdb.json.sig` from winhub-engine's `main`, checks the Ed25519 signature with the
   built-in key (`CompatDatabaseSync.publicKey`) and only writes to `Application Support/WinHub/compat/compatdb.json`
