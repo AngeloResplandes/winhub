@@ -123,12 +123,38 @@
         }
       }
     },
+    "A Steam já está aberta na garrafa “%@”. Duas Steam ao mesmo tempo podem desinstalar jogos." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Steam is already open in the bottle “%@”. Two Steam instances at once can uninstall games."
+          }
+        }
+      }
+    },
     "A garrafa deste atalho não existe mais." : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "This shortcut's bottle no longer exists."
+          }
+        }
+      }
+    },
+    "A garrafa “%@” está em uso por outro WinHub (%@)." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "A garrafa “%1$@” está em uso por outro WinHub (%2$@)."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The bottle “%@” is in use by another WinHub (%@)."
           }
         }
       }
@@ -739,12 +765,32 @@
         }
       }
     },
+    "Encerrar e abrir" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Close and open"
+          }
+        }
+      }
+    },
     "Encerrar e aplicar" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Close and Apply"
+          }
+        }
+      }
+    },
+    "Encerrar os programas antes de continuar?" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Close the programs before continuing?"
           }
         }
       }
@@ -1839,6 +1885,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "OK"
+          }
+        }
+      }
+    },
+    "Os programas da garrafa “%@” estão rodando com outro motor." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The programs in the bottle “%@” are running with another engine."
           }
         }
       }
