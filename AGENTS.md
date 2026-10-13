@@ -27,7 +27,7 @@ in [`docs/`](docs/) (English) and [`docs/pt-BR/`](docs/pt-BR/) (Brazilian Portug
 
 ```bash
 swift build                 # build
-swift test                  # 116 tests (unit; the ones with a real Wine stay off)
+swift test                  # 138 tests (unit; the ones with a real Wine stay off)
 swift run WinHub            # run without packaging (.app shortcuts and winhub:// links do not work this way)
 ./scripts/package-app.sh    # builds dist/WinHub.app (universal) and dist/WinHub.zip, ad-hoc signature;
                             # builds the Steam wrapper (needs: brew install mingw-w64)
@@ -213,6 +213,8 @@ Dated decisions are in `docs/decisions.md`. The pitfalls an agent must know:
 - **Testing games:** test on an APFS clone of the bottle and **never run two Steam instances of the same bottle at
   once** (on 2026-10-11 that made Steam uninstall two games from the original bottle). Never risk a user's real
   bottle.
+  WinHub itself now refuses (and offers to end) a bottle used by another open WinHub or another engine, and Steam
+  in a second bottle (`BottleGuard`); the clone is still the rule.
 - **Swift 6.1 compatibility (Xcode 16.4, used in CI):** `async` closures passed to methods of `@MainActor` classes
   must be marked `@MainActor` (or return a `Sendable` result). Local Swift may be newer and not complain; CI does.
 - `@State`, `#Preview` and `@Previewable` need Xcode (the macro plug-in is not in the Command Line Tools).

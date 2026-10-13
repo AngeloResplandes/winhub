@@ -4,6 +4,15 @@
 
 A dated record of the decisions that shaped WinHub, newest first.
 
+## 2026-10-13: Guard bottles against a second WinHub and a second Steam
+
+The installed WinHub and a development build share the same bottles. With both open on the Steam bottle, Steam
+uninstalled its games, as two Steams in two bottles had done on 2026-10-11. WinHub now writes
+`<bottle>/session.json` (its pid and path) when it runs Wine in a bottle and checks, before every action that runs
+Wine, that no other open WinHub and no other engine's `wineserver` is using it, and, when opening a program in a
+bottle with Steam, that no other bottle with Steam is running. Otherwise it asks before ending them
+("Encerrar e abrir"). Two WinHubs clicking at the same second on a stopped bottle are not covered.
+
 ## 2026-10-13: Declare the microphone in WinHub's Info.plist
 
 macOS counts Wine processes started by WinHub as WinHub for privacy checks. With no

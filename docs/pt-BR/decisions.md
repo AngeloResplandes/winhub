@@ -4,6 +4,15 @@
 
 Registro datado das decisões que deram forma ao WinHub, das mais novas para as mais antigas.
 
+## 2026-10-13: Proteger as garrafas de um segundo WinHub e de uma segunda Steam
+
+O WinHub instalado e um build de desenvolvimento usam as mesmas garrafas. Com os dois abertos na garrafa Steam, a
+Steam desinstalou os jogos, como duas Steams em duas garrafas já tinham feito em 11/10. Agora o WinHub grava
+`<garrafa>/session.json` (seu pid e caminho) quando roda o Wine numa garrafa e confere, antes de cada ação que roda
+o Wine, que nenhum outro WinHub aberto e nenhum `wineserver` de outro motor está usando a garrafa e, ao abrir um
+programa numa garrafa com Steam, que nenhuma outra garrafa com Steam está rodando. Se houver, pergunta antes de
+encerrá-los ("Encerrar e abrir"). Dois WinHub clicando no mesmo segundo numa garrafa parada não são cobertos.
+
 ## 2026-10-13: Declarar o microfone no Info.plist do WinHub
 
 O macOS conta os processos do Wine abertos pelo WinHub como sendo do WinHub nas verificações de privacidade. Sem

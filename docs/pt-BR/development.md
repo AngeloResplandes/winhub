@@ -13,7 +13,7 @@
 
 ```bash
 swift build
-swift test            # 116 testes; os que precisam do Wine de verdade ficam desligados
+swift test            # 138 testes; os que precisam do Wine de verdade ficam desligados
 swift run WinHub      # roda sem empacotar
 open Package.swift    # abre no Xcode
 ```
@@ -84,7 +84,10 @@ publicado (foi assim que a revisão 2 foi testada em 2026-10-12):
 4. Desligue **Ajustes → Atualizações → Procurar atualizações automaticamente**, senão a próxima verificação troca
    o `runtimes.json` pelo da `main`.
 5. Teste numa **cópia** de uma garrafa (no APFS, `cp -c` faz um clone instantâneo) e nunca abra duas Steams da
-   mesma garrafa ao mesmo tempo ([por quê](decisions.md#2026-10-11-nunca-abrir-duas-steams-da-mesma-garrafa)).
+   mesma garrafa ao mesmo tempo ([por quê](decisions.md#2026-10-11-nunca-abrir-duas-steams-da-mesma-garrafa)). O
+   WinHub agora pergunta antes de usar uma garrafa que outro WinHub ou outro motor está usando, ou de abrir a Steam
+   enquanto outra garrafa a roda ([como](decisions.md#2026-10-13-proteger-as-garrafas-de-um-segundo-winhub-e-de-uma-segunda-steam));
+   a cópia continua sendo a regra.
 
 Para desfazer: restaure a cópia do `runtimes.json`, religue as verificações automáticas e apague a pasta do motor.
 
