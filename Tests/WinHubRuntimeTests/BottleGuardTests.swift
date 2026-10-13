@@ -141,3 +141,34 @@ import Testing
         ]) == nil)
     }
 }
+
+@Suite struct ProcessTerminatorTests {
+    func start(_ script: String) throws -> Process {
+        let process = Process()
+        process.executableURL = URL(fileURLWithPath: "/bin/sh")
+        process.arguments = ["-c", script]
+        try process.run()
+        return process
+    }
+
+    @Test func endsAProcessWithSIGTERM() async throws {
+        let process = try start("exec sleep 30")
+        #expect(await ProcessTerminator.end(process.processIdentifier, grace: .milliseconds(300)))
+        process.waitUntilExit()
+        #expect(process.terminationReason == .uncaughtSignal)
+        #expect(process.terminationStatus == SIGTERM)
+    }
+
+    @Test func endsAProcessThatIgnoresSIGTERM() async throws {
+        let process = try start("trap '' TERM; while :; do sleep 1; done")
+        #expect(await ProcessTerminator.end(process.processIdentifier, grace: .milliseconds(300)))
+        process.waitUntilExit()
+        #expect(process.terminationStatus == SIGKILL)
+    }
+
+    @Test func aProcessThatAlreadyExitedCountsAsEnded() async throws {
+        let process = try start("exit 0")
+        process.waitUntilExit()
+        #expect(await ProcessTerminator.end(process.processIdentifier, grace: .milliseconds(100)))
+    }
+}

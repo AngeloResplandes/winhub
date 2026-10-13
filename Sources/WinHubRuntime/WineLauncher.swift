@@ -88,6 +88,18 @@ public struct WineLauncher: Sendable {
         await reapOrphans(bottle)
     }
 
+    /// Ends the bottle's programs even when its wineserver belongs to another engine, whose `-w` may never
+    /// return for this engine's tools: the server gets a few seconds to end its clients and save the
+    /// registry after `-k`, then SIGTERM and SIGKILL. Clients left behind are reaped.
+    public func forceShutdown(_ bottle: Bottle) async {
+        if let pid = WineServerStatus.serverPID(prefix: bottle.prefix) {
+            _ = try? await ProcessRunner.run(runtime.wineserver, arguments: ["-k"],
+                                             environment: environment(for: bottle), log: logURL(bottle, "wineserver"))
+            await ProcessTerminator.end(pid, grace: .seconds(5))
+        }
+        await reapOrphans(bottle)
+    }
+
     /// Ends processes left behind by a wineserver of this bottle that is gone
     /// (see `WineOrphanReaper`). Does nothing while the bottle's wineserver runs.
     @discardableResult
