@@ -27,3 +27,32 @@ import Testing
         #expect(WineServerStatus.serverPID(prefix: dir.appending(path: "missing")) == nil)
     }
 }
+
+@Suite struct BottleSessionTests {
+    @Test func writesAndReadsTheRecord() throws {
+        let dir = try makeTempDirectory()
+        defer { try? FileManager.default.removeItem(at: dir) }
+        let bottle = try BottleStore(root: dir).create(name: "Jogo", runtimeID: "w")
+        #expect(BottleSession.read(bottle) == nil)
+
+        let session = BottleSession(pid: 123, appPath: "/Applications/WinHub.app/Contents/MacOS/WinHub",
+                                    startedAt: Date(timeIntervalSince1970: 1_000_000))
+        try BottleSession.write(session, to: bottle)
+        #expect(BottleSession.read(bottle) == session)
+        #expect(FileManager.default.fileExists(atPath: bottle.folder.appending(path: "session.json").path))
+    }
+
+    @Test func anUnreadableRecordIsIgnored() throws {
+        let dir = try makeTempDirectory()
+        defer { try? FileManager.default.removeItem(at: dir) }
+        let bottle = try BottleStore(root: dir).create(name: "Jogo", runtimeID: "w")
+        try Data("{".utf8).write(to: bottle.folder.appending(path: "session.json"))
+        #expect(BottleSession.read(bottle) == nil)
+    }
+
+    @Test func currentIsThisProcess() {
+        let current = BottleSession.current
+        #expect(current.pid == getpid())
+        #expect(current.appPath == WineServerStatus.executablePath(pid: getpid()))
+    }
+}
