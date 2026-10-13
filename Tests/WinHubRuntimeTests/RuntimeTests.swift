@@ -783,9 +783,16 @@ struct EngineInstallTests {
         let winemac = installed.wineDirectory.appending(path: "lib/wine/x86_64-unix/winemac.so")
         let symbols = try ProcessRunner.run(URL(fileURLWithPath: "/usr/bin/nm"), arguments: ["-gU", winemac.path])
         #expect(symbols.output.contains(" _macdrv_functions"))
-        for arch in ["x64", "x32"] {
+        // Engines that pick the Direct3D lay DXMT out like a Wine library folder; older ones copy it from x64/x32.
+        let folders = installed.dispatchesGraphics ? ["x86_64-windows", "i386-windows"] : ["x64", "x32"]
+        for arch in folders {
             for dll in ["d3d11", "dxgi", "d3d10core", "winemetal"] {
                 #expect(FileManager.default.fileExists(atPath: installed.dxmtDirectory.appending(path: "\(arch)/\(dll).dll").path))
+            }
+        }
+        if manifest.supports(.nvext) {
+            for dll in ["nvapi64", "nvngx"] {
+                #expect(FileManager.default.fileExists(atPath: installed.dxmtDirectory.appending(path: "x86_64-windows/\(dll).dll").path))
             }
         }
         let version = try ProcessRunner.run(installed.wine, arguments: ["--version"])
