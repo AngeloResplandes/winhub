@@ -13,7 +13,7 @@ One-page summary. Detail: [parity with CrossOver](docs/crossover-parity.md) (wei
 
 | | Value | Kind |
 |---|---|---|
-| **WinHub parity with CrossOver** | **~57%** | estimated, weighted by dimension |
+| **WinHub parity with CrossOver** | **~61%** | estimated, weighted by dimension |
 | Catalog search | same results as CrossOver in the cases compared | measured |
 | Steam | installs with one click; saved login kept across engines | measured |
 | Direct3D 11 game | Hollow Knight at 60 FPS through DXMT | measured |
@@ -27,7 +27,7 @@ One-page summary. Detail: [parity with CrossOver](docs/crossover-parity.md) (wei
 - Direct3D per bottle and per program: Wine, DXVK, DXMT; with engine revision 2, also Automático and D3DMetal,
   chosen by the engine with nothing copied into bottles.
 - Signed per-game rule database from winhub-engine.
-- Engine revision 2 (`wine-11.0-r2`) is the default engine.
+- Engine revision 3 (`wine-11.0-r3`) is the default engine.
 - Program icons, read from each program's `.exe`, in the lists and on `.app` shortcuts.
 - English interface (String Catalog), following the macOS language; English summaries in the catalog.
 - Bottle export and import (`.winhubbottle`).
@@ -48,3 +48,4 @@ One-page summary. Detail: [parity with CrossOver](docs/crossover-parity.md) (wei
 | 2026-10-12 | Program icons and extra display modes done. |
 | 2026-10-12 | English interface done. |
 | 2026-10-12 | Bottle export and import done. |
+| 2026-10-13 | Engine revision 3 is the default; parity ~61%. |
