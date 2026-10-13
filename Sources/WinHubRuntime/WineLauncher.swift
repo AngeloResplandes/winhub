@@ -6,7 +6,7 @@ public enum WineLauncherError: Error, LocalizedError, Equatable {
     public var errorDescription: String? {
         switch self {
         case .failed(let step, let status, let log):
-            "\(step) terminou com erro (código \(status)). Veja o log em \(log.path)."
+            String(localized: "\(step) terminou com erro (código \(status)). Veja o log em \(log.path).")
         }
     }
 }
@@ -24,16 +24,16 @@ public struct WineLauncher: Sendable {
     /// that need them can install them later.
     public func initialize(_ bottle: Bottle) async throws {
         try FileManager.default.createDirectory(at: bottle.prefix, withIntermediateDirectories: true)
-        try await runChecked("Criar a garrafa", bottle, ["wineboot", "--init"], logName: "wineboot",
+        try await runChecked(String(localized: "Criar a garrafa"), bottle, ["wineboot", "--init"], logName: "wineboot",
                              extraOverrides: ["mscoree": "", "mshtml": ""])
-        try await runChecked("Definir a versão do Windows", bottle,
+        try await runChecked(String(localized: "Definir a versão do Windows"), bottle,
                              ["winecfg", "/v", bottle.windowsVersion.rawValue], logName: "winecfg")
         try await shutdown(bottle)
     }
 
     /// Applies `bottle.windowsVersion` to an existing prefix.
     public func applyWindowsVersion(_ bottle: Bottle) async throws {
-        try await runChecked("Definir a versão do Windows", bottle,
+        try await runChecked(String(localized: "Definir a versão do Windows"), bottle,
                              ["winecfg", "/v", bottle.windowsVersion.rawValue], logName: "winecfg")
     }
 
@@ -42,7 +42,7 @@ public struct WineLauncher: Sendable {
     /// when it starts, so the session `reg` itself started (with the old value) is ended afterwards.
     /// Programs already running keep the modes they saw; close the bottle first.
     public func applyDisplayModes(_ bottle: Bottle) async throws {
-        try await runChecked("Mudar as resoluções da garrafa", bottle,
+        try await runChecked(String(localized: "Mudar as resoluções da garrafa"), bottle,
                              Self.displayModesArguments(bottle.extraDisplayModes), logName: "reg")
         try await shutdown(bottle)
     }
@@ -55,7 +55,7 @@ public struct WineLauncher: Sendable {
     public func runInstaller(_ bottle: Bottle, file: URL, arguments: [String] = []) async throws {
         let isMSI = file.pathExtension.lowercased() == "msi"
         let args = isMSI ? ["msiexec", "/i", file.path] + arguments : [file.path] + arguments
-        try await runChecked("O instalador", bottle, args,
+        try await runChecked(String(localized: "O instalador"), bottle, args,
                              logName: "install-\(file.deletingPathExtension().lastPathComponent)")
     }
 

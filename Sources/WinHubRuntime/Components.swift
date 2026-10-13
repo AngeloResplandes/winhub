@@ -126,18 +126,18 @@ public enum GraphicsBackend: String, Codable, Sendable, CaseIterable {
 
     public var title: String {
         switch self {
-        case .auto: "Automático (o melhor que funcionar)"
-        case .wined3d: "Wine (padrão)"
+        case .auto: String(localized: "Automático (o melhor que funcionar)")
+        case .wined3d: String(localized: "Wine (padrão)")
         case .dxvk: "DXVK (Direct3D 10/11 via Vulkan)"
         case .dxmt: "DXMT (Direct3D 10/11 via Metal)"
-        case .d3dmetal: "D3DMetal (Direct3D 11/12, da Apple)"
+        case .d3dmetal: String(localized: "D3DMetal (Direct3D 11/12, da Apple)")
         }
     }
 
     /// Short name for buttons and lists.
     public var shortTitle: String {
         switch self {
-        case .auto: "Automático"
+        case .auto: String(localized: "Automático")
         case .wined3d: "Wine"
         case .dxvk: "DXVK"
         case .dxmt: "DXMT"
@@ -207,10 +207,10 @@ public enum GraphicsError: Error, LocalizedError, Equatable {
 
     public var errorDescription: String? {
         switch self {
-        case .programNotFound(let path): "O programa \(path) não foi encontrado na garrafa."
-        case .unknownArchitecture(let name): "Não foi possível saber se \(name) é de 32 ou 64 bits."
-        case .programShipsDLL(let dll): "O programa já traz o próprio \(dll).dll; o WinHub não vai substituí-lo."
-        case .unsupported(let backend): "O motor instalado não oferece \(backend.shortTitle)."
+        case .programNotFound(let path): String(localized: "O programa \(path) não foi encontrado na garrafa.")
+        case .unknownArchitecture(let name): String(localized: "Não foi possível saber se \(name) é de 32 ou 64 bits.")
+        case .programShipsDLL(let dll): String(localized: "O programa já traz o próprio \(dll).dll; o WinHub não vai substituí-lo.")
+        case .unsupported(let backend): String(localized: "O motor instalado não oferece \(backend.shortTitle).")
         }
     }
 }
@@ -339,7 +339,7 @@ extension WineLauncher {
             for dll in backend.overriddenDLLs {
                 let status = try await run(updated, ["reg", "add", key, "/v", dll, "/d", "native,builtin", "/f"], logName: "reg")
                 guard status == 0 else {
-                    throw WineLauncherError.failed(step: "Registrar \(dll) para \(exe.lastPathComponent)", status: status,
+                    throw WineLauncherError.failed(step: String(localized: "Registrar \(dll) para \(exe.lastPathComponent)"), status: status,
                                                    log: logURL(updated, "reg"))
                 }
             }

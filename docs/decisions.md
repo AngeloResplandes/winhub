@@ -4,6 +4,13 @@
 
 A dated record of the decisions that shaped WinHub, newest first.
 
+## 2026-10-13: Declare the microphone in WinHub's Info.plist
+
+macOS counts Wine processes started by WinHub as WinHub for privacy checks. With no
+`NSMicrophoneUsageDescription`, it refuses the microphone **without asking** and ends the thread that asked, so games
+with voice chat (Lethal Company, PEAK) hung while loading. `package-app.sh` now declares it (Portuguese in
+`Info.plist`, English in `en.lproj/InfoPlist.strings`), and macOS asks the person the first time.
+
 ## 2026-10-12: Document the reverse engineering openly
 
 The old rule forbade mentioning any reverse engineering. WinHub now documents what was studied in CrossOver and

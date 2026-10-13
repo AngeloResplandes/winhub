@@ -43,7 +43,7 @@ Testes: [`SearchEngineTests`](https://github.com/AngeloResplandes/winhub/blob/ma
 
 | | CrossOver 26.3 | WinHub |
 |---|---|---|
-| Catálogo | o próprio (milhares de entradas), baixado e assinado pela CodeWeavers | o `catalog.json` do WinHub (31 títulos hoje), baixado deste repositório |
+| Catálogo | o próprio (milhares de entradas), baixado e assinado pela CodeWeavers | o `catalog.json` do WinHub (34 títulos hoje), baixado deste repositório |
 | Escape | — | `\` também escapa o caractere seguinte |
 | Notas | medalhas por versão do CrossOver | uma nota por título, dos testes do próprio WinHub |
 

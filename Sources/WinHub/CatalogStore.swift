@@ -13,7 +13,7 @@ final class CatalogStore {
 
         var label: String {
             switch self {
-            case .official: "Catálogo do WinHub"
+            case .official: String(localized: "Catálogo do WinHub")
             case .imported(let url): url.lastPathComponent
             }
         }

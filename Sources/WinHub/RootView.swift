@@ -34,6 +34,14 @@ struct RootView: View {
                         }
                         .tag(Section.bottle(bottle.id))
                     }
+                    if let status = wine.activity[WineStore.importActivity] {
+                        HStack {
+                            Label(status, systemImage: "square.and.arrow.down")
+                            Spacer()
+                            ProgressView().controlSize(.small)
+                        }
+                        .foregroundStyle(.secondary)
+                    }
                     Button { isCreatingBottle = true } label: {
                         Label("Nova garrafa…", systemImage: "plus")
                     }

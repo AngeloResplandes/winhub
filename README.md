@@ -36,7 +36,7 @@ CrossOver code or data is used.
 | **Catalog with search** | words in order, ignoring case and accents, names in your language; the same rules as CrossOver's search |
 | **One-click recipes** | Steam installs and opens with one click; Steam games get "Jogar pela Steam" |
 | **Any installer** | pick an `.exe` or `.msi` and a bottle (⌘I) |
-| **Bottles** | each with its Windows version, Direct3D, msync, performance HUD and winetricks components |
+| **Bottles** | each with its Windows version, Direct3D, msync, performance HUD and winetricks components; export and import (`.winhubbottle`) |
 | **Direct3D per bottle or per game** | Automático, Wine, DXMT (Metal), DXVK (Vulkan) or your own D3DMetal ([Graphics](docs/graphics.md)) |
 | **Steam that works** | a small wrapper fixes Steam's black window on Wine 11 for macOS |
 | **Shortcuts** | `~/Applications/WinHub/<bottle>/<program>.app`, for the Finder, Spotlight and the Dock |
@@ -56,9 +56,10 @@ CrossOver code or data is used.
 - **D3DMetal** (Apple's Game Porting Toolkit) is not included: Apple's license does not allow redistributing it.
   If you have it, point **Ajustes → D3DMetal** to it.
 - Wine's own Direct3D only reaches feature level 9_3 on macOS; Direct3D 11 games need DXMT, DXVK or D3DMetal.
-- Games only see the Mac screen's own display modes (no 1920×1080 on most Macs).
+- Games see the Mac screen's own display modes; **Resoluções extras** adds 16:9 and others up to the screen size in
+  points, so 1920×1080 is still missing on most Macs.
 - The engine is x86_64: Apple silicon Macs need **Rosetta 2**, whose general support Apple keeps until macOS 27.
-- The interface is in Brazilian Portuguese only.
+- The interface is in Brazilian Portuguese and English (it follows the macOS language).
 
 ## Install
 

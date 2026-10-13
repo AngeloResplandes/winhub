@@ -4,6 +4,13 @@
 
 Registro datado das decisões que deram forma ao WinHub, das mais novas para as mais antigas.
 
+## 2026-10-13: Declarar o microfone no Info.plist do WinHub
+
+O macOS conta os processos do Wine abertos pelo WinHub como sendo do WinHub nas verificações de privacidade. Sem
+`NSMicrophoneUsageDescription`, ele recusa o microfone **sem perguntar** e encerra a thread que pediu; por isso jogos
+com chat de voz (Lethal Company, PEAK) travavam no carregamento. O `package-app.sh` agora declara o uso (português no
+`Info.plist`, inglês no `en.lproj/InfoPlist.strings`), e o macOS pergunta à pessoa na primeira vez.
+
 ## 2026-10-12: Documentar a engenharia reversa abertamente
 
 A regra antiga proibia mencionar qualquer engenharia reversa. Agora o WinHub documenta o que foi estudado no

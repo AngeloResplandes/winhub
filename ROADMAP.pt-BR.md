@@ -17,7 +17,7 @@ Resumo em uma página. Detalhes: [paridade com o CrossOver](docs/pt-BR/crossover
 | Busca do catálogo | os mesmos resultados do CrossOver nos casos comparados | medido |
 | Steam | instala com um clique; login salvo mantido entre motores | medido |
 | Jogo Direct3D 11 | Hollow Knight a 60 FPS pelo DXMT | medido |
-| Catálogo | 31 títulos, 1 receita | medido |
+| Catálogo | 34 títulos, 1 receita, 6 relatórios de compatibilidade | medido |
 
 ## Feito
 
@@ -29,14 +29,16 @@ Resumo em uma página. Detalhes: [paridade com o CrossOver](docs/pt-BR/crossover
   escolhidos pelo motor sem nada copiado para as garrafas.
 - Banco de regras por jogo assinado, do winhub-engine.
 - A revisão 2 do motor (`wine-11.0-r2`) é o motor padrão.
+- Ícones dos programas, lidos do `.exe` de cada um, nas listas e nos atalhos `.app`.
+- Interface em inglês (String Catalog), seguindo o idioma do macOS; resumos em inglês no catálogo.
+- Exportar e importar garrafas (`.winhubbottle`).
+- Resoluções extras: os modos de tela emulados do Wine (16:9 e outros até o tamanho da tela) por garrafa.
 
 ## Próximos passos
 
 1. **Mais títulos testados:** entradas no catálogo, receitas e um relatório de compatibilidade por jogo.
-2. **Interface em inglês** (String Catalogs), depois outros idiomas.
-3. **Exportar e importar garrafas.**
-4. **Ícones dos programas** nas listas e nos atalhos.
-5. **Versões notarizadas.**
+2. **Versões notarizadas.**
+3. **Mais idiomas na interface**, no mesmo String Catalog.
 
 ## Histórico de revisões
 
@@ -44,3 +46,6 @@ Resumo em uma página. Detalhes: [paridade com o CrossOver](docs/pt-BR/crossover
 |---|---|
 | 2026-10-12 | Primeiro roadmap. |
 | 2026-10-12 | A revisão 2 do motor é o padrão. |
+| 2026-10-12 | Ícones dos programas e resoluções extras prontos. |
+| 2026-10-12 | Interface em inglês pronta. |
+| 2026-10-12 | Exportar e importar garrafas prontos. |
