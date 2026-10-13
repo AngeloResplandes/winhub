@@ -9,6 +9,19 @@ public enum WineServerStatus {
         return isRunning(serverDirectory: directory)
     }
 
+    /// Pid of the bottle's live wineserver, or `nil` when the bottle is not running.
+    public static func serverPID(prefix: URL) -> pid_t? {
+        serverDirectory(prefix: prefix).flatMap(lockOwner(serverDirectory:))
+    }
+
+    /// Executable of a running process as the kernel reports it (symlinks resolved, `/private/tmp/…`),
+    /// or `nil` when there is no such process.
+    public static func executablePath(pid: pid_t) -> String? {
+        var buffer = [CChar](repeating: 0, count: Int(4 * MAXPATHLEN))
+        guard proc_pidpath(pid, &buffer, UInt32(buffer.count)) > 0 else { return nil }
+        return String(cString: buffer)
+    }
+
     /// The socket is not enough: it stays behind when the wineserver is killed.
     static func isRunning(serverDirectory: URL) -> Bool {
         lockOwner(serverDirectory: serverDirectory) != nil
