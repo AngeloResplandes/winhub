@@ -77,6 +77,29 @@ import Testing
         #expect(BottleSession.read(imported) == nil)
     }
 
+    @Test func exportLeavesTheLogsAndTheSessionRecordOut() async throws {
+        let dir = try makeTempDirectory()
+        defer { try? FileManager.default.removeItem(at: dir) }
+        let store = BottleStore(root: dir.appending(path: "A"))
+        let bottle = try makeBottle(in: store, user: "ana", home: dir.appending(path: "Users/ana"))
+        try BottleSession.write(BottleSession(pid: 42, appPath: "/Applications/WinHub.app/Contents/MacOS/WinHub"), to: bottle)
+        let archive = dir.appending(path: "Jogo.winhubbottle")
+        try await BottleArchive.export(bottle, to: archive)
+
+        let unpacked = dir.appending(path: "unpacked")
+        _ = try ProcessRunner.run(URL(fileURLWithPath: "/usr/bin/ditto"), arguments: ["-x", "-k", archive.path, unpacked.path])
+        let folder = unpacked.appending(path: bottle.folder.lastPathComponent)
+        let fm = FileManager.default
+        #expect(fm.fileExists(atPath: folder.appending(path: BottleStore.fileName).path))
+        #expect(fm.fileExists(atPath: folder.appending(path: "prefix/system.reg").path))
+        #expect(!fm.fileExists(atPath: folder.appending(path: "logs").path))
+        #expect(!fm.fileExists(atPath: folder.appending(path: "session.json").path))
+        // The bottle itself keeps them, and no copy is left next to it.
+        #expect(fm.fileExists(atPath: bottle.logs.appending(path: "steam.log").path))
+        #expect(BottleSession.read(bottle) != nil)
+        #expect(try fm.contentsOfDirectory(atPath: store.root.path) == [bottle.folder.lastPathComponent])
+    }
+
     @Test func importingNextToTheOriginalGetsAnotherName() async throws {
         let dir = try makeTempDirectory()
         defer { try? FileManager.default.removeItem(at: dir) }

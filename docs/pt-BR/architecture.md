@@ -26,7 +26,7 @@ interface.
 | | `WineEnvironment` | Monta o ambiente dos processos do Wine (uma função pura) |
 | | `WineLauncher`, `ProgramScanner`, `WineServerStatus`, `WineOrphanReaper` | Roda o Wine, encontra os programas instalados, sabe se a garrafa está rodando, limpa processos órfãos |
 | | `BottleSession`, `BottleGuard` | Registra qual WinHub roda o Wine numa garrafa; decide se outro WinHub, motor ou Steam está no caminho |
-| | `BottleArchive` | Exporta uma garrafa para um arquivo `.winhubbottle` e importa uma como garrafa nova |
+| | `BottleArchive` | Exporta uma garrafa (sem os logs e o registro de sessão) para um arquivo `.winhubbottle` e importa uma como garrafa nova |
 | | `ShellLink`, `ProgramIcon` | Lê o alvo de um atalho e o ícone do programa no `.exe` (remontado como `.ico`) |
 | | `ComponentManager`, `GraphicsBackend` | DXVK e winetricks; o Direct3D da garrafa e de cada programa ([Gráficos](graphics.md)) |
 | | `CompatRules`, `D3DMetal`, `CompatDatabaseSync` | Regras da garrafa para o motor, o D3DMetal do usuário, o banco de regras assinado |

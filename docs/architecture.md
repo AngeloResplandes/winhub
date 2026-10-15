@@ -25,7 +25,7 @@ Tests/                   unit and integration tests (Swift Testing)
 | | `WineEnvironment` | Builds the environment of Wine processes (a pure function) |
 | | `WineLauncher`, `ProgramScanner`, `WineServerStatus`, `WineOrphanReaper` | Runs Wine, finds installed programs, knows whether a bottle is running, cleans up orphaned processes |
 | | `BottleSession`, `BottleGuard` | Records which WinHub runs Wine in a bottle; decides whether another WinHub, engine or Steam is in the way |
-| | `BottleArchive` | Exports a bottle to a `.winhubbottle` file and imports one as a new bottle |
+| | `BottleArchive` | Exports a bottle (without its logs and session record) to a `.winhubbottle` file and imports one as a new bottle |
 | | `ShellLink`, `ProgramIcon` | Reads a shortcut's target and the program's icon from its `.exe` (rebuilt as an `.ico`) |
 | | `ComponentManager`, `GraphicsBackend` | DXVK and winetricks; the bottle's and each program's Direct3D ([Graphics](graphics.md)) |
 | | `CompatRules`, `D3DMetal`, `CompatDatabaseSync` | Per-bottle rules for the engine, the user's D3DMetal, the signed rule database |

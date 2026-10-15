@@ -14,15 +14,28 @@ public enum BottleArchiveError: Error, LocalizedError, Equatable {
 
 /// A bottle in one file (`.winhubbottle`, a zip made by `ditto`), to back it up or take it to another Mac.
 ///
-/// The folder goes as it is, symbolic links included (never followed, so the Mac user's own folders stay out).
+/// The folder goes as it is, symbolic links included (never followed, so the Mac user's own folders stay out),
+/// except its logs and its session record.
 /// Importing makes a new bottle: a new id (shortcuts and the running state are keyed by it), a free name, and
 /// the profile's shell folders (Desktop, Documents…) pointed at this Mac's home. Close the bottle before exporting.
 public enum BottleArchive {
     public static let fileExtension = "winhubbottle"
 
     public static func export(_ bottle: Bottle, to destination: URL) async throws {
-        try? FileManager.default.removeItem(at: destination)
-        let result = try await ditto(["-c", "-k", "--sequesterRsrc", "--keepParent", bottle.folder.path, destination.path])
+        let fm = FileManager.default
+        try? fm.removeItem(at: destination)
+        // An APFS clone (instant, no extra space) without the logs and the record of which WinHub used it.
+        let staging = bottle.folder.deletingLastPathComponent()
+            .appending(path: ".export-\(UUID().uuidString)", directoryHint: .isDirectory)
+        try fm.createDirectory(at: staging, withIntermediateDirectories: true)
+        defer { try? fm.removeItem(at: staging) }
+        let copy = staging.appending(path: bottle.folder.lastPathComponent, directoryHint: .isDirectory)
+        let clone = try await run("/bin/cp", ["-cR", bottle.folder.path, copy.path])
+        guard clone.status == 0 else { throw BottleArchiveError.failed(clone.output) }
+        try? fm.removeItem(at: copy.appending(path: "logs"))
+        try? fm.removeItem(at: copy.appending(path: BottleSession.fileName))
+
+        let result = try await ditto(["-c", "-k", "--sequesterRsrc", "--keepParent", copy.path, destination.path])
         guard result.status == 0 else { throw BottleArchiveError.failed(result.output) }
     }
 
@@ -58,8 +71,12 @@ public enum BottleArchive {
 
     /// Big bottles take a while; never on the caller's thread (it may be the main one).
     private static func ditto(_ arguments: [String]) async throws -> ProcessRunner.Result {
+        try await run("/usr/bin/ditto", arguments)
+    }
+
+    private static func run(_ tool: String, _ arguments: [String]) async throws -> ProcessRunner.Result {
         try await Task.detached(priority: .userInitiated) {
-            try ProcessRunner.run(URL(fileURLWithPath: "/usr/bin/ditto"), arguments: arguments)
+            try ProcessRunner.run(URL(fileURLWithPath: tool), arguments: arguments)
         }.value
     }
 

@@ -11,8 +11,11 @@ uninstalled its games, as two Steams in two bottles had done on 2026-10-11. WinH
 `<bottle>/session.json` (its pid and path) when it runs Wine in a bottle and checks, before every action that runs
 Wine in an existing bottle, that no other open WinHub and no other engine's `wineserver` is using it, and, when opening a program in a
 bottle with Steam, that no other bottle with Steam is running. Otherwise it asks before ending them
-("Encerrar e abrir"). Two WinHubs clicking at the same second on a stopped bottle are not covered. It only
-protects against copies of WinHub that have it too: an older WinHub never writes the record.
+("Encerrar e abrir", or "Encerrar e continuar" for actions that open no program). Two WinHubs clicking at the
+same second on a stopped bottle are not covered. An older WinHub never writes the record, so a running bottle with
+no live record counts as used while a WinHub from before 0.2.13 is open (found through the running apps; newer
+copies carry `WinHubBottleGuard` in their `Info.plist`). An older WinHub does not check the record either: it can
+still open a bottle this one is using.
 
 ## 2026-10-13: Declare the microphone in WinHub's Info.plist
 

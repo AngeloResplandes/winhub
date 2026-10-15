@@ -11,8 +11,11 @@ Steam desinstalou os jogos, como duas Steams em duas garrafas já tinham feito e
 `<garrafa>/session.json` (seu pid e caminho) quando roda o Wine numa garrafa e confere, antes de cada ação que roda
 o Wine numa garrafa existente, que nenhum outro WinHub aberto e nenhum `wineserver` de outro motor está usando a garrafa e, ao abrir um
 programa numa garrafa com Steam, que nenhuma outra garrafa com Steam está rodando. Se houver, pergunta antes de
-encerrá-los ("Encerrar e abrir"). Dois WinHub clicando no mesmo segundo numa garrafa parada não são cobertos. Só protege contra cópias do WinHub
-que também a têm: um WinHub mais antigo não grava o registro.
+encerrá-los ("Encerrar e abrir", ou "Encerrar e continuar" nas ações que não abrem programa). Dois WinHub clicando no
+mesmo segundo numa garrafa parada não são cobertos. Um WinHub mais antigo não grava o registro, então uma garrafa
+rodando sem registro vivo conta como em uso enquanto houver aberto um WinHub anterior à 0.2.13 (achado pelos apps em
+execução; as cópias novas levam `WinHubBottleGuard` no `Info.plist`). Um WinHub mais antigo também não confere o
+registro: ele ainda pode abrir uma garrafa que este está usando.
 
 ## 2026-10-13: Declarar o microfone no Info.plist do WinHub
 

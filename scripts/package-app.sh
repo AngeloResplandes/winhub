@@ -59,6 +59,8 @@ cat > "$APP/Contents/Info.plist" <<PLIST
     <key>LSMinimumSystemVersion</key><string>14.0</string>
     <key>LSApplicationCategoryType</key><string>public.app-category.games</string>
     <key>NSHighResolutionCapable</key><true/>
+    <!-- Tells other WinHub copies this one records the bottles it uses (BottleGuard.hasGuard). -->
+    <key>WinHubBottleGuard</key><true/>
     <key>NSMicrophoneUsageDescription</key><string>Programas e jogos do Windows abertos pelo WinHub podem usar o microfone, por exemplo para chat de voz.</string>
     <key>WinHubUpdateRepository</key><string>$REPOSITORY</string>
     <key>CFBundleURLTypes</key>

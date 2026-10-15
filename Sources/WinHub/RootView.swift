@@ -86,7 +86,11 @@ struct RootView: View {
                             isPresented: $wine.isShowingConflict,
                             titleVisibility: .visible, presenting: wine.pendingConflict) { pending in
             // `pending` is captured: dismissing the dialog clears `pendingConflict` before the task runs.
-            Button("Encerrar e abrir", role: .destructive) { Task { await wine.resolveConflict(pending) } }
+            if pending.opensProgram {
+                Button("Encerrar e abrir", role: .destructive) { Task { await wine.resolveConflict(pending) } }
+            } else {
+                Button("Encerrar e continuar", role: .destructive) { Task { await wine.resolveConflict(pending) } }
+            }
             Button("Cancelar", role: .cancel) { wine.cancelConflict() }
         } message: { pending in
             Text(Self.message(for: pending))

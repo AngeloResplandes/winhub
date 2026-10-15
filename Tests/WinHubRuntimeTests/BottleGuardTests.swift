@@ -62,9 +62,38 @@ import Testing
     let otherEngine = "/Users/me/Library/Application Support/WinHub/Runtimes/r2/Wine.app/Contents/Resources/wine/bin/wineserver"
     let installed = "/Applications/WinHub.app/Contents/MacOS/WinHub"
 
-    func conflict(server: String?, session: BottleSession?, sessionExecutable: String?, ownPID: pid_t = 20) -> BottleConflict? {
+    let older = "/Users/me/Downloads/WinHub.app/Contents/MacOS/WinHub"
+
+    func conflict(server: String?, session: BottleSession?, sessionExecutable: String?, ownPID: pid_t = 20,
+                  guardless: [String] = []) -> BottleConflict? {
         BottleGuard.conflict(serverPath: server, ownWineserver: engine, session: session,
-                             sessionExecutable: sessionExecutable, ownPID: ownPID)
+                             sessionExecutable: sessionExecutable, ownPID: ownPID, guardlessWinHubs: guardless)
+    }
+
+    @Test func anOpenWinHubWithoutTheGuardHoldsARunningBottleNobodyClaimed() {
+        #expect(conflict(server: engine, session: nil, sessionExecutable: nil, guardless: [older]) == .otherWinHub(appPath: older))
+        #expect(conflict(server: engine, session: BottleSession(pid: 10, appPath: installed), sessionExecutable: nil,
+                         guardless: [older]) == .otherWinHub(appPath: older))
+    }
+
+    @Test func aWinHubWithoutTheGuardDoesNotTouchAStoppedBottle() {
+        #expect(conflict(server: nil, session: nil, sessionExecutable: nil, guardless: [older]) == nil)
+    }
+
+    @Test func aBottleThisWinHubClaimedIgnoresWinHubsWithoutTheGuard() {
+        #expect(conflict(server: engine, session: BottleSession(pid: 20, appPath: installed), sessionExecutable: installed,
+                         guardless: [older]) == nil)
+    }
+
+    @Test func versionsFromTheGuardOnHaveIt() {
+        #expect(!BottleGuard.hasGuard(version: "0.2.12", marker: false))
+        #expect(!BottleGuard.hasGuard(version: "0.2.0", marker: false))
+        #expect(!BottleGuard.hasGuard(version: nil, marker: false))
+        #expect(!BottleGuard.hasGuard(version: "beta", marker: false))
+        #expect(BottleGuard.hasGuard(version: "0.2.13", marker: false))
+        #expect(BottleGuard.hasGuard(version: "0.2.140", marker: false))
+        #expect(BottleGuard.hasGuard(version: "0.3", marker: false))
+        #expect(BottleGuard.hasGuard(version: "0.2.0", marker: true))
     }
 
     @Test func aStoppedBottleIsFreeWhateverItsRecord() {
