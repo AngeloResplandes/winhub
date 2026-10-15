@@ -151,6 +151,9 @@ Dated decisions are in `docs/decisions.md`. The pitfalls an agent must know:
   goes to whichever WinHub macOS picks (possibly `/Applications/WinHub.app`); use `open -a <app> <url>` in tests.
 - **Never run Wine from inside a shortcut `.app`'s process.** Programs started that way hang (Steam stops at
   "Verifying…"). That is why shortcuts delegate to WinHub through `winhub://`.
+- **One main window (`Window`, not `WindowGroup`).** A `WindowGroup` opened a new window for every `winhub://`
+  link, each with its own dialogs and startup task, and macOS brought them all back on the next launch. A
+  `Window` scene receives `onOpenURL` in its single window; closing it quits the app.
 - **Orphans of a dead wineserver.** If wineserver dies without ending its clients (for example SIGKILL),
   `winebus.sys`'s `winedevice.exe` lives forever (an IOHID loop that never talks to the server; Wine handles
   SIGTERM by ending only one thread). The next wineserver reuses the folder `/tmp/.wine-<uid>/server-<dev>-<inode>/`

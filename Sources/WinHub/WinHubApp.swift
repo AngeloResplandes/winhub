@@ -10,7 +10,9 @@ struct WinHubApp: App {
     @State private var updates = UpdateStore()
 
     var body: some Scene {
-        WindowGroup("WinHub") {
+        // One window: a WindowGroup opened a new one for every winhub:// link (each with its own dialogs
+        // and startup task), and they all came back on the next launch.
+        Window("WinHub", id: "main") {
             RootView()
                 .environment(store)
                 .environment(wine)
@@ -22,7 +24,6 @@ struct WinHubApp: App {
                 }
                 .onOpenURL { wine.handle($0) }
         }
-        .handlesExternalEvents(matching: ["*"])
         .commands {
             CommandGroup(after: .appInfo) {
                 Button("Procurar Atualizações…") {
