@@ -14,7 +14,7 @@ Resultados nossos, medidos no WinHub.
 | Garrafa | Steam, Windows 10, gráficos da garrafa: Wine |
 | Jogo | "The Witcher 3: Wild Hunt — Remastered", build 25773555 (74 GB) |
 
-## Resultado: instala, mas não abre
+## Resultado (versão atual): instala, mas não abre
 
 - **A versão atual é só DirectX 12.** O `launcher-configuration.json` lista apenas `bin\x64_dx12\witcher3.exe`, e a
   pasta `bin\x64` (DX11) não existe. O modo DX11 só existe no ramo beta "classic" da Steam (1.32).
@@ -24,11 +24,20 @@ Resultados nossos, medidos no WinHub.
   Support for DirectX 12 is required." O D3D12 do Wine (vkd3d sobre MoltenVK) não oferece o que o jogo exige, e o
   DXMT v0.80 não tem D3D12.
 
-## Revisão 2 do motor
+## 15/10/2026: o ramo "classic" (1.32, DX11) na revisão 3 do motor
 
-Ainda não testado de novo: o jogo foi desinstalado em 2026-10-11 ([por quê](../decisions.md#2026-10-11-nunca-abrir-duas-steams-da-mesma-garrafa)).
-Na revisão 2, o caminho esperado é o **D3DMetal** (Direct3D 12) para quem tem o Game Porting Toolkit; sem ele, o
-resultado deve continuar o mesmo.
+Mesmo Mac (macOS 27.0.1), motor `winhub-wine-11.0-r3`, sem D3DMetal, um clone APFS da garrafa Steam (Windows 10,
+msync desligado, Metal HUD ligado, Direct3D "Automático"). Ramo beta `classic` da Steam, build 3280809, com as duas
+expansões. O `bin\x64\witcher3.exe` rodou direto, com `SteamAppId`/`SteamGameId`, enquanto a Steam da garrafa
+estava aberta.
+
+| Backend | Resultado |
+|---|---|
+| DXMT ("Automático") | **Início jogável.** Menu principal em português a 60 FPS (GPU abaixo de 1 ms); menus de jogo novo, dificuldade e tutoriais; as cenas do prólogo no motor do jogo a 58–60 FPS, GPU de 12–17 ms por quadro, nos ajustes que o jogo escolheu (1470×956). |
+| DXVK | não tentado (o DXMT já roda o jogo). |
+
+Não conferido: a versão atual (DX12) com D3DMetal, combate e áreas abertas, o REDprelauncher que a Steam abre neste
+ramo (o jogo foi aberto direto).
 
 ## O mesmo vale para
 
@@ -36,7 +45,7 @@ Resident Evil 4 Remake e Hogwarts Legacy também são só D3D12 (não testados p
 
 ## Caminhos
 
-1. Ramo beta "classic" (1.32, DX11) na Steam, para testar o jogo com DXMT ou DXVK.
+1. Ramo beta "classic" (1.32, DX11) na Steam: roda com DXMT (15/10/2026, acima).
 2. D3D12 no motor: o DXMT trabalha num D3D12 experimental depois da v0.80 (licença LGPL a partir daí); ou o
    D3DMetal do usuário na revisão 2.
 3. O launcher que trava pode ser evitado com a opção de abertura `--launcher-skip` na Steam, quando o jogo em si

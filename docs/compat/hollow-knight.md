@@ -82,6 +82,13 @@ with Resoluções extras on, driven by [`scripts/game-test.swift`](README.md#tes
 - **The intro cinematic is black:** Unity logs `WindowsVideoMedia error 0xc00d36bb` for the video; the game goes on
   after it. The engine has no H.264 video decoding yet (winhub-engine's gap "Game videos").
 
+### 2026-10-15: engine revision 3, "Automático"
+
+Same Mac (macOS 27.0.1), engine `winhub-wine-11.0-r3`, no D3DMetal, a new APFS clone of the Steam bottle (msync off,
+Metal HUD on), no per-program choice and no rule. "Automático" picked **DXMT** for the game by itself
+(`backend-of`: dxmt): the language screen at 60 FPS, GPU about 1 ms per frame. Choosing DXMT for the game by hand is
+no longer needed.
+
 ## How to reproduce
 
 - The game must be opened through Steam. Opened directly, it quits with "Application was not launched through

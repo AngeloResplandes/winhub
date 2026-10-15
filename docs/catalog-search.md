@@ -43,7 +43,7 @@ Tests: [`SearchEngineTests`](https://github.com/AngeloResplandes/winhub/blob/mai
 
 | | CrossOver 26.3 | WinHub |
 |---|---|---|
-| Catalog | its own (thousands of entries), downloaded and signed by CodeWeavers | WinHub's `catalog.json` (34 titles today), downloaded from this repository |
+| Catalog | its own (thousands of entries), downloaded and signed by CodeWeavers | WinHub's `catalog.json` (35 titles today), downloaded from this repository |
 | Escaping | — | `\` also escapes the next character |
 | Ratings | medals per CrossOver version | one rating per title, from WinHub's own tests |
 

@@ -45,17 +45,22 @@
     },
     "rating": 4,
     "isFeatured": true,
-    "steamID": 489830
+    "steamID": 489830,
+    "steamGame": {
+      "installDir": "Skyrim Special Edition",
+      "executable": "SkyrimSE.exe",
+      "graphics": "dxvk"
+    }
   },
   {
     "id": "winhub.sample.5",
     "name": "The Witcher 3: Wild Hunt",
     "category": "Games/Role Playing Games",
-    "summary": "RPG de fantasia sombria com Geralt de Rívia.",
+    "summary": "RPG de fantasia sombria com Geralt de Rívia. Roda no ramo beta “classic” (DirectX 11) da Steam.",
     "localizedSummaries": {
-      "en": "Dark fantasy RPG with Geralt of Rivia."
+      "en": "Dark fantasy RPG with Geralt of Rivia. Runs on Steam's “classic” beta branch (DirectX 11)."
     },
-    "rating": 2,
+    "rating": 3,
     "isFeatured": true,
     "steamID": 292030
   },
@@ -428,5 +433,17 @@
       "installDir": "PEAK",
       "executable": "PEAK.exe"
     }
+  },
+  {
+    "id": "winhub.sample.35",
+    "name": "Persona 5 Royal",
+    "category": "Games/Role Playing Games",
+    "summary": "RPG por turnos dos Ladrões Fantasmas de Corações.",
+    "localizedSummaries": {
+      "en": "Turn-based RPG of the Phantom Thieves of Hearts."
+    },
+    "rating": 2,
+    "isFeatured": false,
+    "steamID": 1687950
   }
 ]

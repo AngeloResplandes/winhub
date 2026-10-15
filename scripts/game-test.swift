@@ -8,7 +8,7 @@
 // test runs, the game takes the screen and keyboard: do not use the Mac. Test on a clone of a bottle,
 // never with two Steam instances of the same bottle (AGENTS.md, "Testing games").
 //
-//   game-test launch <bottle folder> <steam app id>
+//   game-test launch <bottle folder> <steam app id>       starts Steam if needed (GAME_TEST_HUD=1: Metal HUD)
 //   game-test backend <bottle folder> <Windows path of the .exe> <auto|wined3d|dxmt|dxvk|d3dmetal>
 //   game-test wait <window title part> [seconds]          prints: <window id> <pid> <width>x<height>
 //   game-test shot <window id> <file.png> [max width]
@@ -17,7 +17,8 @@
 //   game-test click <window id> <x 0…1> <y 0…1> [right]
 //   game-test backend-of <pid>                             prints: d3dmetal, dxmt, dxvk or wined3d
 //   game-test fps <pid> [seconds]                         average FPS from the Metal HUD log (needs
-//                                                          MTL_HUD_ENABLED=1 and MTL_HUD_LOG_ENABLED=1 in the game)
+//                                                          MTL_HUD_ENABLED=1 and MTL_HUD_LOG_ENABLED=1 in the game,
+//                                                          for example `GAME_TEST_HUD=1 game-test launch …`)
 //   game-test quit <pid>
 import AppKit
 import CoreGraphics
@@ -47,8 +48,7 @@ func run(_ path: String, _ arguments: [String], environment: [String: String]? =
 // MARK: - Bottles and Steam
 
 let home = FileManager.default.homeDirectoryForCurrentUser
-let runtime = ProcessInfo.processInfo.environment["WINHUB_RUNTIME"]
-    ?? home.appending(path: "Library/Application Support/WinHub/Runtimes/winhub-wine-11.0-r2/Wine Devel.app/Contents/Resources/wine").path
+let winhubHome = home.appending(path: "Library/Application Support/WinHub").path
 
 func bottleSettings(_ folder: String) -> [String: Any] {
     guard let data = FileManager.default.contents(atPath: folder + "/bottle.json"),
@@ -56,13 +56,32 @@ func bottleSettings(_ folder: String) -> [String: Any] {
     return json
 }
 
-/// Asks the bottle's running Steam to start the game. The bottle's msync setting must match the running wineserver.
+/// `WINHUB_RUNTIME`, or the engine the bottle uses.
+func runtime(_ settings: [String: Any]) -> String {
+    if let path = ProcessInfo.processInfo.environment["WINHUB_RUNTIME"] { return path }
+    let id = settings["runtimeID"] as? String ?? "winhub-wine-11.0-r3"
+    return winhubHome + "/Runtimes/\(id)/Wine Devel.app/Contents/Resources/wine"
+}
+
+/// Asks the bottle's Steam to start the game, starting Steam first if it is not running, with the environment
+/// WinHub gives Wine (WineEnvironment.make), so the engine's rules and the bottle's Direct3D apply. The bottle's
+/// msync setting must match a running wineserver. GAME_TEST_HUD=1 turns on the Metal HUD and its log (for `fps`).
 func launch(bottle: String, appID: String) {
     let settings = bottleSettings(bottle)
-    var env = ["HOME": home.path, "USER": NSUserName(), "WINEPREFIX": bottle + "/prefix", "WINEDEBUG": "-all",
-               "ROSETTA_ADVERTISE_AVX": "1", "PATH": runtime + "/bin:/usr/bin:/bin"]
+    let wine = runtime(settings)
+    var env = ["HOME": home.path, "USER": NSUserName(), "WINEPREFIX": bottle + "/prefix", "WINEDEBUG": "fixme-all",
+               "ROSETTA_ADVERTISE_AVX": "1", "DOTNET_EnableWriteXorExecute": "0",
+               "PATH": wine + "/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+               "WINHUB_GRAPHICS_BACKEND": settings["graphics"] as? String ?? "auto",
+               "WINHUB_COMPAT_RULES": bottle + "/compat-rules.json", "WINHUB_HOME": winhubHome]
     if settings["msync"] as? Bool == true { env["WINEMSYNC"] = "1" }
-    _ = run(runtime + "/bin/wine", [#"C:\Program Files (x86)\Steam\steam.exe"#, "-applaunch", appID],
+    if settings["nvidiaExtensions"] as? Bool == true { env["DXMT_ENABLE_NVEXT"] = "1" }
+    if settings["performanceHUD"] as? Bool == true || ProcessInfo.processInfo.environment["GAME_TEST_HUD"] == "1" {
+        env["MTL_HUD_ENABLED"] = "1"
+        env["MTL_HUD_LOG_ENABLED"] = "1"
+    }
+    env.merge(settings["environment"] as? [String: String] ?? [:]) { _, bottleValue in bottleValue }
+    _ = run(wine + "/bin/wine", [#"C:\Program Files (x86)\Steam\steam.exe"#, "-applaunch", appID],
             environment: env, wait: false)
 }
 
@@ -175,8 +194,10 @@ case "shot":
     if args.count > 2 { _ = run("/usr/bin/sips", ["-Z", arg(2), file, "--out", file]) }
     guard FileManager.default.fileExists(atPath: file) else { fail("capture failed") }
 case "focus":
+    // NSRunningApplication.activate() from a background tool is ignored on recent macOS; System Events is not.
     let target = window(Int(arg(0))!)
-    NSRunningApplication(processIdentifier: target.pid)?.activate()
+    _ = run("/usr/bin/osascript", ["-e", "tell application \"System Events\" to set frontmost of " +
+                                         "(first process whose unix id is \(target.pid)) to true"])
     Thread.sleep(forTimeInterval: 0.8)
 case "key":
     key(arg(0), hold: args.count > 1 ? Double(arg(1)) ?? 0 : 0, times: args.count > 2 ? Int(arg(2)) ?? 1 : 1)
