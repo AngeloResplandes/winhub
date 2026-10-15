@@ -143,10 +143,11 @@ import Testing
 }
 
 @Suite struct ProcessTerminatorTests {
-    func start(_ script: String) throws -> Process {
+    func start(_ script: String, output: Pipe? = nil) throws -> Process {
         let process = Process()
         process.executableURL = URL(fileURLWithPath: "/bin/sh")
         process.arguments = ["-c", script]
+        process.standardOutput = output
         try process.run()
         return process
     }
@@ -160,7 +161,16 @@ import Testing
     }
 
     @Test func endsAProcessThatIgnoresSIGTERM() async throws {
-        let process = try start("trap '' TERM; while :; do sleep 1; done")
+        let pipe = Pipe()
+        let process = try start("trap '' TERM; echo ready; while :; do sleep 1; done", output: pipe)
+        // Wait until the shell has installed the trap, or SIGTERM could still end it within the grace period.
+        var seen = Data()
+        while !String(decoding: seen, as: UTF8.self).contains("ready") {
+            let chunk = pipe.fileHandleForReading.availableData
+            if chunk.isEmpty { break }
+            seen.append(chunk)
+        }
+        #expect(String(decoding: seen, as: UTF8.self).contains("ready"))
         #expect(await ProcessTerminator.end(process.processIdentifier, grace: .milliseconds(300)))
         process.waitUntilExit()
         #expect(process.terminationStatus == SIGKILL)

@@ -86,8 +86,8 @@ publicado (foi assim que a revisão 2 foi testada em 2026-10-12):
 5. Teste numa **cópia** de uma garrafa (no APFS, `cp -c` faz um clone instantâneo) e nunca abra duas Steams da
    mesma garrafa ao mesmo tempo ([por quê](decisions.md#2026-10-11-nunca-abrir-duas-steams-da-mesma-garrafa)). O
    WinHub agora pergunta antes de usar uma garrafa que outro WinHub ou outro motor está usando, ou de abrir a Steam
-   enquanto outra garrafa a roda ([como](decisions.md#2026-10-13-proteger-as-garrafas-de-um-segundo-winhub-e-de-uma-segunda-steam));
-   a cópia continua sendo a regra.
+   enquanto outra garrafa a roda ([como](decisions.md#2026-10-13-proteger-as-garrafas-de-um-segundo-winhub-e-de-uma-segunda-steam)),
+   mas só entre cópias do WinHub que têm essa proteção; a cópia continua sendo a regra.
 
 Para desfazer: restaure a cópia do `runtimes.json`, religue as verificações automáticas e apague a pasta do motor.
 

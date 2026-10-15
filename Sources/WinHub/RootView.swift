@@ -83,8 +83,7 @@ struct RootView: View {
         .sheet(isPresented: $isCreatingBottle) { NewBottleSheet() }
         .sheet(item: $wine.pendingInstall) { pending in InstallSheet(pending: pending) }
         .confirmationDialog("Encerrar os programas antes de continuar?",
-                            isPresented: Binding(get: { wine.pendingConflict != nil },
-                                                 set: { if !$0 { wine.cancelConflict() } }),
+                            isPresented: $wine.isShowingConflict,
                             titleVisibility: .visible, presenting: wine.pendingConflict) { pending in
             // `pending` is captured: dismissing the dialog clears `pendingConflict` before the task runs.
             Button("Encerrar e abrir", role: .destructive) { Task { await wine.resolveConflict(pending) } }

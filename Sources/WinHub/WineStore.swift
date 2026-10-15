@@ -40,6 +40,11 @@ final class WineStore {
     var isShowingRuntimeSetup = false
     var pendingInstall: PendingInstall?
     var pendingConflict: PendingConflict?
+    /// Drives the conflict dialog; dismissing it drops the held-back action.
+    var isShowingConflict: Bool {
+        get { pendingConflict != nil }
+        set { if !newValue { pendingConflict = nil } }
+    }
 
     private let runtimeManager = RuntimeManager(root: RuntimeManager.defaultRoot)
     private let bottleStore = BottleStore(root: BottleStore.defaultRoot)

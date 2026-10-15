@@ -88,9 +88,11 @@ public struct WineLauncher: Sendable {
         await reapOrphans(bottle)
     }
 
-    /// Ends the bottle's programs even when its wineserver belongs to another engine, whose `-w` may never
-    /// return for this engine's tools: the server gets a few seconds to end its clients and save the
-    /// registry after `-k`, then SIGTERM and SIGKILL. Clients left behind are reaped.
+    /// Ends the bottle's programs even when its wineserver was started by another engine. `-k` works across
+    /// engine versions (it goes through the lock file and signals) and ends the server, whichever engine
+    /// started it; unlike `shutdown`, it does not wait with `-w`. It can take a while (about 10 s) because it
+    /// signals the server and escalates. `ProcessTerminator` is the fallback for when this engine's
+    /// `wineserver` cannot run or the server outlives `-k`: SIGTERM, then SIGKILL. Leftover clients are reaped.
     public func forceShutdown(_ bottle: Bottle) async {
         if let pid = WineServerStatus.serverPID(prefix: bottle.prefix) {
             _ = try? await ProcessRunner.run(runtime.wineserver, arguments: ["-k"],
