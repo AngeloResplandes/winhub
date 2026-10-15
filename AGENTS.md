@@ -27,7 +27,7 @@ in [`docs/`](docs/) (English) and [`docs/pt-BR/`](docs/pt-BR/) (Brazilian Portug
 
 ```bash
 swift build                 # build
-swift test                  # 116 tests (unit; the ones with a real Wine stay off)
+swift test                  # 138 tests (unit; the ones with a real Wine stay off)
 swift run WinHub            # run without packaging (.app shortcuts and winhub:// links do not work this way)
 ./scripts/package-app.sh    # builds dist/WinHub.app (universal) and dist/WinHub.zip, ad-hoc signature;
                             # builds the Steam wrapper (needs: brew install mingw-w64)
@@ -65,6 +65,8 @@ Sources/WinHubRuntime/   everything that touches disk, network and Wine processe
   ShellLink, ProgramIcon            reads a .lnk's target (MS-SHLLINK) and the .exe's icon (PE resources) as .ico
   WineServerStatus                  "bottle running" = someone holds the wineserver `lock`
   WineOrphanReaper                  ends processes orphaned by a dead wineserver
+  BottleSession                     <bottle>/session.json: which open WinHub is running Wine in the bottle
+  BottleGuard                       checks other WinHub / other engine / second Steam before running Wine
   Components                        DXVK and winetricks (ComponentManager) + GraphicsBackend
   CompatRules, D3DMetal             per-bottle engine rules; the user's D3DMetal folder
   CompatDatabaseSync                downloads winhub-engine's signed rule database
@@ -149,6 +151,9 @@ Dated decisions are in `docs/decisions.md`. The pitfalls an agent must know:
   goes to whichever WinHub macOS picks (possibly `/Applications/WinHub.app`); use `open -a <app> <url>` in tests.
 - **Never run Wine from inside a shortcut `.app`'s process.** Programs started that way hang (Steam stops at
   "Verifying…"). That is why shortcuts delegate to WinHub through `winhub://`.
+- **One main window (`Window`, not `WindowGroup`).** A `WindowGroup` opened a new window for every `winhub://`
+  link, each with its own dialogs and startup task, and macOS brought them all back on the next launch. A
+  `Window` scene receives `onOpenURL` in its single window; closing it quits the app.
 - **Orphans of a dead wineserver.** If wineserver dies without ending its clients (for example SIGKILL),
   `winebus.sys`'s `winedevice.exe` lives forever (an IOHID loop that never talks to the server; Wine handles
   SIGTERM by ending only one thread). The next wineserver reuses the folder `/tmp/.wine-<uid>/server-<dev>-<inode>/`
@@ -213,6 +218,9 @@ Dated decisions are in `docs/decisions.md`. The pitfalls an agent must know:
 - **Testing games:** test on an APFS clone of the bottle and **never run two Steam instances of the same bottle at
   once** (on 2026-10-11 that made Steam uninstall two games from the original bottle). Never risk a user's real
   bottle.
+  WinHub itself now refuses (and offers to end) a bottle used by another open WinHub or another engine, and Steam
+  in a second bottle (`BottleGuard`; only between WinHub copies that have this guard); the clone is still the
+  rule.
 - **Swift 6.1 compatibility (Xcode 16.4, used in CI):** `async` closures passed to methods of `@MainActor` classes
   must be marked `@MainActor` (or return a `Sendable` result). Local Swift may be newer and not complain; CI does.
 - `@State`, `#Preview` and `@Previewable` need Xcode (the macro plug-in is not in the Command Line Tools).

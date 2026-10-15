@@ -13,7 +13,7 @@
 
 ```bash
 swift build
-swift test            # 116 tests; the ones that need a real Wine stay off
+swift test            # 138 tests; the ones that need a real Wine stay off
 swift run WinHub      # runs without packaging
 open Package.swift    # opens in Xcode
 ```
@@ -83,7 +83,10 @@ released (this is how revision 2 was tested on 2026-10-12):
 4. Turn off **Ajustes → Atualizações → Procurar atualizações automaticamente**, or the next check replaces
    `runtimes.json` with the one from `main`.
 5. Test on a **copy** of a bottle (on APFS, `cp -c` makes an instant clone) and never run two Steam instances of
-   the same bottle at once ([why](decisions.md#2026-10-11-never-run-two-steam-instances-of-one-bottle)).
+   the same bottle at once ([why](decisions.md#2026-10-11-never-run-two-steam-instances-of-one-bottle)). WinHub
+   now asks before using a bottle another WinHub or another engine is using, or opening Steam while another bottle
+   runs it ([how](decisions.md#2026-10-13-guard-bottles-against-a-second-winhub-and-a-second-steam)), but only
+   between WinHub copies that have this guard; the copy is still the rule.
 
 To undo: restore the copy of `runtimes.json`, turn automatic checks back on and remove the engine folder.
 

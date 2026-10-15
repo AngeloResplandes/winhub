@@ -49,6 +49,8 @@ public enum BottleArchive {
         try fm.moveItem(at: folder, to: destination)
         bottle.folder = destination
         try? fm.removeItem(at: bottle.logs)
+        // Names a WinHub process of the Mac (or the moment) the bottle came from.
+        try? fm.removeItem(at: BottleSession.url(for: bottle))
         adoptProfile(in: bottle, home: home, userName: userName)
         try store.save(bottle)
         return bottle

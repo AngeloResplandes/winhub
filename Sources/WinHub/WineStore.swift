@@ -16,6 +16,14 @@ final class WineStore {
         var bottleID: Bottle.ID?
     }
 
+    /// A Wine action held back because something else is using the bottle (see `BottleGuard`).
+    struct PendingConflict: Identifiable {
+        let id = UUID()
+        let bottle: Bottle
+        let conflict: BottleConflict
+        let retry: @MainActor () async -> Void
+    }
+
     private(set) var manifests: [RuntimeManifest] = []
     private(set) var components: [ComponentManifest] = []
     private(set) var runtime: InstalledRuntime?
@@ -31,6 +39,12 @@ final class WineStore {
     var errorMessage: String?
     var isShowingRuntimeSetup = false
     var pendingInstall: PendingInstall?
+    var pendingConflict: PendingConflict?
+    /// Drives the conflict dialog; dismissing it drops the held-back action.
+    var isShowingConflict: Bool {
+        get { pendingConflict != nil }
+        set { if !newValue { pendingConflict = nil } }
+    }
 
     private let runtimeManager = RuntimeManager(root: RuntimeManager.defaultRoot)
     private let bottleStore = BottleStore(root: BottleStore.defaultRoot)
@@ -170,6 +184,7 @@ final class WineStore {
 
     func setWindowsVersion(_ version: Bottle.WindowsVersion, for bottle: Bottle) async {
         guard let runtime = requireRuntime() else { return }
+        guard claim(bottle, opensProgram: false, retry: { await self.setWindowsVersion(version, for: bottle) }) else { return }
         var updated = bottle
         updated.windowsVersion = version
         do {
@@ -245,6 +260,8 @@ final class WineStore {
     /// Gives one program its own Direct3D (`nil`: back to the bottle's setting).
     func setProgramGraphics(_ backend: GraphicsBackend?, program: String, in bottle: Bottle) async {
         guard let runtime = requireRuntime() else { return }
+        guard claim(bottle, opensProgram: false,
+                    retry: { await self.setProgramGraphics(backend, program: program, in: bottle) }) else { return }
         let key = bottle.id.uuidString
         do {
             let dxvk = runtime.dispatchesGraphics ? nil
@@ -329,6 +346,7 @@ final class WineStore {
     /// Display modes are cached by the bottle's running processes, so a running bottle is ended first.
     func setExtraDisplayModes(_ enabled: Bool, for bottle: Bottle) async {
         guard let runtime else { return }
+        guard claim(bottle, opensProgram: false, retry: { await self.setExtraDisplayModes(enabled, for: bottle) }) else { return }
         var updated = bottle
         updated.extraDisplayModes = enabled
         do {
@@ -381,6 +399,7 @@ final class WineStore {
     }
 
     func installDependenciesFromUI(_ text: String, in bottle: Bottle) async {
+        guard claim(bottle, opensProgram: false, retry: { await self.installDependenciesFromUI(text, in: bottle) }) else { return }
         let verbs = text.split(whereSeparator: { $0 == " " || $0 == "," }).map(String.init)
         do {
             try await installDependencies(verbs, in: bottle)
@@ -496,6 +515,9 @@ final class WineStore {
             target = await createBottle(name: newBottleName, windowsVersion: windowsVersion)
         }
         guard let bottle = target, let runtime else { return }
+        guard claim(bottle, opensProgram: true, retry: {
+            await self.installUnlisted(file, into: bottle, newBottleName: newBottleName, windowsVersion: windowsVersion)
+        }) else { return }
         do {
             try await perform(key: bottle.id.uuidString, String(localized: "Instalando \(file.lastPathComponent)…")) {
                 try await WineLauncher(runtime: runtime).runInstaller(bottle, file: file)
@@ -523,6 +545,10 @@ final class WineStore {
                 bottle = await createBottle(name: recipe.bottleName, windowsVersion: version)
             }
             guard let bottle else { activity[entryID] = nil; return }
+            guard claim(bottle, opensProgram: true, retry: { await self.install(recipe, entryID: entryID) }) else {
+                activity[entryID] = nil
+                return
+            }
 
             try await installDependencies(recipe.dependencies, in: bottle, key: entryID)
             let installer = try await perform(key: entryID, String(localized: "Baixando o instalador…")) {
@@ -543,6 +569,60 @@ final class WineStore {
             activity[entryID] = nil
             errorMessage = error.localizedDescription
         }
+    }
+
+    // MARK: Guard
+
+    /// Whether this WinHub may run Wine in `bottle` now; if so, the bottle's record names it. If not,
+    /// `retry` waits in `pendingConflict` until the user ends what is in the way (`resolveConflict`) or
+    /// gives up. `opensProgram` adds the one-Steam-at-a-time rule.
+    private func claim(_ bottle: Bottle, opensProgram: Bool, retry: @escaping @MainActor () async -> Void) -> Bool {
+        guard let runtime else { return true }
+        if let conflict = conflict(for: bottle, opensProgram: opensProgram, runtime: runtime) {
+            pendingConflict = PendingConflict(bottle: bottle, conflict: conflict, retry: retry)
+            return false
+        }
+        try? BottleSession.write(.current, to: bottle)
+        return true
+    }
+
+    private func conflict(for bottle: Bottle, opensProgram: Bool, runtime: InstalledRuntime) -> BottleConflict? {
+        let session = BottleSession.read(bottle)
+        let serverPath = WineServerStatus.serverPID(prefix: bottle.prefix).flatMap(WineServerStatus.executablePath(pid:))
+        if let conflict = BottleGuard.conflict(serverPath: serverPath, ownWineserver: runtime.wineserver.path,
+                                               session: session,
+                                               sessionExecutable: session.flatMap { WineServerStatus.executablePath(pid: $0.pid) },
+                                               ownPID: getpid()) {
+            return conflict
+        }
+        guard opensProgram else { return nil }
+        return BottleGuard.steamConflict(opening: bottle.id, bottles: bottles.map {
+            BottleGuard.BottleState(id: $0.id, name: $0.name, hasSteam: hasSteam($0),
+                                    isRunning: WineServerStatus.isRunning(prefix: $0.prefix))
+        })
+    }
+
+    private func hasSteam(_ bottle: Bottle) -> Bool {
+        guard let steam = bottle.unixPath(forWindowsPath: SteamClient.windowsPath) else { return false }
+        return FileManager.default.fileExists(atPath: steam.path)
+    }
+
+    /// "Encerrar e abrir": ends the bottle in the way (this one, or the other bottle with Steam), then tries
+    /// the action again, which asks again if something is still in the way.
+    func resolveConflict(_ pending: PendingConflict) async {
+        pendingConflict = nil
+        guard let runtime else { return }
+        var target = pending.bottle
+        if case .steamRunning(_, let id) = pending.conflict, let other = bottle(id: id) { target = other }
+        try? await perform(key: target.id.uuidString, String(localized: "Encerrando os programas…")) {
+            await WineLauncher(runtime: runtime).forceShutdown(target)
+        }
+        updateActiveBottles()
+        await pending.retry()
+    }
+
+    func cancelConflict() {
+        pendingConflict = nil
     }
 
     // MARK: Opening
@@ -570,7 +650,8 @@ final class WineStore {
     }
 
     func open(_ recipe: Recipe) {
-        guard let bottle = bottle(named: recipe.bottleName) else { return }
+        guard let bottle = bottle(named: recipe.bottleName),
+              claim(bottle, opensProgram: true, retry: { self.open(recipe) }) else { return }
         let arguments = SteamClient.arguments(forOpening: recipe.launch.windowsPath, recipe.launch.arguments,
                                               wrapperInstalled: prepareSteam(in: bottle))
         launch(in: bottle) { launcher in
@@ -579,6 +660,7 @@ final class WineStore {
     }
 
     func open(_ program: InstalledProgram, in bottle: Bottle) {
+        guard claim(bottle, opensProgram: true, retry: { self.open(program, in: bottle) }) else { return }
         let wrapperInstalled = prepareSteam(in: bottle)
         let arguments = SteamClient.isClientShortcut(named: program.name)
             ? SteamClient.launchArguments(wrapperInstalled: wrapperInstalled) : []
@@ -589,7 +671,8 @@ final class WineStore {
 
     /// Opens a Steam game through the Steam client bottle.
     func playOnSteam(appID: Int) {
-        guard let bottle = bottle(named: SteamClient.bottleName) else { return }
+        guard let bottle = bottle(named: SteamClient.bottleName),
+              claim(bottle, opensProgram: true, retry: { self.playOnSteam(appID: appID) }) else { return }
         let arguments = SteamClient.runArguments(appID: appID, wrapperInstalled: prepareSteam(in: bottle))
         launch(in: bottle) { launcher in
             try await launcher.run(bottle, windowsPath: SteamClient.windowsPath, arguments: arguments)

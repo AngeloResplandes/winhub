@@ -19,4 +19,4 @@ O guia completo do projeto (regras, arquitetura, comandos, decisões e armadilha
   descompilado, endereços, nomes de símbolos internos ou logs da análise (veja a regra 1 do `AGENTS.md`).
 - Documentação: inglês em `docs/` e na raiz, espelhada em português em `docs/pt-BR/` e nos `.pt-BR.md`;
   mude os dois idiomas juntos.
-- `swift test` tem 116 testes.
+- `swift test` tem 138 testes.

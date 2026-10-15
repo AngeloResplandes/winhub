@@ -82,6 +82,15 @@ struct RootView: View {
         .sheet(isPresented: $wine.isShowingRuntimeSetup) { RuntimeSetupView() }
         .sheet(isPresented: $isCreatingBottle) { NewBottleSheet() }
         .sheet(item: $wine.pendingInstall) { pending in InstallSheet(pending: pending) }
+        .confirmationDialog("Encerrar os programas antes de continuar?",
+                            isPresented: $wine.isShowingConflict,
+                            titleVisibility: .visible, presenting: wine.pendingConflict) { pending in
+            // `pending` is captured: dismissing the dialog clears `pendingConflict` before the task runs.
+            Button("Encerrar e abrir", role: .destructive) { Task { await wine.resolveConflict(pending) } }
+            Button("Cancelar", role: .cancel) { wine.cancelConflict() }
+        } message: { pending in
+            Text(Self.message(for: pending))
+        }
         .alert("Algo deu errado", isPresented: .constant(wine.errorMessage != nil)) {
             Button("OK") { wine.errorMessage = nil }
         } message: {
@@ -93,6 +102,19 @@ struct RootView: View {
             Text(updates.notice ?? "")
         }
         .onAppear { wine.refresh() }
+    }
+
+    static func message(for pending: WineStore.PendingConflict) -> String {
+        switch pending.conflict {
+        case .otherWinHub(let appPath):
+            // `…/WinHub.app/Contents/MacOS/WinHub` → `…/WinHub.app`
+            let app = appPath.range(of: ".app/").map { String(appPath[..<$0.lowerBound]) + ".app" } ?? appPath
+            return String(localized: "A garrafa “\(pending.bottle.name)” está em uso por outro WinHub (\(app)).")
+        case .otherEngine:
+            return String(localized: "Os programas da garrafa “\(pending.bottle.name)” estão rodando com outro motor.")
+        case .steamRunning(let name, _):
+            return String(localized: "A Steam já está aberta na garrafa “\(name)”. Duas Steam ao mesmo tempo podem desinstalar jogos.")
+        }
     }
 }
 

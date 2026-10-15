@@ -60,6 +60,23 @@ import Testing
         #expect(try FileManager.default.contentsOfDirectory(atPath: target.root.path) == [imported.folder.lastPathComponent])
     }
 
+    @Test func importLeavesTheSessionRecordBehind() async throws {
+        let dir = try makeTempDirectory()
+        defer { try? FileManager.default.removeItem(at: dir) }
+        let home = dir.appending(path: "Users/ana")
+        let source = BottleStore(root: dir.appending(path: "A"))
+        let original = try makeBottle(in: source, user: "ana", home: home)
+        try BottleSession.write(BottleSession(pid: 42, appPath: "/Applications/WinHub.app/Contents/MacOS/WinHub"),
+                                to: original)
+        let archive = dir.appending(path: "Jogo.winhubbottle")
+        try await BottleArchive.export(original, to: archive)
+
+        let target = BottleStore(root: dir.appending(path: "B"))
+        try FileManager.default.createDirectory(at: target.root, withIntermediateDirectories: true)
+        let imported = try await BottleArchive.importBottle(from: archive, into: target, home: home, userName: "ana")
+        #expect(BottleSession.read(imported) == nil)
+    }
+
     @Test func importingNextToTheOriginalGetsAnotherName() async throws {
         let dir = try makeTempDirectory()
         defer { try? FileManager.default.removeItem(at: dir) }
