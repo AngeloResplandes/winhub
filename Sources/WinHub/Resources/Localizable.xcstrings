@@ -145,16 +145,16 @@
     },
     "A garrafa “%@” está em uso por outro WinHub (%@)." : {
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The bottle “%1$@” is in use by another WinHub (%2$@)."
+          }
+        },
         "pt" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "A garrafa “%1$@” está em uso por outro WinHub (%2$@)."
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "The bottle “%@” is in use by another WinHub (%@)."
           }
         }
       }
@@ -781,6 +781,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Close and Apply"
+          }
+        }
+      }
+    },
+    "Encerrar e continuar" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Close and continue"
           }
         }
       }

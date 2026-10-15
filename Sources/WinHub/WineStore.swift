@@ -21,6 +21,8 @@ final class WineStore {
         let id = UUID()
         let bottle: Bottle
         let conflict: BottleConflict
+        /// Whether `retry` opens a program (the dialog's button says so).
+        let opensProgram: Bool
         let retry: @MainActor () async -> Void
     }
 
@@ -579,7 +581,7 @@ final class WineStore {
     private func claim(_ bottle: Bottle, opensProgram: Bool, retry: @escaping @MainActor () async -> Void) -> Bool {
         guard let runtime else { return true }
         if let conflict = conflict(for: bottle, opensProgram: opensProgram, runtime: runtime) {
-            pendingConflict = PendingConflict(bottle: bottle, conflict: conflict, retry: retry)
+            pendingConflict = PendingConflict(bottle: bottle, conflict: conflict, opensProgram: opensProgram, retry: retry)
             return false
         }
         try? BottleSession.write(.current, to: bottle)
@@ -592,7 +594,8 @@ final class WineStore {
         if let conflict = BottleGuard.conflict(serverPath: serverPath, ownWineserver: runtime.wineserver.path,
                                                session: session,
                                                sessionExecutable: session.flatMap { WineServerStatus.executablePath(pid: $0.pid) },
-                                               ownPID: getpid()) {
+                                               ownPID: getpid(),
+                                               guardlessWinHubs: serverPath == nil ? [] : guardlessWinHubs()) {
             return conflict
         }
         guard opensProgram else { return nil }
@@ -602,13 +605,25 @@ final class WineStore {
         })
     }
 
+    /// Other open WinHub copies too old to record the bottles they use (see `BottleGuard.hasGuard`).
+    private func guardlessWinHubs() -> [String] {
+        NSWorkspace.shared.runningApplications.compactMap { app in
+            guard app.bundleIdentifier == AppUpdater.bundleIdentifier, app.processIdentifier != getpid(),
+                  let bundle = app.bundleURL.flatMap(Bundle.init(url:)) else { return nil }
+            let version = bundle.infoDictionary?["CFBundleShortVersionString"] as? String
+            let marker = bundle.infoDictionary?["WinHubBottleGuard"] as? Bool ?? false
+            guard !BottleGuard.hasGuard(version: version, marker: marker) else { return nil }
+            return app.executableURL?.path ?? bundle.bundlePath
+        }
+    }
+
     private func hasSteam(_ bottle: Bottle) -> Bool {
         guard let steam = bottle.unixPath(forWindowsPath: SteamClient.windowsPath) else { return false }
         return FileManager.default.fileExists(atPath: steam.path)
     }
 
-    /// "Encerrar e abrir": ends the bottle in the way (this one, or the other bottle with Steam), then tries
-    /// the action again, which asks again if something is still in the way.
+    /// "Encerrar e abrir" / "Encerrar e continuar": ends the bottle in the way (this one, or the other bottle with
+    /// Steam), then tries the action again, which asks again if something is still in the way.
     func resolveConflict(_ pending: PendingConflict) async {
         pendingConflict = nil
         guard let runtime else { return }

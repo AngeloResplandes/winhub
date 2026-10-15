@@ -18,14 +18,18 @@ public enum BottleGuard {
     ///   - serverPath: executable of the bottle's live wineserver; `nil` when the bottle is not running.
     ///   - ownWineserver: the `wineserver` of this WinHub's engine.
     ///   - sessionExecutable: executable of the process with `session.pid` now; `nil` when it has exited.
+    ///   - guardlessWinHubs: executables of other open WinHubs from before this guard (see `hasGuard`).
     public static func conflict(serverPath: String?, ownWineserver: String, session: BottleSession?,
-                                sessionExecutable: String?, ownPID: pid_t) -> BottleConflict? {
+                                sessionExecutable: String?, ownPID: pid_t,
+                                guardlessWinHubs: [String] = []) -> BottleConflict? {
         guard let serverPath else { return nil }
         // Pids are reused, so the record counts only while its pid is still that WinHub.
-        if let session, session.pid != ownPID, let sessionExecutable,
-           normalized(sessionExecutable) == normalized(session.appPath) {
-            return .otherWinHub(appPath: session.appPath)
+        let holder = session.flatMap { session in
+            sessionExecutable.map(normalized) == normalized(session.appPath) ? session.pid : nil
         }
+        if let session, let holder, holder != ownPID { return .otherWinHub(appPath: session.appPath) }
+        // Older WinHubs leave no record, so a running bottle nobody claimed may be theirs.
+        if holder == nil, let older = guardlessWinHubs.first { return .otherWinHub(appPath: older) }
         guard normalized(serverPath) == normalized(ownWineserver) else { return .otherEngine(wineserver: serverPath) }
         return nil
     }
@@ -51,6 +55,15 @@ public enum BottleGuard {
         guard bottles.first(where: { $0.id == bottleID })?.hasSteam == true,
               let other = bottles.first(where: { $0.id != bottleID && $0.hasSteam && $0.isRunning }) else { return nil }
         return .steamRunning(bottleName: other.name, bottleID: other.id)
+    }
+
+    /// Whether a WinHub copy records the bottles it uses: the `WinHubBottleGuard` Info.plist key, or a
+    /// released version from 0.2.13 on (released before the key existed). Local builds end in `.0`.
+    public static func hasGuard(version: String?, marker: Bool) -> Bool {
+        if marker { return true }
+        guard let parts = version?.split(separator: ".").map({ Int($0) }), !parts.isEmpty,
+              !parts.contains(nil) else { return false }
+        return !(parts.compactMap { $0 } + [0, 0]).prefix(3).lexicographicallyPrecedes([0, 2, 13])
     }
 
     /// The kernel reports `/private/tmp/…` where a path says `/tmp/…`.
