@@ -14,7 +14,7 @@ Our own results, measured in WinHub.
 | Bottle | Steam, Windows 10, bottle graphics: Wine |
 | Game | "The Witcher 3: Wild Hunt — Remastered", build 25773555 (74 GB) |
 
-## Result: installs, but does not start
+## Result (current version): installs, but does not start
 
 - **The current version is DirectX 12 only.** `launcher-configuration.json` lists only `bin\x64_dx12\witcher3.exe`,
   and the `bin\x64` (DX11) folder does not exist. DX11 only exists in Steam's "classic" beta branch (1.32).
@@ -24,11 +24,19 @@ Our own results, measured in WinHub.
   Support for DirectX 12 is required." Wine's D3D12 (vkd3d over MoltenVK) does not offer what the game needs, and
   DXMT v0.80 has no D3D12.
 
-## Engine revision 2
+## 2026-10-15: the "classic" branch (1.32, DX11) on engine revision 3
 
-Not retested yet: the game was uninstalled on 2026-10-11 ([why](../decisions.md#2026-10-11-never-run-two-steam-instances-of-one-bottle)).
-On revision 2, the expected path is **D3DMetal** (Direct3D 12) for people who have the Game Porting Toolkit; without
-it, the result should stay the same.
+Same Mac (macOS 27.0.1), engine `winhub-wine-11.0-r3`, no D3DMetal, an APFS clone of the Steam bottle (Windows 10,
+msync off, Metal HUD on, Direct3D "Automático"). Steam's beta branch `classic`, build 3280809, with both expansions.
+`bin\x64\witcher3.exe` run directly with `SteamAppId`/`SteamGameId` while the bottle's Steam was open.
+
+| Backend | Result |
+|---|---|
+| DXMT ("Automático") | **Playable start.** Main menu in Portuguese at 60 FPS (GPU under 1 ms); new game, difficulty and tutorial menus; the prologue's in-engine cut-scenes at 58–60 FPS, GPU 12–17 ms per frame, at the settings the game picked (1470×956). |
+| DXVK | not tried (DXMT already runs it). |
+
+Not checked: the current (DX12) version with D3DMetal, combat and open-world areas, the REDprelauncher that Steam
+starts for this branch (the game was opened directly).
 
 ## The same applies to
 
@@ -36,7 +44,7 @@ Resident Evil 4 Remake and Hogwarts Legacy are also D3D12 only (not tested for t
 
 ## Paths
 
-1. Steam's "classic" beta branch (1.32, DX11), to test the game with DXMT or DXVK.
+1. Steam's "classic" beta branch (1.32, DX11): runs with DXMT (2026-10-15, above).
 2. D3D12 in the engine: DXMT works on an experimental D3D12 after v0.80 (LGPL from then on); or D3DMetal from the
    user on revision 2.
 3. The crashing launcher can be skipped with the `--launcher-skip` launch option in Steam, once the game itself

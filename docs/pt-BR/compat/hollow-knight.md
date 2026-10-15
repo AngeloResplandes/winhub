@@ -83,6 +83,13 @@ com Resoluções extras ligado, conduzido pelo [`scripts/game-test.swift`](READM
 - **A cinemática de abertura fica preta:** o Unity registra `WindowsVideoMedia error 0xc00d36bb` para o vídeo; o jogo
   segue depois dela. O motor ainda não decodifica vídeo H.264 (lacuna "Vídeos dos jogos" do winhub-engine).
 
+### 15/10/2026: revisão 3 do motor, "Automático"
+
+Mesmo Mac (macOS 27.0.1), motor `winhub-wine-11.0-r3`, sem D3DMetal, um clone APFS novo da garrafa da Steam (msync
+desligado, Metal HUD ligado), sem escolha por programa e sem regra. O "Automático" escolheu o **DXMT** para o jogo
+sozinho (`backend-of`: dxmt): a tela de idiomas a 60 FPS, GPU de cerca de 1 ms por quadro. Escolher o DXMT para o
+jogo à mão não é mais necessário.
+
 ## Como reproduzir
 
 - O jogo precisa ser aberto pela Steam. Aberto direto, ele encerra com "Application was not launched through

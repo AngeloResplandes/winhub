@@ -8,11 +8,14 @@ from these reports.
 
 | Game | Direct3D | Result | Best choice |
 |---|---|---|---|
+| [BioShock Remastered](bioshock-remastered.md) | 11, 32-bit | starts with DXMT; gameplay not measured yet | Automático (DXMT) |
 | [Dark Souls Remastered](dark-souls-remastered.md) | 11 | playable with D3DMetal and DXVK; DXMT freezes | DXVK (rule) or D3DMetal |
-| [Hollow Knight](hollow-knight.md) | 11 (Unity 6) | playable; intro video black | DXMT for the game only, or D3DMetal |
+| [Hollow Knight](hollow-knight.md) | 11 (Unity 6) | playable; intro video black | Automático (DXMT on revision 3), or D3DMetal |
 | [Lethal Company](lethal-company.md) | 11 (Unity 2022) | playable (needs the microphone fix) | Automático |
 | [PEAK](peak.md) | 11 (Unity 6) | playable (needs the microphone fix) | Automático |
-| [The Witcher 3](the-witcher-3.md) | 12 only | installs, does not start | needs D3DMetal or Direct3D 12 in the engine |
+| [Persona 5 Royal](persona-5-royal.md) | 11 | installs, does not start (crash in the game, any Direct3D) | — |
+| [Skyrim Special Edition](skyrim-special-edition.md) | 11 | playable with DXVK; DXMT closes it | DXVK (rule) |
+| [The Witcher 3](the-witcher-3.md) | 12; 11 in the "classic" branch | current version does not start; "classic" (1.32) runs with DXMT | "classic" branch, Automático (DXMT) |
 
 ## Writing a report
 
@@ -46,7 +49,19 @@ What we learned running it:
   person's.
 - A bottle clone does not isolate every save: `C:\users\<user>\Documents` links to the Mac's `~/Documents`, so games
   that save there (Dark Souls Remastered: `Documents\NBGI`) share the file with the original bottle and Steam Cloud.
-  Back it up first.
+  Back it up first, or replace the link in the clone with a folder of its own and copy the game folders into it
+  (`cp -cR ~/Documents/"My Games" …`).
+- Add the clone to WinHub as a bottle of its own (a new `id` and `name` in its `bottle.json`, the folder named
+  `<name>-<first 8 characters of the id>` in `Bottles/`) and open its Steam through WinHub, which swaps the
+  `steamwebhelper` wrapper in and gives Steam the engine's environment. Steam started only by `game-test launch`
+  showed no window and took minutes to sign in.
+- `focus` brings the game forward through System Events: macOS ignores `NSRunningApplication.activate()` from a
+  tool in the background, and a click then lands on whatever window is in front (Steam's store, once).
+- A game run directly (outside Steam) and then ended can stay "running" for Steam, which then ignores
+  `-applaunch` until it restarts.
+- Rules that match `steam_game_id` do not reach games started by Steam on engine revision 3 (the engine logs
+  `SteamGameId (null)`); match the executable's path instead (`path_suffix`). See
+  [Skyrim Special Edition](skyrim-special-edition.md#rules-by-steam-app-id-do-not-reach-the-game).
 - Start Steam with `open -a <WinHub.app you are testing> "winhub://open?…"`; a bare `open` may hand the link to
   another WinHub (for example `/Applications/WinHub.app`).
 - The Metal HUD log has the frame number but redacts the frame time; `fps` divides frames by seconds. Only engines

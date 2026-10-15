@@ -8,11 +8,14 @@ vêm destes relatórios.
 
 | Jogo | Direct3D | Resultado | Melhor escolha |
 |---|---|---|---|
+| [BioShock Remastered](bioshock-remastered.md) | 11, 32 bits | abre com DXMT; jogabilidade ainda não medida | Automático (DXMT) |
 | [Dark Souls Remastered](dark-souls-remastered.md) | 11 | jogável com D3DMetal e DXVK; o DXMT trava | DXVK (regra) ou D3DMetal |
-| [Hollow Knight](hollow-knight.md) | 11 (Unity 6) | jogável; vídeo de abertura preto | DXMT só no jogo, ou D3DMetal |
+| [Hollow Knight](hollow-knight.md) | 11 (Unity 6) | jogável; vídeo de abertura preto | Automático (DXMT na revisão 3), ou D3DMetal |
 | [Lethal Company](lethal-company.md) | 11 (Unity 2022) | jogável (precisa da correção do microfone) | Automático |
 | [PEAK](peak.md) | 11 (Unity 6) | jogável (precisa da correção do microfone) | Automático |
-| [The Witcher 3](the-witcher-3.md) | só 12 | instala, não abre | precisa do D3DMetal ou de Direct3D 12 no motor |
+| [Persona 5 Royal](persona-5-royal.md) | 11 | instala, não abre (falha no jogo, com qualquer Direct3D) | — |
+| [Skyrim Special Edition](skyrim-special-edition.md) | 11 | jogável com DXVK; o DXMT fecha o jogo | DXVK (regra) |
+| [The Witcher 3](the-witcher-3.md) | 12; 11 no ramo "classic" | a versão atual não abre; a "classic" (1.32) roda com DXMT | ramo "classic", Automático (DXMT) |
 
 ## Como escrever um relatório
 
@@ -48,7 +51,19 @@ O que aprendemos usando:
   novo, nunca o da pessoa.
 - O clone da garrafa não isola todos os saves: `C:\users\<usuário>\Documents` aponta para a `~/Documents` do Mac,
   então jogos que salvam ali (Dark Souls Remastered: `Documents\NBGI`) dividem o arquivo com a garrafa original e
-  com o Steam Cloud. Faça backup antes.
+  com o Steam Cloud. Faça backup antes, ou troque o link no clone por uma pasta própria e copie para ela as pastas
+  dos jogos (`cp -cR ~/Documents/"My Games" …`).
+- Ponha o clone no WinHub como uma garrafa própria (`id` e `name` novos no `bottle.json`, a pasta chamada
+  `<nome>-<8 primeiros caracteres do id>` em `Bottles/`) e abra a Steam dele pelo WinHub, que coloca o wrapper do
+  `steamwebhelper` e dá à Steam o ambiente do motor. A Steam aberta só pelo `game-test launch` não mostrou janela e
+  levou minutos para entrar na conta.
+- O `focus` traz o jogo para a frente pelo System Events: o macOS ignora o `NSRunningApplication.activate()` vindo de
+  uma ferramenta em segundo plano, e o clique então cai na janela que estiver na frente (a loja da Steam, uma vez).
+- Um jogo rodado direto (fora da Steam) e depois encerrado pode continuar "rodando" para a Steam, que então ignora o
+  `-applaunch` até ser reiniciada.
+- Regras que casam por `steam_game_id` não chegam aos jogos abertos pela Steam na revisão 3 do motor (o motor
+  registra `SteamGameId (null)`); case pelo caminho do executável (`path_suffix`). Veja o
+  [Skyrim Special Edition](skyrim-special-edition.md#regras-pelo-id-do-app-na-steam-não-chegam-ao-jogo).
 - Abra a Steam com `open -a <o WinHub.app em teste> "winhub://open?…"`; um `open` simples pode entregar o link a
   outro WinHub (por exemplo, o `/Applications/WinHub.app`).
 - O log do Metal HUD traz o número do quadro, mas esconde o tempo do quadro; o `fps` divide quadros por segundos. Só

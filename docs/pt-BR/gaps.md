@@ -2,7 +2,7 @@
 
 # Lacunas
 
-> **Última revisão:** 2026-10-12
+> **Última revisão:** 2026-10-15
 
 Faltas conhecidas, em ordem de quantas pessoas e jogos elas bloqueiam. As lacunas só do motor estão detalhadas nas
 [lacunas do winhub-engine](https://angeloresplandes.github.io/winhub-engine/pt-BR/gaps.html). Números de paridade:
@@ -11,7 +11,7 @@ Faltas conhecidas, em ordem de quantas pessoas e jogos elas bloqueiam. As lacuna
 | # | Lacuna | Bloqueia | Caminho provável |
 |---|---|---|---|
 | 1 | **Direct3D 12 sem D3DMetal** | jogos só Direct3D 12 ([The Witcher 3](compat/the-witcher-3.md), Resident Evil 4 Remake, Hogwarts Legacy) para quem não tem o Game Porting Toolkit | trabalho no motor: o Direct3D 12 do DXMT ou o vkd3d-proton |
-| 2 | **Catálogo pequeno** | achar um título e saber que funciona: 34 títulos, 1 receita, 6 relatórios de compatibilidade | acrescentar títulos e receitas conforme forem testados; um [relatório de compatibilidade](compat/README.md) por jogo |
+| 2 | **Catálogo pequeno** | achar um título e saber que funciona: 35 títulos, 1 receita, 8 relatórios de compatibilidade | acrescentar títulos e receitas conforme forem testados; um [relatório de compatibilidade](compat/README.md) por jogo |
 | 3 | **Banco de regras vazio** | jogos que precisam de um Direct3D, uma variável ou um argumento específico para abrir | uma regra por jogo testado no `data/compatdb.json` do winhub-engine |
 | 4 | **Vídeos dos jogos** | cenas e vídeos de abertura de muitos jogos | GStreamer e H.264 no motor |
 | 5 | **Modos de tela 16:9** | 1920×1080 e outros modos fora da proporção da tela do Mac | feito em parte: **Resoluções extras** liga os modos emulados do Wine (`EmulateModeset`), com 16:9 até o tamanho da tela em pontos (1280×720 num Mac de 1470×956); o 1920×1080 nele exige o `RetinaMode` (da garrafa toda) ou uma mudança no `win32u` do motor |
