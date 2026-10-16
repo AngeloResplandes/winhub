@@ -2579,23 +2579,6 @@
         }
       }
     },
-    "Linha inválida: %@. Use NOME=valor, uma por linha." : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Invalid line: %@. Use NAME=value, one per line."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Línea no válida: %@. Usa NOMBRE=valor, una por línea."
-          }
-        }
-      }
-    },
     "Manutenção" : {
       "localizations" : {
         "en" : {
@@ -4226,34 +4209,18 @@
         }
       }
     },
-    "Uma por linha, como d3d11=n,b (n = a do Windows, b = a do Wine; vazio desliga a DLL)." : {
+    "Uma por linha, como xinput1_3=n,b (n = a do Windows, b = a do Wine; vazio desliga a DLL). O Direct3D se escolhe em “Gráficos (Direct3D)”." : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "One per line, like d3d11=n,b (n = the Windows one, b = Wine’s own; empty turns the DLL off)."
+            "value" : "One per line, like xinput1_3=n,b (n = the Windows one, b = Wine’s own; empty turns the DLL off). Choose the Direct3D in “Graphics (Direct3D)”."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Una por línea, como d3d11=n,b (n = la de Windows, b = la de Wine; vacío desactiva la DLL)."
-          }
-        }
-      }
-    },
-    "Uma por linha, no formato NOME=valor. Linhas com # são ignoradas." : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "One per line, as NAME=value. Lines starting with # are ignored."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Una por línea, con el formato NOMBRE=valor. Las líneas que empiezan con # se ignoran."
+            "value" : "Una por línea, como xinput1_3=n,b (n = la de Windows, b = la de Wine; vacío desactiva la DLL). El Direct3D se elige en “Gráficos (Direct3D)”."
           }
         }
       }
@@ -4270,6 +4237,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Una por línea, con el formato NOMBRE=valor. Valen solo para esta ejecución y prevalecen sobre las de la botella."
+          }
+        }
+      }
+    },
+    "Uma por linha, no formato NOME=valor; o valor vale como está, sem aspas. Linhas que começam com # são ignoradas." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "One per line, as NAME=value; the value is used as is, without quotes. Lines starting with # are ignored."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Una por línea, con el formato NOMBRE=valor; el valor se usa tal cual, sin comillas. Las líneas que empiezan con # se ignoran."
           }
         }
       }
@@ -4658,6 +4641,22 @@
         }
       }
     },
+    "o nome “%@” não pode ter espaços nem “=”" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "the name “%@” cannot contain spaces or “=”"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "el nombre “%@” no puede tener espacios ni “=”"
+          }
+        }
+      }
+    },
     "o nome “%@” não pode ter espaços, vírgulas nem ponto e vírgula" : {
       "localizations" : {
         "en" : {
@@ -4718,6 +4717,38 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "“%@” ya aparece en otra línea"
+          }
+        }
+      }
+    },
+    "“%@” é controlada pelo WinHub; escolha o Direct3D em “Gráficos (Direct3D)”" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "“%@” is managed by WinHub; choose the Direct3D in “Graphics (Direct3D)”"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "WinHub controla “%@”; elige el Direct3D en “Gráficos (Direct3D)”"
+          }
+        }
+      }
+    },
+    "“%@” é definida pelo WinHub e não pode ser mudada aqui" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "“%@” is set by WinHub and cannot be changed here"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "WinHub define “%@” y no se puede cambiar aquí"
           }
         }
       }

@@ -455,10 +455,11 @@ struct AdvancedSettingsSheet: View {
         BottleAdvancedSettings.parseOverrides(overrides)
     }
 
-    /// Both texts as values, or `nil` while either has an error.
+    /// Both texts as values, or `nil` while either has an error. The overrides keep the Direct3D ones WinHub
+    /// set, which the editor does not show.
     private var parsed: (environment: [String: String], overrides: [String: String])? {
         guard case .success(let environment) = parsedVariables, case .success(let overrides) = parsedOverrides else { return nil }
-        return (environment, overrides)
+        return (environment, BottleAdvancedSettings.overrides(overrides, keepingManagedFrom: bottle.dllOverrides))
     }
 
     private var hasChanges: Bool {
@@ -478,7 +479,7 @@ struct AdvancedSettingsSheet: View {
             } header: {
                 Text("Variáveis de ambiente")
             } footer: {
-                footer(for: parsedVariables, hint: "Uma por linha, no formato NOME=valor. Linhas com # são ignoradas.")
+                footer(for: parsedVariables, hint: "Uma por linha, no formato NOME=valor; o valor vale como está, sem aspas. Linhas que começam com # são ignoradas.")
             }
             Section {
                 TextEditor(text: $overrides)
@@ -489,7 +490,7 @@ struct AdvancedSettingsSheet: View {
                 Text("Substituições de DLL")
             } footer: {
                 footer(for: parsedOverrides,
-                       hint: "Uma por linha, como d3d11=n,b (n = a do Windows, b = a do Wine; vazio desliga a DLL).")
+                       hint: "Uma por linha, como xinput1_3=n,b (n = a do Windows, b = a do Wine; vazio desliga a DLL). O Direct3D se escolhe em “Gráficos (Direct3D)”.")
             }
             if hasChanges, let parsed, wine.activeBottles.contains(bottle.id),
                !wine.advancedChangeClosesPrograms(environment: parsed.environment, dllOverrides: parsed.overrides, for: bottle) {
@@ -503,7 +504,7 @@ struct AdvancedSettingsSheet: View {
         .frame(width: 500)
         .onAppear {
             variables = BottleAdvancedSettings.formatEnvironment(bottle.environment)
-            overrides = BottleAdvancedSettings.formatOverrides(bottle.dllOverrides)
+            overrides = BottleAdvancedSettings.formatOverrides(BottleAdvancedSettings.editableOverrides(bottle.dllOverrides))
         }
         .toolbar {
             ToolbarItem(placement: .cancellationAction) { Button("Cancelar") { dismiss() } }
