@@ -13,7 +13,7 @@ Resumo em uma página. Detalhes: [paridade com o CrossOver](docs/pt-BR/crossover
 
 | | Valor | Tipo |
 |---|---|---|
-| **Paridade do WinHub com o CrossOver** | **~62%** | estimado, ponderado por dimensão |
+| **Paridade do WinHub com o CrossOver** | **~63%** | estimado, ponderado por dimensão |
 | Busca do catálogo | os mesmos resultados do CrossOver nos casos comparados | medido |
 | Steam | instala com um clique; login salvo mantido entre motores | medido |
 | Jogo Direct3D 11 | Hollow Knight a 60 FPS pelo DXMT | medido |
@@ -34,6 +34,8 @@ Resumo em uma página. Detalhes: [paridade com o CrossOver](docs/pt-BR/crossover
   no catálogo.
 - Exportar e importar garrafas (`.winhubbottle`).
 - Resoluções extras: os modos de tela emulados do Wine (16:9 e outros até o tamanho da tela) por garrafa.
+- Ferramentas da garrafa: duplicar e renomear garrafas, modelos para garrafas novas, as ferramentas do próprio Wine,
+  "Executar comando" e um editor das variáveis e das substituições de DLL da garrafa.
 
 ## Próximos passos
 
@@ -51,3 +53,4 @@ Resumo em uma página. Detalhes: [paridade com o CrossOver](docs/pt-BR/crossover
 | 2026-10-12 | Exportar e importar garrafas prontos. |
 | 2026-10-13 | A revisão 3 do motor é o padrão; paridade ~61%. |
 | 2026-10-16 | Interface em espanhol pronta; paridade ~62%. |
+| 2026-10-16 | Ferramentas da garrafa prontas (duplicar, renomear, ferramentas do Wine, executar comando, modelos, variáveis e DLLs); paridade ~63%. |

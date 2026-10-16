@@ -19,9 +19,10 @@ Tests/                   unit and integration tests (Swift Testing)
 
 | Module | Main types | Role |
 |---|---|---|
-| **WinHubCore** | `CatalogEntry`, `Rating`, `Recipe`, `CatalogLoader`, `CatalogSearchEngine`, `WildcardPattern` | The catalog and its search ([Catalog search](catalog-search.md)), install recipes |
+| **WinHubCore** | `CatalogEntry`, `Rating`, `Recipe`, `CatalogLoader`, `CatalogSearchEngine`, `WildcardPattern`, `ArgumentSplitter` | The catalog and its search ([Catalog search](catalog-search.md)), install recipes |
 | **WinHubRuntime** | `RuntimeManifest`, `RuntimeManager` | Downloads, checks (SHA-256) and installs the Wine engine, including engine overlays |
-| | `Bottle`, `BottleStore` | A bottle is a folder with `bottle.json` and `prefix/` (the `WINEPREFIX`) |
+| | `Bottle`, `BottleStore` | A bottle is a folder with `bottle.json` and `prefix/` (the `WINEPREFIX`); the store creates, duplicates, renames and deletes them |
+| | `BottleTemplate`, `BottleAdvancedSettings`, `WineTool` | Templates for new bottles; reads and writes a bottle's variables and DLL overrides as text; Wine's own tools |
 | | `WineEnvironment` | Builds the environment of Wine processes (a pure function) |
 | | `WineLauncher`, `ProgramScanner`, `WineServerStatus`, `WineOrphanReaper` | Runs Wine, finds installed programs, knows whether a bottle is running, cleans up orphaned processes |
 | | `BottleSession`, `BottleGuard` | Records which WinHub runs Wine in a bottle; decides whether another WinHub, engine or Steam is in the way |
@@ -66,6 +67,32 @@ process (programs started that way hang).
    when the signature is valid and the database is newer;
 3. `AppUpdater` reads the latest GitHub release, downloads `WinHub.zip`, checks the SHA-256 GitHub computed,
    the bundle identifier, the version and `codesign --verify`, and swaps the app on "Reiniciar para atualizar".
+
+## Bottle tools
+
+All of them live in the bottle's page, under "Manutenção" and "Configuração".
+
+- **Duplicar garrafa…** clones the folder (`cp -cR`, an APFS clone) into a new bottle with its own id and name.
+  Logs and the session record are not copied, and neither are the `.app` shortcuts. A running bottle is closed
+  first, after a confirmation.
+- **Renomear garrafa…** changes only the name in `bottle.json`; the id and the folder stay. The shortcuts folder
+  moves with the name, and a shortcut `.app` that already exists keeps opening because it points to the bottle's id.
+  Renaming the Steam bottle to something else asks for a confirmation first.
+- **Ferramentas do Wine** opens Wine's configuration (`winecfg`), the registry editor (`regedit`), the control
+  panel (`control`), the task manager (`taskmgr`) and a command prompt (`cmd`) in the bottle.
+- **Executar comando…** runs one `.exe`, `.msi` or `.bat` from anywhere on the Mac, once, with arguments, a working
+  folder and extra variables (which win over the bottle's). Arguments are split by `ArgumentSplitter`: spaces and
+  tabs separate them, single and double quotes group them, and a backslash only escapes a double quote inside
+  double quotes. So a quoted path that ends in a backslash, like `"C:\Games\"`, reads as an escaped quote and
+  swallows the rest of the line, the same as in Windows. An `.msi` ignores the working folder.
+- **Modelo** (in "Nova garrafa"): Jogos (Windows 10, Direct3D Automático, msync), Aplicativos (Windows 10, Wine's
+  own Direct3D) and Programas antigos (Windows 7, Wine's own Direct3D); Personalizado is the plain bottle. If
+  the installed engine lacks the Direct3D or msync a template asks for, the first available Direct3D is used and
+  msync stays off. The Windows version in the picker wins over the template's.
+- **Avançado…** edits the bottle's environment variables (`NAME=value`, one per line, lines starting with `#` are
+  ignored) and DLL overrides (`d3d11=n,b`; `n` is Windows' DLL, `b` is Wine's; an empty mode turns the DLL off). A
+  wrong line is refused with its number. Changes take effect for programs opened afterwards; if the bottle is
+  running and the change needs a restart, WinHub asks before closing its programs.
 
 ## The catalog and recipes
 

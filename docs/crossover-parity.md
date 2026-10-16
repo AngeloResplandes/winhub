@@ -13,7 +13,7 @@ are judgement, with the reason next to them. The engine has its own, more detail
 
 | | Value | Kind |
 |---|---|---|
-| **WinHub parity** (weighted, below) | **~62%** | estimated |
+| **WinHub parity** (weighted, below) | **~63%** | estimated |
 | Catalog search | same results as CrossOver in the cases compared | measured |
 | Steam and a Direct3D 11 game | Steam with saved login; Hollow Knight through DXMT at feature level 11.1 | measured on 2026-10-12 |
 
@@ -24,14 +24,14 @@ are judgement, with the reason next to them. The engine has its own, more detail
 | Catalog search | 10% | local, `*a*b*` pattern, localized names, 128 results | the same rules ([Catalog search](catalog-search.md)) | 100% | measured: same 8 featured titles and same 16 results for `excel` |
 | Catalog content | 10% | about 4,500 applications with ratings per version | 35 titles, 9 featured, ratings from WinHub's own tests (8 compatibility reports) | 5% | measured count, weight estimated |
 | Install recipes | 10% | recipes for thousands of applications | 1 recipe (Steam), any `.exe`/`.msi`, winetricks components | 15% | estimated |
-| Bottles | 10% | create, Windows version, settings, templates, archives | create, Windows version, Direct3D, msync, HUD, components, export and import; no templates | 85% | estimated |
+| Bottles | 10% | create, Windows version, settings, templates, archives | create from templates, duplicate, rename, Windows version, Direct3D, msync, HUD, components, variables and DLL overrides, Wine's own tools, run command, export and import (the only bottle archives) | 95% | estimated |
 | Steam | 10% | works | works: black-window wrapper, saved login, games opened through Steam | 90% | measured |
 | Graphics and engine | 20% | the engine inside CrossOver 26.3 | engine revision 3 (`wine-11.0-r3`), the default; see the engine's own parity table | 71% | estimated (engine parity) |
 | Per-game rules | 10% | curated database, updated online | per-program Direct3D rules; the signed database channel works and has 1 rule | 20% | estimated |
 | Desktop integration | 5% | shortcuts for installed programs | `.app` shortcuts that open from the Finder, Spotlight and the Dock | 80% | estimated |
 | Updates | 5% | app, catalog and rules | app, catalog, manifests and signed rules | 95% | estimated |
 | Interface and languages | 10% | several languages | Brazilian Portuguese, English and Spanish | 75% | estimated |
-| **Weighted** | 100% | | | **~62%** | estimated |
+| **Weighted** | 100% | | | **~63%** | estimated |
 
 ## Differences that are choices, not gaps
 
@@ -51,3 +51,4 @@ are judgement, with the reason next to them. The engine has its own, more detail
 | 2026-10-12 | Engine revision 2 becomes the default: graphics and engine 50% → 68%, total ~57%. |
 | 2026-10-13 | Bottles 85% (export and import), interface 40% → 70% (English), engine revision 3 the default (68% → 71%); total ~61%. |
 | 2026-10-16 | Interface 70% → 75% (Spanish); total ~62%. |
+| 2026-10-16 | Bottles 85% → 95% (duplicate, rename, Wine tools, run command, templates, variables and DLLs); total ~63%. |

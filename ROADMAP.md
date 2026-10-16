@@ -13,7 +13,7 @@ One-page summary. Detail: [parity with CrossOver](docs/crossover-parity.md) (wei
 
 | | Value | Kind |
 |---|---|---|
-| **WinHub parity with CrossOver** | **~62%** | estimated, weighted by dimension |
+| **WinHub parity with CrossOver** | **~63%** | estimated, weighted by dimension |
 | Catalog search | same results as CrossOver in the cases compared | measured |
 | Steam | installs with one click; saved login kept across engines | measured |
 | Direct3D 11 game | Hollow Knight at 60 FPS through DXMT | measured |
@@ -33,6 +33,8 @@ One-page summary. Detail: [parity with CrossOver](docs/crossover-parity.md) (wei
   the catalog.
 - Bottle export and import (`.winhubbottle`).
 - Resoluções extras: Wine's emulated display modes (16:9 and others up to the screen size) per bottle.
+- Bottle tools: duplicate and rename a bottle, templates for new bottles, Wine's own tools, "Executar comando", and an
+  editor for a bottle's variables and DLL overrides.
 
 ## Next
 
@@ -50,3 +52,4 @@ One-page summary. Detail: [parity with CrossOver](docs/crossover-parity.md) (wei
 | 2026-10-12 | Bottle export and import done. |
 | 2026-10-13 | Engine revision 3 is the default; parity ~61%. |
 | 2026-10-16 | Spanish interface done; parity ~62%. |
+| 2026-10-16 | Bottle tools done (duplicate, rename, Wine tools, run command, templates, variables and DLLs); parity ~63%. |

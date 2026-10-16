@@ -36,7 +36,8 @@ CrossOver code or data is used.
 | **Catalog with search** | words in order, ignoring case and accents, names in your language; the same rules as CrossOver's search |
 | **One-click recipes** | Steam installs and opens with one click; Steam games get "Jogar pela Steam" |
 | **Any installer** | pick an `.exe` or `.msi` and a bottle (⌘I) |
-| **Bottles** | each with its Windows version, Direct3D, msync, performance HUD and winetricks components; export and import (`.winhubbottle`) |
+| **Bottles** | each with its Windows version, Direct3D, msync, performance HUD and winetricks components; duplicate, rename, templates, variables and DLL overrides; export and import (`.winhubbottle`) |
+| **Bottle tools** | Wine's own tools (configuration, registry editor, control panel, task manager, command prompt) and "Executar comando" for any `.exe`, `.msi` or `.bat` with arguments ([Architecture](docs/architecture.md#bottle-tools)) |
 | **Direct3D per bottle or per game** | Automático, Wine, DXMT (Metal), DXVK (Vulkan) or your own D3DMetal ([Graphics](docs/graphics.md)) |
 | **Steam that works** | a small wrapper fixes Steam's black window on Wine 11 for macOS |
 | **Shortcuts** | `~/Applications/WinHub/<bottle>/<program>.app`, for the Finder, Spotlight and the Dock |
@@ -47,7 +48,7 @@ CrossOver code or data is used.
 | | |
 |---|---|
 | Version | 0.2 (a release on every push to `main`) |
-| Parity with CrossOver | **~62%** (estimated, [details](docs/crossover-parity.md)) |
+| Parity with CrossOver | **~63%** (estimated, [details](docs/crossover-parity.md)) |
 | Tested | Steam with saved login; Hollow Knight (Direct3D 11) at 60 FPS through DXMT ([reports](docs/compat/README.md)) |
 | Biggest gaps | Direct3D 12 without D3DMetal, small catalog, empty rule database ([all gaps](docs/gaps.md)) |
 
