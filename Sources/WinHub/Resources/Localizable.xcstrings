@@ -492,7 +492,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Applications"
+            "value" : "Apps"
           }
         },
         "es" : {
@@ -1282,7 +1282,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Duplicate bottle"
+            "value" : "Duplicate Bottle"
           }
         },
         "es" : {
@@ -1298,7 +1298,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Duplicate bottle…"
+            "value" : "Duplicate Bottle…"
           }
         },
         "es" : {
@@ -1826,7 +1826,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Run command"
+            "value" : "Run Command"
           }
         },
         "es" : {
@@ -1842,7 +1842,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Run command…"
+            "value" : "Run Command…"
           }
         },
         "es" : {
@@ -3926,7 +3926,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Rename bottle"
+            "value" : "Rename Bottle"
           }
         },
         "es" : {
@@ -3942,7 +3942,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Rename bottle…"
+            "value" : "Rename Bottle…"
           }
         },
         "es" : {

@@ -72,11 +72,14 @@ atalho (programas abertos assim travam).
 
 ## Ferramentas da garrafa
 
-Todas ficam na página da garrafa, em "Manutenção" e "Configuração".
+Os modelos ficam em "Nova garrafa"; as outras ferramentas ficam na página da garrafa, em "Manutenção" e
+"Configuração".
 
 - **Duplicar garrafa…** clona a pasta (`cp -cR`, um clone do APFS) numa garrafa nova, com id e nome próprios. Os
   logs e o registro de sessão não são copiados, nem os atalhos `.app`. Uma garrafa em uso é encerrada antes, depois
-  de uma confirmação.
+  de uma confirmação. Enquanto uma tarefa roda na garrafa, Duplicar, Renomear, Executar comando e Avançado esperam;
+  um nome que outra garrafa já tem (sem contar maiúsculas) é recusado na própria janela, antes de qualquer coisa
+  fechar.
 - **Renomear garrafa…** muda só o nome no `bottle.json`; o id e a pasta continuam. A pasta dos atalhos acompanha o
   nome, e um atalho `.app` que já existe continua abrindo, porque aponta para o id da garrafa. Tirar o nome
   “Steam” da garrafa da Steam pede uma confirmação antes.
@@ -84,17 +87,23 @@ Todas ficam na página da garrafa, em "Manutenção" e "Configuração".
   painel de controle (`control`), o gerenciador de tarefas (`taskmgr`) e um prompt de comando (`cmd`).
 - **Executar comando…** roda uma vez um `.exe`, `.msi` ou `.bat` de qualquer lugar do Mac, com argumentos, pasta de
   trabalho e variáveis extras (que valem mais que as da garrafa). O `ArgumentSplitter` separa os argumentos: espaços
-  e tabulações separam, aspas simples e duplas agrupam, e a barra invertida só escapa uma aspa dupla dentro de aspas
-  duplas. Por isso um caminho entre aspas que termina em barra invertida, como `"C:\Games\"`, é lido como aspa
-  escapada e engole o resto da linha, igual ao Windows. Um `.msi` ignora a pasta de trabalho.
+  e tabulações separam, só as aspas duplas agrupam (a aspa simples é um caractere comum, como no Windows), e a barra
+  invertida só escapa uma aspa dupla dentro de aspas duplas. Por isso um caminho entre aspas que termina em barra
+  invertida, como `"C:\Games\"`, é lido como aspa escapada e engole o resto da linha, igual ao Windows. Um `.msi`
+  ignora a pasta de trabalho.
 - **Modelo** (em "Nova garrafa"): Jogos (Windows 10, Direct3D Automático, msync), Aplicativos (Windows 10, Direct3D
   do próprio Wine) e Programas antigos (Windows 7, Direct3D do próprio Wine); Personalizado é a garrafa simples.
-  Se o motor instalado não tem o Direct3D ou o msync que o modelo pede, usa-se o primeiro Direct3D disponível e o
-  msync fica desligado. A versão do Windows escolhida no seletor vale mais que a do modelo.
-- **Avançado…** edita as variáveis de ambiente da garrafa (`NOME=valor`, uma por linha; linhas com `#` são
-  ignoradas) e as substituições de DLL (`d3d11=n,b`; `n` é a DLL do Windows, `b` a do Wine; modo vazio desliga a
-  DLL). Uma linha errada é recusada com o número dela. A mudança vale para os programas abertos depois; se a
-  garrafa está rodando e a mudança exige reiniciar, o WinHub pergunta antes de encerrar os programas.
+  Se o motor instalado não tem o Direct3D ou o msync que o modelo pede, usa-se o Direct3D do próprio Wine (ou, sem
+  ele, o primeiro disponível) e o msync fica desligado. A versão do Windows escolhida no seletor vale mais que a do
+  modelo.
+- **Avançado…** edita as variáveis de ambiente da garrafa (`NOME=valor`, uma por linha; o valor vale como está, sem
+  aspas; linhas que começam com `#` são ignoradas; `WINEPREFIX` é do WinHub e é recusada) e as substituições de DLL
+  (`xinput1_3=n,b`; `n` é a DLL do Windows, `b` a do Wine; modo vazio desliga a DLL). Uma linha errada é recusada com
+  o número dela. `d3d10core`, `d3d11`, `dxgi` e `winemetal` também são recusadas: quem cuida delas é a escolha em
+  "Gráficos (Direct3D)", e um motor que escolhe o Direct3D tomaria essa substituição por sobra das DLLs copiadas de
+  antes e a removeria. As substituições que o WinHub pôs para o Direct3D de um motor antigo ficam fora do editor e
+  são mantidas. A mudança vale para os programas abertos depois; se a garrafa está rodando e a mudança exige
+  reiniciar, o WinHub pergunta antes de encerrar os programas.
 
 ## O catálogo e as receitas
 

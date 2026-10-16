@@ -39,11 +39,19 @@ import Testing
         #expect(!result.msync)
     }
 
-    @Test func gamesFallsBackToFirstAvailableWithoutAuto() {
+    @Test func gamesFallsBackToWineWithoutAuto() {
         let result = BottleTemplate.games.apply(to: bottle(), availableGraphics: r1, supportsMSync: true)
         #expect(result.graphics == .wined3d)
+        // Wine's own Direct3D wins wherever it is in the list.
         let dxmtFirst = BottleTemplate.games.apply(to: bottle(), availableGraphics: [.dxmt, .wined3d], supportsMSync: true)
-        #expect(dxmtFirst.graphics == .dxmt)
+        #expect(dxmtFirst.graphics == .wined3d)
+    }
+
+    @Test func fallsBackToTheFirstAvailableWithoutWine() {
+        let games = BottleTemplate.games.apply(to: bottle(), availableGraphics: [.dxmt, .dxvk], supportsMSync: true)
+        #expect(games.graphics == .dxmt)
+        let applications = BottleTemplate.applications.apply(to: bottle(), availableGraphics: [.dxvk, .dxmt], supportsMSync: true)
+        #expect(applications.graphics == .dxvk)
     }
 
     @Test func msyncStaysOffWithoutEngineSupport() {

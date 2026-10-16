@@ -142,13 +142,16 @@ public struct BottleTemplate: Sendable, Hashable, Identifiable {
 
     public static let all: [BottleTemplate] = [.games, .applications, .olderPrograms]
 
-    /// `bottle` with this template's settings. A Direct3D the runtime lacks falls back to the first of
-    /// `availableGraphics` (the bottle keeps its own when the list is empty); msync only with `supportsMSync`.
+    /// `bottle` with this template's settings. A Direct3D the runtime lacks falls back to Wine's own, the most
+    /// compatible, or else the first of `availableGraphics` (the bottle keeps its own when the list is empty);
+    /// msync only with `supportsMSync`.
     public func apply(to bottle: Bottle, availableGraphics: [GraphicsBackend], supportsMSync: Bool) -> Bottle {
         var result = bottle
         result.windowsVersion = windowsVersion
         if availableGraphics.contains(graphics) {
             result.graphics = graphics
+        } else if availableGraphics.contains(.wined3d) {
+            result.graphics = .wined3d
         } else if let first = availableGraphics.first {
             result.graphics = first
         }

@@ -70,11 +70,13 @@ process (programs started that way hang).
 
 ## Bottle tools
 
-All of them live in the bottle's page, under "Manutenção" and "Configuração".
+The templates are in "Nova garrafa"; the other tools live in the bottle's page, under "Manutenção" and
+"Configuração".
 
 - **Duplicar garrafa…** clones the folder (`cp -cR`, an APFS clone) into a new bottle with its own id and name.
   Logs and the session record are not copied, and neither are the `.app` shortcuts. A running bottle is closed
-  first, after a confirmation.
+  first, after a confirmation. While a task runs in the bottle, Duplicar, Renomear, Executar comando and Avançado
+  wait; a name another bottle already has (case aside) is refused in the sheet, before anything closes.
 - **Renomear garrafa…** changes only the name in `bottle.json`; the id and the folder stay. The shortcuts folder
   moves with the name, and a shortcut `.app` that already exists keeps opening because it points to the bottle's id.
   Renaming the Steam bottle to something else asks for a confirmation first.
@@ -82,17 +84,22 @@ All of them live in the bottle's page, under "Manutenção" and "Configuração"
   panel (`control`), the task manager (`taskmgr`) and a command prompt (`cmd`) in the bottle.
 - **Executar comando…** runs one `.exe`, `.msi` or `.bat` from anywhere on the Mac, once, with arguments, a working
   folder and extra variables (which win over the bottle's). Arguments are split by `ArgumentSplitter`: spaces and
-  tabs separate them, single and double quotes group them, and a backslash only escapes a double quote inside
-  double quotes. So a quoted path that ends in a backslash, like `"C:\Games\"`, reads as an escaped quote and
-  swallows the rest of the line, the same as in Windows. An `.msi` ignores the working folder.
+  tabs separate them, only double quotes group them (a single quote is an ordinary character, as in Windows), and a
+  backslash only escapes a double quote inside double quotes. So a quoted path that ends in a backslash, like
+  `"C:\Games\"`, reads as an escaped quote and swallows the rest of the line, the same as in Windows. An `.msi`
+  ignores the working folder.
 - **Modelo** (in "Nova garrafa"): Jogos (Windows 10, Direct3D Automático, msync), Aplicativos (Windows 10, Wine's
   own Direct3D) and Programas antigos (Windows 7, Wine's own Direct3D); Personalizado is the plain bottle. If
-  the installed engine lacks the Direct3D or msync a template asks for, the first available Direct3D is used and
-  msync stays off. The Windows version in the picker wins over the template's.
-- **Avançado…** edits the bottle's environment variables (`NAME=value`, one per line, lines starting with `#` are
-  ignored) and DLL overrides (`d3d11=n,b`; `n` is Windows' DLL, `b` is Wine's; an empty mode turns the DLL off). A
-  wrong line is refused with its number. Changes take effect for programs opened afterwards; if the bottle is
-  running and the change needs a restart, WinHub asks before closing its programs.
+  the installed engine lacks the Direct3D or msync a template asks for, Wine's own Direct3D is used (or, without it,
+  the first available one) and msync stays off. The Windows version in the picker wins over the template's.
+- **Avançado…** edits the bottle's environment variables (`NAME=value`, one per line; the value is used as is,
+  without quotes; lines starting with `#` are ignored; `WINEPREFIX` is WinHub's and is refused) and DLL overrides
+  (`xinput1_3=n,b`; `n` is Windows' DLL, `b` is Wine's; an empty mode turns the DLL off). A wrong line is refused
+  with its number. `d3d10core`, `d3d11`, `dxgi` and `winemetal` are refused too: the "Gráficos (Direct3D)" choice
+  manages them, and an engine that picks the Direct3D would take such an override for a leftover of the old copied
+  DLLs and remove it. The overrides WinHub set for an older engine's Direct3D stay out of the editor and are kept.
+  Changes take effect for programs opened afterwards; if the bottle is running and the change needs a restart,
+  WinHub asks before closing its programs.
 
 ## The catalog and recipes
 

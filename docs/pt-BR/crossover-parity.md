@@ -24,7 +24,7 @@ trabalho está em [Lacunas](gaps.md).
 | Busca do catálogo | 10% | local, padrão `*a*b*`, nomes localizados, 128 resultados | as mesmas regras ([Busca do catálogo](catalog-search.md)) | 100% | medido: os mesmos 8 destaques e os mesmos 16 resultados para `excel` |
 | Conteúdo do catálogo | 10% | cerca de 4.500 aplicativos com notas por versão | 35 títulos, 9 destaques, notas dos testes do próprio WinHub (8 relatórios de compatibilidade) | 5% | contagem medida, peso estimado |
 | Receitas de instalação | 10% | receitas para milhares de aplicativos | 1 receita (Steam), qualquer `.exe`/`.msi`, componentes do winetricks | 15% | estimado |
-| Garrafas | 10% | criar, versão do Windows, ajustes, modelos, arquivos | criar a partir de modelos, duplicar, renomear, versão do Windows, Direct3D, msync, HUD, componentes, variáveis e substituições de DLL, ferramentas do próprio Wine, executar comando, exportar e importar (os únicos arquivos de garrafa) | 95% | estimado |
+| Garrafas | 10% | criar, versão do Windows, ajustes, modelos, arquivos | criar a partir de modelos, duplicar, renomear, versão do Windows, Direct3D, msync, HUD, componentes, variáveis e substituições de DLL, ferramentas do próprio Wine, executar comando, exportar e importar no formato próprio do WinHub, `.winhubbottle` | 95% | estimado |
 | Steam | 10% | funciona | funciona: wrapper da janela preta, login salvo, jogos abertos pela Steam | 90% | medido |
 | Gráficos e motor | 20% | o motor do CrossOver 26.3 | a revisão 3 do motor (`wine-11.0-r3`), o padrão; veja a tabela de paridade do próprio motor | 71% | estimado (paridade do motor) |
 | Regras por jogo | 10% | banco curado, atualizado online | regras de Direct3D por programa; o canal do banco assinado funciona e tem 1 regra | 20% | estimado |

@@ -24,7 +24,7 @@ are judgement, with the reason next to them. The engine has its own, more detail
 | Catalog search | 10% | local, `*a*b*` pattern, localized names, 128 results | the same rules ([Catalog search](catalog-search.md)) | 100% | measured: same 8 featured titles and same 16 results for `excel` |
 | Catalog content | 10% | about 4,500 applications with ratings per version | 35 titles, 9 featured, ratings from WinHub's own tests (8 compatibility reports) | 5% | measured count, weight estimated |
 | Install recipes | 10% | recipes for thousands of applications | 1 recipe (Steam), any `.exe`/`.msi`, winetricks components | 15% | estimated |
-| Bottles | 10% | create, Windows version, settings, templates, archives | create from templates, duplicate, rename, Windows version, Direct3D, msync, HUD, components, variables and DLL overrides, Wine's own tools, run command, export and import (the only bottle archives) | 95% | estimated |
+| Bottles | 10% | create, Windows version, settings, templates, archives | create from templates, duplicate, rename, Windows version, Direct3D, msync, HUD, components, variables and DLL overrides, Wine's own tools, run command, export and import in WinHub's own `.winhubbottle` format | 95% | estimated |
 | Steam | 10% | works | works: black-window wrapper, saved login, games opened through Steam | 90% | measured |
 | Graphics and engine | 20% | the engine inside CrossOver 26.3 | engine revision 3 (`wine-11.0-r3`), the default; see the engine's own parity table | 71% | estimated (engine parity) |
 | Per-game rules | 10% | curated database, updated online | per-program Direct3D rules; the signed database channel works and has 1 rule | 20% | estimated |
