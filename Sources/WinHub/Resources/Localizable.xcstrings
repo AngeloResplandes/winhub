@@ -188,7 +188,7 @@
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Steam ya está abierto en la botella “%@”. Dos Steam abiertos a la vez pueden desinstalar juegos."
+            "value" : "Steam ya está abierto en la botella “%@”. Dos instancias de Steam a la vez pueden desinstalar juegos."
           }
         }
       }
@@ -1656,7 +1656,7 @@
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Fuente no fiable"
+            "value" : "Fuente no confiable"
           }
         }
       }
