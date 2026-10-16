@@ -1075,6 +1075,16 @@
         }
       }
     },
+    "Garrafa importada" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bottle imported"
+          }
+        }
+      }
+    },
     "Garrafa não encontrada" : {
       "localizations" : {
         "en" : {
@@ -1341,6 +1351,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "There is already a bottle named “%@”."
+          }
+        }
+      }
+    },
+    "Já existe uma garrafa “Steam”, então a importada se chama “%@”. O catálogo e os jogos da Steam usam só a garrafa “Steam”." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A “Steam” bottle already exists, so the imported one is named “%@”. The catalog and Steam games only use the bottle named “Steam”."
           }
         }
       }

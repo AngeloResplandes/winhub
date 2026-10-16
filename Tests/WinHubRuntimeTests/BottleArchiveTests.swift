@@ -119,6 +119,26 @@ import Testing
         #expect(users == ["ana"])
     }
 
+    @Test func importReportsTheNameTheBottleHadBeforeRenaming() async throws {
+        let dir = try makeTempDirectory()
+        defer { try? FileManager.default.removeItem(at: dir) }
+        let home = dir.appending(path: "Users/ana")
+        let source = BottleStore(root: dir.appending(path: "A"))
+        let original = try makeBottle(in: source, name: "Steam", user: "ana", home: home)
+        let archive = dir.appending(path: "Steam.winhubbottle")
+        try await BottleArchive.export(original, to: archive)
+
+        // A store that has no "Steam" yet keeps the name; the next import in it is renamed.
+        let target = BottleStore(root: dir.appending(path: "B"))
+        try FileManager.default.createDirectory(at: target.root, withIntermediateDirectories: true)
+        let first = try await BottleArchive.importBottleKeepingName(from: archive, into: target, home: home, userName: "ana")
+        let second = try await BottleArchive.importBottleKeepingName(from: archive, into: target, home: home, userName: "ana")
+        #expect(first.originalName == "Steam")
+        #expect(first.bottle.name == "Steam")
+        #expect(second.originalName == "Steam")
+        #expect(second.bottle.name == "Steam (2)")
+    }
+
     @Test func rejectsFilesThatAreNotBottles() async throws {
         let dir = try makeTempDirectory()
         defer { try? FileManager.default.removeItem(at: dir) }

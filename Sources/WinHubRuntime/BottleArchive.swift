@@ -43,6 +43,14 @@ public enum BottleArchive {
     public static func importBottle(from archive: URL, into store: BottleStore,
                                     home: URL = FileManager.default.homeDirectoryForCurrentUser,
                                     userName: String = NSUserName()) async throws -> Bottle {
+        try await importBottleKeepingName(from: archive, into: store, home: home, userName: userName).bottle
+    }
+
+    /// Like `importBottle`, also returning the name the bottle had in the archive (before a free one was picked).
+    public static func importBottleKeepingName(from archive: URL, into store: BottleStore,
+                                               home: URL = FileManager.default.homeDirectoryForCurrentUser,
+                                               userName: String = NSUserName()) async throws
+        -> (bottle: Bottle, originalName: String) {
         let fm = FileManager.default
         // Unpacked next to the bottles, so moving it into place is instant.
         let temporary = store.root.appending(path: ".import-\(UUID().uuidString)", directoryHint: .isDirectory)
@@ -56,6 +64,7 @@ public enum BottleArchive {
               var bottle = try? store.load(folder: folder) else { throw BottleArchiveError.invalidArchive }
 
         bottle.id = UUID()
+        let originalName = bottle.name
         bottle.name = store.uniqueName(bottle.name)
         let destination = store.root.appending(path: BottleStore.folderName(for: bottle.name, id: bottle.id),
                                                directoryHint: .isDirectory)
@@ -66,7 +75,7 @@ public enum BottleArchive {
         try? fm.removeItem(at: BottleSession.url(for: bottle))
         adoptProfile(in: bottle, home: home, userName: userName)
         try store.save(bottle)
-        return bottle
+        return (bottle, originalName)
     }
 
     /// Big bottles take a while; never on the caller's thread (it may be the main one).
