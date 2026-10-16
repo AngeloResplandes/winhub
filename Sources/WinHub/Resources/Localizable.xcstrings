@@ -487,6 +487,22 @@
         }
       }
     },
+    "Aplicativos" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Applications"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aplicaciones"
+          }
+        }
+      }
+    },
     "Argumentos" : {
       "localizations" : {
         "en" : {
@@ -2397,6 +2413,22 @@
         }
       }
     },
+    "Jogos" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Games"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Juegos"
+          }
+        }
+      }
+    },
     "Já existe uma garrafa chamada “%@”." : {
       "localizations" : {
         "en" : {
@@ -2489,6 +2521,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Mantenimiento"
+          }
+        }
+      }
+    },
+    "Modelo" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Template"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Plantilla"
           }
         }
       }
@@ -3509,6 +3557,22 @@
         }
       }
     },
+    "Personalizado" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Custom"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Personalizado"
+          }
+        }
+      }
+    },
     "Procurando…" : {
       "localizations" : {
         "en" : {
@@ -3617,6 +3681,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Programas"
+          }
+        }
+      }
+    },
+    "Programas antigos" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Older programs"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Programas antiguos"
           }
         }
       }
@@ -4183,6 +4263,54 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "WinHub %@"
+          }
+        }
+      }
+    },
+    "Windows 10 e Direct3D do próprio Wine, o mais compatível para aplicativos." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Windows 10 and Wine's own Direct3D, the most compatible choice for applications."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Windows 10 y el Direct3D propio de Wine, la opción más compatible para aplicaciones."
+          }
+        }
+      }
+    },
+    "Windows 10, Direct3D automático e msync, para jogos." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Windows 10, automatic Direct3D and msync, for games."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Windows 10, Direct3D automático y msync, para juegos."
+          }
+        }
+      }
+    },
+    "Windows 7 e Direct3D do próprio Wine, para programas feitos para versões antigas do Windows." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Windows 7 and Wine's own Direct3D, for programs made for older versions of Windows."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Windows 7 y el Direct3D propio de Wine, para programas hechos para versiones antiguas de Windows."
           }
         }
       }

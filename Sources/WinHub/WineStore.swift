@@ -168,11 +168,19 @@ final class WineStore {
     // MARK: Bottles
 
     @discardableResult
-    func createBottle(name: String, windowsVersion: Bottle.WindowsVersion = .win10) async -> Bottle? {
+    func createBottle(name: String, windowsVersion: Bottle.WindowsVersion = .win10,
+                      template: BottleTemplate? = nil) async -> Bottle? {
         guard let runtime = requireRuntime() else { return nil }
         do {
-            let bottle = try bottleStore.create(name: name, runtimeID: runtime.manifest.id, windowsVersion: windowsVersion,
+            var bottle = try bottleStore.create(name: name, runtimeID: runtime.manifest.id, windowsVersion: windowsVersion,
                                                 graphics: runtime.dispatchesGraphics ? .auto : .wined3d)
+            if let template {
+                // The picker's Windows version wins over the template's (the sheet pre-fills it from the template).
+                let chosenVersion = bottle.windowsVersion
+                bottle = template.apply(to: bottle, availableGraphics: graphicsBackends, supportsMSync: supportsMSync)
+                bottle.windowsVersion = chosenVersion
+                try bottleStore.save(bottle)
+            }
             refresh()
             try await perform(key: bottle.id.uuidString, String(localized: "Criando a garrafa…")) {
                 try await WineLauncher(runtime: runtime).initialize(bottle)

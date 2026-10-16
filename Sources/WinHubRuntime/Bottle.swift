@@ -117,6 +117,46 @@ public struct Bottle: Codable, Sendable, Identifiable, Hashable {
     }
 }
 
+/// Ready-made settings for a new bottle: Windows version, Direct3D and msync for the kind of program it will run.
+public struct BottleTemplate: Sendable, Hashable, Identifiable {
+    public let id: String
+    public let title: String
+    public let help: String
+    public let windowsVersion: Bottle.WindowsVersion
+    /// Wanted Direct3D; `apply` falls back when the installed runtime cannot use it.
+    public let graphics: GraphicsBackend
+    public let msync: Bool
+
+    public static let games = BottleTemplate(
+        id: "games", title: String(localized: "Jogos"),
+        help: String(localized: "Windows 10, Direct3D automático e msync, para jogos."),
+        windowsVersion: .win10, graphics: .auto, msync: true)
+    public static let applications = BottleTemplate(
+        id: "applications", title: String(localized: "Aplicativos"),
+        help: String(localized: "Windows 10 e Direct3D do próprio Wine, o mais compatível para aplicativos."),
+        windowsVersion: .win10, graphics: .wined3d, msync: false)
+    public static let olderPrograms = BottleTemplate(
+        id: "older-programs", title: String(localized: "Programas antigos"),
+        help: String(localized: "Windows 7 e Direct3D do próprio Wine, para programas feitos para versões antigas do Windows."),
+        windowsVersion: .win7, graphics: .wined3d, msync: false)
+
+    public static let all: [BottleTemplate] = [.games, .applications, .olderPrograms]
+
+    /// `bottle` with this template's settings. A Direct3D the runtime lacks falls back to the first of
+    /// `availableGraphics` (the bottle keeps its own when the list is empty); msync only with `supportsMSync`.
+    public func apply(to bottle: Bottle, availableGraphics: [GraphicsBackend], supportsMSync: Bool) -> Bottle {
+        var result = bottle
+        result.windowsVersion = windowsVersion
+        if availableGraphics.contains(graphics) {
+            result.graphics = graphics
+        } else if let first = availableGraphics.first {
+            result.graphics = first
+        }
+        result.msync = msync && supportsMSync
+        return result
+    }
+}
+
 public enum BottleError: Error, LocalizedError, Equatable {
     case nameTaken(String)
     case invalidName

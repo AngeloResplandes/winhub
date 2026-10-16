@@ -497,10 +497,24 @@ struct NewBottleSheet: View {
     @Environment(\.dismiss) private var dismiss
     @State private var name = ""
     @State private var version = Bottle.WindowsVersion.win10
+    /// `nil` is "Personalizado": only the Windows version below.
+    @State private var template: BottleTemplate?
 
     var body: some View {
         Form {
             TextField("Nome", text: $name, prompt: Text("Ex.: Jogos"))
+            Picker("Modelo", selection: $template) {
+                Text("Personalizado").tag(BottleTemplate?.none)
+                ForEach(BottleTemplate.all) { Text($0.title).tag(BottleTemplate?.some($0)) }
+            }
+            .onChange(of: template) { _, new in
+                if let new { version = new.windowsVersion }
+            }
+            if let template {
+                Text(template.help)
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
             Picker("Versão do Windows", selection: $version) {
                 ForEach(Bottle.WindowsVersion.allCases, id: \.self) { Text($0.title).tag($0) }
             }
@@ -512,9 +526,9 @@ struct NewBottleSheet: View {
             ToolbarItem(placement: .cancellationAction) { Button("Cancelar") { dismiss() } }
             ToolbarItem(placement: .confirmationAction) {
                 Button("Criar") {
-                    let (name, version) = (name, version)
+                    let (name, version, template) = (name, version, template)
                     dismiss()
-                    Task { await wine.createBottle(name: name, windowsVersion: version) }
+                    Task { await wine.createBottle(name: name, windowsVersion: version, template: template) }
                 }
                 .disabled(name.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
             }
