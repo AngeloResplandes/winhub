@@ -730,6 +730,14 @@ final class WineStore {
         }
     }
 
+    /// Opens one of Wine's own programs (winecfg, regedit, ...) in the bottle.
+    func openTool(_ tool: WineTool, in bottle: Bottle) {
+        guard claim(bottle, opensProgram: true, retry: { self.openTool(tool, in: bottle) }) else { return }
+        launch(in: bottle) { launcher in
+            try await launcher.run(bottle, WineLauncher.toolArguments(tool), logName: tool.rawValue)
+        }
+    }
+
     /// Opens a Steam game through the Steam client bottle.
     func playOnSteam(appID: Int) {
         guard let bottle = bottle(named: SteamClient.bottleName),

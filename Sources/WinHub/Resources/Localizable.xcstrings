@@ -263,6 +263,22 @@
         }
       }
     },
+    "Abre os programas do próprio Wine (configuração, registro, painel de controle…) nesta garrafa." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Opens Wine's own programs (configuration, registry, control panel…) in this bottle."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abre los programas del propio Wine (configuración, registro, panel de control…) en esta botella."
+          }
+        }
+      }
+    },
     "Abrir" : {
       "localizations" : {
         "en" : {
@@ -893,6 +909,22 @@
         }
       }
     },
+    "Configuração do Wine" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wine Configuration"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Configuración de Wine"
+          }
+        }
+      }
+    },
     "Cria a garrafa “%@” e baixa o instalador oficial." : {
       "localizations" : {
         "en" : {
@@ -1209,6 +1241,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Ponle un nombre a la botella."
+          }
+        }
+      }
+    },
+    "Editor do Registro" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Registry Editor"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Editor del Registro"
           }
         }
       }
@@ -1741,6 +1789,22 @@
         }
       }
     },
+    "Ferramentas do Wine" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wine Tools"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Herramientas de Wine"
+          }
+        }
+      }
+    },
     "Fonte não confiável" : {
       "localizations" : {
         "en" : {
@@ -1833,6 +1897,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Botellas"
+          }
+        }
+      }
+    },
+    "Gerenciador de Tarefas" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Task Manager"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Administrador de tareas"
           }
         }
       }
@@ -3205,6 +3285,22 @@
         }
       }
     },
+    "Painel de Controle" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Control Panel"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Panel de control"
+          }
+        }
+      }
+    },
     "Para duplicar, a garrafa precisa estar encerrada. Salve o que estiver aberto antes de continuar." : {
       "localizations" : {
         "en" : {
@@ -3361,6 +3457,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Programas"
+          }
+        }
+      }
+    },
+    "Prompt de Comando" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Command Prompt"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Símbolo del sistema"
           }
         }
       }

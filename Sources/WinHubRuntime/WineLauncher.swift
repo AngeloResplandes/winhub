@@ -11,6 +11,31 @@ public enum WineLauncherError: Error, LocalizedError, Equatable {
     }
 }
 
+/// Wine's own programs, opened from a bottle's page.
+public enum WineTool: String, CaseIterable, Sendable {
+    case configuration, registryEditor, controlPanel, taskManager, commandPrompt
+
+    public var title: String {
+        switch self {
+        case .configuration: String(localized: "Configuração do Wine")
+        case .registryEditor: String(localized: "Editor do Registro")
+        case .controlPanel: String(localized: "Painel de Controle")
+        case .taskManager: String(localized: "Gerenciador de Tarefas")
+        case .commandPrompt: String(localized: "Prompt de Comando")
+        }
+    }
+
+    public var systemImage: String {
+        switch self {
+        case .configuration: "gearshape"
+        case .registryEditor: "list.bullet.rectangle"
+        case .controlPanel: "slider.horizontal.3"
+        case .taskManager: "chart.bar"
+        case .commandPrompt: "terminal"
+        }
+    }
+}
+
 /// Runs Wine commands inside a bottle. Output goes to the bottle's `logs/` folder.
 public struct WineLauncher: Sendable {
     public let runtime: InstalledRuntime
@@ -45,6 +70,17 @@ public struct WineLauncher: Sendable {
         try await runChecked(String(localized: "Mudar as resoluções da garrafa"), bottle,
                              Self.displayModesArguments(bottle.extraDisplayModes), logName: "reg")
         try await shutdown(bottle)
+    }
+
+    /// `cmd` is a console program and needs a window of its own; `start` opens one.
+    public static func toolArguments(_ tool: WineTool) -> [String] {
+        switch tool {
+        case .configuration: ["winecfg"]
+        case .registryEditor: ["regedit"]
+        case .controlPanel: ["control"]
+        case .taskManager: ["taskmgr"]
+        case .commandPrompt: ["start", "cmd"]
+        }
     }
 
     static func displayModesArguments(_ enabled: Bool) -> [String] {

@@ -233,6 +233,14 @@ struct BottleDetailView: View {
             Section("Manutenção") {
                 Button { wine.revealDriveC(bottle) } label: { Label("Mostrar o disco C: no Finder", systemImage: "folder") }
                 Button { wine.revealLogs(bottle) } label: { Label("Abrir os logs", systemImage: "doc.text.magnifyingglass") }
+                Menu {
+                    ForEach(WineTool.allCases, id: \.self) { tool in
+                        Button { wine.openTool(tool, in: bottle) } label: { Label(tool.title, systemImage: tool.systemImage) }
+                    }
+                } label: {
+                    Label("Ferramentas do Wine", systemImage: "wrench.and.screwdriver")
+                }
+                .help("Abre os programas do próprio Wine (configuração, registro, painel de controle…) nesta garrafa.")
                 Button { Task { await wine.shutdown(bottle) } } label: {
                     Label("Encerrar todos os programas", systemImage: "stop.circle")
                 }
