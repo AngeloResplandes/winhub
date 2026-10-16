@@ -2253,6 +2253,22 @@
         }
       }
     },
+    "Já existe uma pasta de atalhos chamada “%@” em Aplicativos/WinHub. Mude ou remova essa pasta e tente de novo." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A shortcuts folder named “%@” already exists in Applications/WinHub. Change or remove that folder and try again."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ya existe una carpeta de accesos directos llamada “%@” en Aplicaciones/WinHub. Cambia o elimina esa carpeta e inténtalo de nuevo."
+          }
+        }
+      }
+    },
     "Licença" : {
       "localizations" : {
         "en" : {
@@ -2431,6 +2447,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Mueve WinHub a la carpeta Aplicaciones para que se actualice solo."
+          }
+        }
+      }
+    },
+    "Muda o nome da garrafa e da pasta dos atalhos .app. Os programas não precisam ser fechados." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Changes the name of the bottle and of its .app shortcuts folder. Programs do not need to be closed."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cambia el nombre de la botella y de su carpeta de accesos directos .app. No hace falta cerrar los programas."
           }
         }
       }
@@ -2997,6 +3029,22 @@
         }
       }
     },
+    "O catálogo e os jogos da Steam usam só a garrafa “Steam”. Renomear mesmo assim?" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The catalog and Steam games only use the “Steam” bottle. Rename it anyway?"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "El catálogo y los juegos de Steam solo usan la botella “Steam”. ¿Quieres cambiarle el nombre de todos modos?"
+          }
+        }
+      }
+    },
     "O instalador" : {
       "localizations" : {
         "en" : {
@@ -3383,6 +3431,86 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Reiniciar para actualizar"
+          }
+        }
+      }
+    },
+    "Renomear" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rename"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Renombrar"
+          }
+        }
+      }
+    },
+    "Renomear a garrafa “%@”?" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rename the bottle “%@”?"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "¿Renombrar la botella “%@”?"
+          }
+        }
+      }
+    },
+    "Renomear garrafa" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rename bottle"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Renombrar botella"
+          }
+        }
+      }
+    },
+    "Renomear garrafa…" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rename bottle…"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Renombrar botella…"
+          }
+        }
+      }
+    },
+    "Renomear mesmo assim" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rename anyway"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Renombrar de todos modos"
           }
         }
       }

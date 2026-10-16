@@ -250,6 +250,17 @@ final class WineStore {
         }
     }
 
+    /// Renames `bottle` and moves its `.app` shortcuts folder along. Only metadata changes, so a running bottle
+    /// is left alone.
+    func rename(_ bottle: Bottle, to name: String) {
+        do {
+            _ = try bottleStore.rename(bottle, to: name, movingLaunchersWith: launchers)
+        } catch {
+            errorMessage = error.localizedDescription
+        }
+        refresh()
+    }
+
     func revealDriveC(_ bottle: Bottle) {
         NSWorkspace.shared.activateFileViewerSelecting([bottle.driveC])
     }

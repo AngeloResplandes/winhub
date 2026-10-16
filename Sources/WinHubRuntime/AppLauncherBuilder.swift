@@ -1,5 +1,16 @@
 import Foundation
 
+public enum AppLauncherError: Error, LocalizedError, Equatable {
+    case folderExists(String)
+
+    public var errorDescription: String? {
+        switch self {
+        case .folderExists(let name):
+            String(localized: "Já existe uma pasta de atalhos chamada “\(name)” em Aplicativos/WinHub. Mude ou remova essa pasta e tente de novo.")
+        }
+    }
+}
+
 /// Creates small `.app` bundles that open a Windows program from Finder,
 /// Spotlight or the Dock.
 ///
@@ -68,6 +79,31 @@ public struct AppLauncherBuilder: Sendable {
         if FileManager.default.fileExists(atPath: dir.path) {
             try FileManager.default.removeItem(at: dir)
         }
+    }
+
+    /// Moves the shortcuts folder of a renamed bottle (`<root>/<old>` to `<root>/<new>`). The scripts hold the
+    /// bottle's id and the `.lnk` path, which do not change. Nothing to move: no-op. The destination is never
+    /// overwritten: another bottle's folder there throws `AppLauncherError.folderExists`.
+    public func renameFolder(from oldName: String, to newName: String) throws {
+        let oldFolder = root.appending(path: Self.safeName(oldName), directoryHint: .isDirectory)
+        let newFolder = root.appending(path: Self.safeName(newName), directoryHint: .isDirectory)
+        let fm = FileManager.default
+        guard oldFolder.lastPathComponent != newFolder.lastPathComponent, fm.fileExists(atPath: oldFolder.path) else { return }
+        if fm.fileExists(atPath: newFolder.path) {
+            // A case-only rename on a case-insensitive volume: the destination is the source itself.
+            guard Self.isSameItem(oldFolder, newFolder) else { throw AppLauncherError.folderExists(newFolder.lastPathComponent) }
+            let hop = root.appending(path: ".rename-\(UUID().uuidString)", directoryHint: .isDirectory)
+            try fm.moveItem(at: oldFolder, to: hop)
+            try fm.moveItem(at: hop, to: newFolder)
+            return
+        }
+        try fm.moveItem(at: oldFolder, to: newFolder)
+    }
+
+    private static func isSameItem(_ a: URL, _ b: URL) -> Bool {
+        guard let first = try? a.resourceValues(forKeys: [.fileResourceIdentifierKey]).fileResourceIdentifier,
+              let second = try? b.resourceValues(forKeys: [.fileResourceIdentifierKey]).fileResourceIdentifier else { return false }
+        return first.isEqual(second)
     }
 
     static func script(for program: InstalledProgram, in bottle: Bottle) -> String {

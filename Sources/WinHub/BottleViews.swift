@@ -1,4 +1,5 @@
 import SwiftUI
+import WinHubCore
 import WinHubRuntime
 
 /// A program's own icon (from its `.exe`), or a generic one while it loads or if it has none.
@@ -95,6 +96,9 @@ struct BottleDetailView: View {
     var onDuplicated: (Bottle.ID) -> Void = { _ in }
     @State private var isConfirmingDelete = false
     @State private var isDuplicating = false
+    @State private var isRenaming = false
+    /// A new name that leaves the "Steam" bottle, waiting for confirmation.
+    @State private var steamRename: String?
     /// A change that closes the bottle's programs, waiting for confirmation.
     @State private var pendingChange: PendingChange?
     @State private var verbs = ""
@@ -236,6 +240,10 @@ struct BottleDetailView: View {
                     Label("Exportar garrafa…", systemImage: "square.and.arrow.up")
                 }
                 .help("Salva a garrafa inteira num arquivo .winhubbottle, para backup ou para levar a outro Mac.")
+                Button { isRenaming = true } label: {
+                    Label("Renomear garrafa…", systemImage: "pencil")
+                }
+                .help("Muda o nome da garrafa e da pasta dos atalhos .app. Os programas não precisam ser fechados.")
                 Button { isDuplicating = true } label: {
                     Label("Duplicar garrafa…", systemImage: "plus.square.on.square")
                 }
@@ -266,6 +274,28 @@ struct BottleDetailView: View {
             }
         } message: {
             Text("Todos os programas e arquivos dentro dela serão apagados. Esta ação não pode ser desfeita.")
+        }
+        .sheet(isPresented: $isRenaming) {
+            RenameBottleSheet(bottle: bottle) { name in
+                if SteamClient.isRenamedClientBottle(original: bottle.name,
+                                                     imported: name.trimmingCharacters(in: .whitespacesAndNewlines)) {
+                    steamRename = name
+                } else {
+                    wine.rename(bottle, to: name)
+                }
+            }
+        }
+        .confirmationDialog("Renomear a garrafa “\(bottle.name)”?", isPresented: Binding(
+            get: { steamRename != nil },
+            set: { if !$0 { steamRename = nil } }
+        )) {
+            Button("Renomear mesmo assim") {
+                if let name = steamRename { wine.rename(bottle, to: name) }
+                steamRename = nil
+            }
+            Button("Cancelar", role: .cancel) { steamRename = nil }
+        } message: {
+            Text("O catálogo e os jogos da Steam usam só a garrafa “Steam”. Renomear mesmo assim?")
         }
         .sheet(isPresented: $isDuplicating) {
             DuplicateBottleSheet(bottle: bottle) { name in
@@ -315,6 +345,37 @@ struct BottleDetailView: View {
         case msync(Bool)
         case displayModes(Bool)
         case duplicate(String)
+    }
+}
+
+/// New name for a bottle, starting from the current one.
+struct RenameBottleSheet: View {
+    @Environment(\.dismiss) private var dismiss
+    let bottle: Bottle
+    let onRename: (String) -> Void
+    @State private var name = ""
+
+    private var trimmed: String { name.trimmingCharacters(in: .whitespacesAndNewlines) }
+
+    var body: some View {
+        Form {
+            TextField("Nome", text: $name)
+        }
+        .formStyle(.grouped)
+        .safeAreaInset(edge: .top) { SheetHeader(title: "Renomear garrafa", systemImage: "pencil") }
+        .frame(width: 380)
+        .onAppear { name = bottle.name }
+        .toolbar {
+            ToolbarItem(placement: .cancellationAction) { Button("Cancelar") { dismiss() } }
+            ToolbarItem(placement: .confirmationAction) {
+                Button("Renomear") {
+                    let name = name
+                    dismiss()
+                    onRename(name)
+                }
+                .disabled(trimmed.isEmpty || trimmed == bottle.name)
+            }
+        }
     }
 }
 

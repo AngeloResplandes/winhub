@@ -156,16 +156,45 @@ public struct BottleStore: Sendable {
     /// Writes the bottle's folder and `bottle.json`. The prefix is created later by `WineLauncher.initialize`.
     public func create(name: String, runtimeID: String, windowsVersion: Bottle.WindowsVersion = .win10,
                        graphics: GraphicsBackend = .wined3d) throws -> Bottle {
-        let trimmed = name.trimmingCharacters(in: .whitespacesAndNewlines)
-        guard !trimmed.isEmpty else { throw BottleError.invalidName }
-        guard !list().contains(where: { $0.name.caseInsensitiveCompare(trimmed) == .orderedSame }) else {
-            throw BottleError.nameTaken(trimmed)
-        }
+        let trimmed = try validatedName(name)
         var bottle = Bottle(name: trimmed, runtimeID: runtimeID, windowsVersion: windowsVersion, graphics: graphics)
         bottle.folder = root.appending(path: Self.folderName(for: trimmed, id: bottle.id), directoryHint: .isDirectory)
         try FileManager.default.createDirectory(at: bottle.folder, withIntermediateDirectories: true)
         try save(bottle)
         return bottle
+    }
+
+    /// `name` trimmed, if it is not empty and no other bottle has it (names compare without case). `bottle` is the
+    /// one being renamed: it may keep its own name, in another case.
+    func validatedName(_ name: String, renaming bottle: Bottle? = nil) throws -> String {
+        let trimmed = name.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !trimmed.isEmpty else { throw BottleError.invalidName }
+        guard !list().contains(where: { $0.id != bottle?.id && $0.name.caseInsensitiveCompare(trimmed) == .orderedSame }) else {
+            throw BottleError.nameTaken(trimmed)
+        }
+        return trimmed
+    }
+
+    /// Renames `bottle`: only `bottle.json` changes. The folder keeps its name, because the `.app` shortcuts store
+    /// the path of the `.lnk` inside it. Running programs are not affected.
+    public func rename(_ bottle: Bottle, to name: String) throws -> Bottle {
+        var renamed = bottle
+        renamed.name = try validatedName(name, renaming: bottle)
+        try save(renamed)
+        return renamed
+    }
+
+    /// `rename` plus the move of the bottle's `.app` shortcuts folder. The name is checked first and the shortcuts
+    /// move before `bottle.json` changes, so a failure leaves the bottle as it was.
+    public func rename(_ bottle: Bottle, to name: String, movingLaunchersWith launchers: AppLauncherBuilder) throws -> Bottle {
+        let trimmed = try validatedName(name, renaming: bottle)
+        try launchers.renameFolder(from: bottle.name, to: trimmed)
+        do {
+            return try rename(bottle, to: trimmed)
+        } catch {
+            try? launchers.renameFolder(from: trimmed, to: bottle.name)
+            throw error
+        }
     }
 
     public func save(_ bottle: Bottle) throws {
@@ -184,11 +213,7 @@ public struct BottleStore: Sendable {
     /// A copy of `bottle` under a new id and `name`: an APFS clone of the folder (instant, no extra space) off
     /// the caller's thread, without the logs and the record of which WinHub used it. Close the bottle first.
     public func duplicate(_ bottle: Bottle, name: String) async throws -> Bottle {
-        let trimmed = name.trimmingCharacters(in: .whitespacesAndNewlines)
-        guard !trimmed.isEmpty else { throw BottleError.invalidName }
-        guard !list().contains(where: { $0.name.caseInsensitiveCompare(trimmed) == .orderedSame }) else {
-            throw BottleError.nameTaken(trimmed)
-        }
+        let trimmed = try validatedName(name)
         var copy = bottle
         copy.id = UUID()
         copy.name = trimmed
