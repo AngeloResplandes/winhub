@@ -2,7 +2,7 @@
 
 # Gaps
 
-> **Last reviewed:** 2026-10-15
+> **Last reviewed:** 2026-10-16
 
 Known gaps, ranked by how many people and games they block. Engine-only gaps are detailed in
 [winhub-engine's gaps](https://angeloresplandes.github.io/winhub-engine/gaps.html). Parity numbers:
@@ -15,7 +15,7 @@ Known gaps, ranked by how many people and games they block. Engine-only gaps are
 | 3 | **Empty rule database** | games that need a specific Direct3D, variable or argument to start | one rule per tested game in winhub-engine's `data/compatdb.json` |
 | 4 | **Game videos** | cutscenes and intros in many games | GStreamer and H.264 in the engine |
 | 5 | **16:9 display modes** | 1920×1080 and other modes that are not the Mac screen's own ratio | partly done: **Resoluções extras** turns on Wine's emulated modes (`EmulateModeset`), with 16:9 up to the screen size in points (1280×720 on a 1470×956 Mac); 1920×1080 there needs `RetinaMode` (prefix-wide) or a change in the engine's `win32u` |
-| 6 | **Interface only in Brazilian Portuguese** | people who do not read Portuguese | done for English (String Catalog); other languages can be added to the same catalog |
+| 6 | **Interface only in Brazilian Portuguese** | people who do not read Portuguese | done for English and Spanish (String Catalog); other languages go into the same catalog |
 | 7 | **Bottle export and import** | moving a bottle to another Mac, backups | done: **Exportar garrafa…** and **Arquivo → Importar garrafa…** (`.winhubbottle`); not yet tried between two Macs with different user names |
 | 8 | **Program icons** | recognizing programs in the lists and shortcuts | done: read from the `.exe` the shortcut points to, in the lists and on `.app` shortcuts |
 | 9 | **Unnotarized releases** | a smooth first launch (macOS asks for "Abrir Mesmo Assim") | sign and notarize with a Developer ID (the release workflow already supports it) |

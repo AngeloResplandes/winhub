@@ -139,6 +139,14 @@ import Testing
         #expect(entry.displaySummary(preferredLanguages: ["fr"]) == "Resumo")
     }
 
+    /// Regional Spanish (Spain, Latin America) falls back to the catalog's plain "es".
+    @Test func displaySummaryFallsBackToBaseSpanish() {
+        let entry = CatalogEntry(id: "x", name: "X", summary: "Resumo", localizedSummaries: ["en": "Summary", "es": "Resumen"])
+        #expect(entry.displaySummary(preferredLanguages: ["es-419"]) == "Resumen")
+        #expect(entry.displaySummary(preferredLanguages: ["es-ES", "en"]) == "Resumen")
+        #expect(entry.displaySummary(preferredLanguages: ["es_MX"]) == "Resumen")
+    }
+
     @Test func decodesMinimalJSON() throws {
         let json = #"[{"id": "a", "name": "App"}]"#
         let entries = try JSONDecoder().decode([CatalogEntry].self, from: Data(json.utf8))
@@ -212,6 +220,13 @@ import Testing
         #expect(knight.steamGame?.executable == "hollow_knight.exe")
         #expect(knight.steamGame?.graphics == "dxmt")
         #expect(knight.rating == .good)
+    }
+
+    @Test func renamedSteamBottle() {
+        #expect(SteamClient.isRenamedClientBottle(original: "Steam", imported: "Steam (2)"))
+        #expect(SteamClient.isRenamedClientBottle(original: "steam", imported: "steam (2)"))
+        #expect(!SteamClient.isRenamedClientBottle(original: "Steam", imported: "Steam"))
+        #expect(!SteamClient.isRenamedClientBottle(original: "Jogos", imported: "Jogos (2)"))
     }
 
     @Test func steamRunArguments() {

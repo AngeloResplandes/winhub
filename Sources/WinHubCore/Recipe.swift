@@ -88,6 +88,11 @@ public enum SteamClient {
     public static let bottleName = "Steam"
     public static let windowsPath = #"C:\Program Files (x86)\Steam\steam.exe"#
 
+    /// Whether an imported bottle that was WinHub's Steam bottle got another name (the catalog only uses "Steam").
+    public static func isRenamedClientBottle(original: String, imported: String) -> Bool {
+        original.caseInsensitiveCompare(bottleName) == .orderedSame && imported.caseInsensitiveCompare(original) != .orderedSame
+    }
+
     /// Steam checks its files on start and would put back the original
     /// `steamwebhelper.exe` over WinHub's wrapper. Only used while the wrapper is
     /// installed: on the first start the check is what downloads Steam's client.

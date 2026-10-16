@@ -39,6 +39,8 @@ final class WineStore {
     private(set) var activeBottles: Set<Bottle.ID> = []
 
     var errorMessage: String?
+    /// An informational message (not an error) shown in an alert.
+    var notice: String?
     var isShowingRuntimeSetup = false
     var pendingInstall: PendingInstall?
     var pendingConflict: PendingConflict?
@@ -469,10 +471,13 @@ final class WineStore {
         do {
             try FileManager.default.createDirectory(at: bottleStore.root, withIntermediateDirectories: true)
             let store = bottleStore
-            _ = try await perform(key: Self.importActivity, String(localized: "Importando “\(url.deletingPathExtension().lastPathComponent)”…")) {
-                try await BottleArchive.importBottle(from: url, into: store)
+            let imported = try await perform(key: Self.importActivity, String(localized: "Importando “\(url.deletingPathExtension().lastPathComponent)”…")) {
+                try await BottleArchive.importBottleKeepingName(from: url, into: store)
             }
             refresh()
+            if SteamClient.isRenamedClientBottle(original: imported.originalName, imported: imported.bottle.name) {
+                notice = String(localized: "Já existe uma garrafa “Steam”, então a importada se chama “\(imported.bottle.name)”. O catálogo e os jogos da Steam usam só a garrafa “Steam”.")
+            }
         } catch {
             errorMessage = error.localizedDescription
         }

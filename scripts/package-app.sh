@@ -29,11 +29,15 @@ cp -R "$BIN_DIR/WinHub_WinHub.bundle" "$APP/Contents/Resources/"
 for lproj in "$BIN_DIR/WinHub_WinHub.bundle/"*.lproj "$BIN_DIR/WinHub_WinHub.bundle/Contents/Resources/"*.lproj; do
     if [ -d "$lproj" ]; then cp -R "$lproj" "$APP/Contents/Resources/"; fi
 done
-test -f "$APP/Contents/Resources/en.lproj/Localizable.strings" || { echo "English strings missing from the app" >&2; exit 1; }
+for language in en es; do
+    test -f "$APP/Contents/Resources/$language.lproj/Localizable.strings" || { echo "$language strings missing from the app" >&2; exit 1; }
+done
 # Wine processes count as WinHub for macOS privacy checks: without a usage description, macOS refuses the
 # microphone without asking and ends the thread that asked (games with voice chat hang).
 printf '"NSMicrophoneUsageDescription" = "Windows programs and games opened by WinHub can use the microphone, for example for voice chat.";\n' \
     > "$APP/Contents/Resources/en.lproj/InfoPlist.strings"
+printf '"NSMicrophoneUsageDescription" = "Los programas y juegos de Windows abiertos por WinHub pueden usar el micrófono, por ejemplo para el chat de voz.";\n' \
+    > "$APP/Contents/Resources/es.lproj/InfoPlist.strings"
 
 # App icon, drawn from code (see scripts/make-icon.swift).
 swift scripts/make-icon.swift "$APP/Contents/Resources/AppIcon.icns"
@@ -55,7 +59,7 @@ cat > "$APP/Contents/Info.plist" <<PLIST
     <key>CFBundleShortVersionString</key><string>$VERSION</string>
     <key>CFBundleVersion</key><string>$BUILD</string>
     <key>CFBundleDevelopmentRegion</key><string>pt</string>
-    <key>CFBundleLocalizations</key><array><string>pt</string><string>en</string></array>
+    <key>CFBundleLocalizations</key><array><string>pt</string><string>en</string><string>es</string></array>
     <key>LSMinimumSystemVersion</key><string>14.0</string>
     <key>LSApplicationCategoryType</key><string>public.app-category.games</string>
     <key>NSHighResolutionCapable</key><true/>

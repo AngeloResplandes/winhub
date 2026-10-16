@@ -2,7 +2,7 @@
 
 # Paridade com o CrossOver
 
-> **Última revisão:** 2026-10-15 · **WinHub:** `main` (0.2) · **Alvo:** CrossOver 26.3.0 para macOS
+> **Última revisão:** 2026-10-16 · **WinHub:** `main` (0.2) · **Alvo:** CrossOver 26.3.0 para macOS
 
 O quanto o WinHub se aproxima do CrossOver, dimensão por dimensão. Números "medidos" vêm de testes; os "estimados"
 são avaliação, com o motivo ao lado. O motor tem a própria tabela, mais detalhada:
@@ -13,7 +13,7 @@ trabalho está em [Lacunas](gaps.md).
 
 | | Valor | Tipo |
 |---|---|---|
-| **Paridade do WinHub** (ponderada, abaixo) | **~61%** | estimado |
+| **Paridade do WinHub** (ponderada, abaixo) | **~62%** | estimado |
 | Busca do catálogo | os mesmos resultados do CrossOver nos casos comparados | medido |
 | Steam e um jogo Direct3D 11 | Steam com login salvo; Hollow Knight pelo DXMT no feature level 11.1 | medido em 2026-10-12 |
 
@@ -30,8 +30,8 @@ trabalho está em [Lacunas](gaps.md).
 | Regras por jogo | 10% | banco curado, atualizado online | regras de Direct3D por programa; o canal do banco assinado funciona e tem 2 regras | 20% | estimado |
 | Integração com o Mac | 5% | atalhos dos programas instalados | atalhos `.app` que abrem pelo Finder, pelo Spotlight e pelo Dock | 80% | estimado |
 | Atualizações | 5% | app, catálogo e regras | app, catálogo, manifestos e regras assinadas | 95% | estimado |
-| Interface e idiomas | 10% | vários idiomas | português do Brasil e inglês | 70% | estimado |
-| **Ponderado** | 100% | | | **~61%** | estimado |
+| Interface e idiomas | 10% | vários idiomas | português do Brasil, inglês e espanhol | 75% | estimado |
+| **Ponderado** | 100% | | | **~62%** | estimado |
 
 ## Diferenças que são escolhas, não lacunas
 
@@ -51,3 +51,4 @@ trabalho está em [Lacunas](gaps.md).
 | 2026-10-12 | A revisão 2 do motor vira o padrão: gráficos e motor de 50% para 68%, total ~57%. |
 | 2026-10-13 | Garrafas 85% (exportar e importar), interface de 40% para 70% (inglês), a revisão 3 do motor vira o padrão (68% para 71%); total ~61%. |
 | 2026-10-15 | A revisão 4 do motor vira o padrão (regras `steam_game_id` chegam aos jogos abertos pela Steam); 2 regras assinadas; total ~61%. |
+| 2026-10-16 | Interface de 70% para 75% (espanhol); total ~62%. |

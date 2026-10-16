@@ -100,6 +100,11 @@ struct RootView: View {
         } message: {
             Text(wine.errorMessage ?? "")
         }
+        .alert("Garrafa importada", isPresented: .constant(wine.notice != nil)) {
+            Button("OK") { wine.notice = nil }
+        } message: {
+            Text(wine.notice ?? "")
+        }
         .alert("Atualizações", isPresented: .constant(updates.notice != nil)) {
             Button("OK") { updates.notice = nil }
         } message: {
