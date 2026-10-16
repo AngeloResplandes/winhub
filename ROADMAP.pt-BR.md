@@ -28,7 +28,7 @@ Resumo em uma página. Detalhes: [paridade com o CrossOver](docs/pt-BR/crossover
 - Direct3D por garrafa e por programa: Wine, DXVK, DXMT; com a revisão 2 do motor, também Automático e D3DMetal,
   escolhidos pelo motor sem nada copiado para as garrafas.
 - Banco de regras por jogo assinado, do winhub-engine.
-- A revisão 3 do motor (`wine-11.0-r3`) é o motor padrão.
+- A revisão 4 do motor (`wine-11.0-r4`) é o motor padrão.
 - Ícones dos programas, lidos do `.exe` de cada um, nas listas e nos atalhos `.app`.
 - Interface em inglês e em espanhol (String Catalog), seguindo o idioma do macOS; resumos em inglês e em espanhol
   no catálogo.
@@ -50,4 +50,5 @@ Resumo em uma página. Detalhes: [paridade com o CrossOver](docs/pt-BR/crossover
 | 2026-10-12 | Interface em inglês pronta. |
 | 2026-10-12 | Exportar e importar garrafas prontos. |
 | 2026-10-13 | A revisão 3 do motor é o padrão; paridade ~61%. |
+| 2026-10-15 | A revisão 4 do motor é o padrão. |
 | 2026-10-16 | Interface em espanhol pronta; paridade ~62%. |

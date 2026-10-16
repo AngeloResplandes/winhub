@@ -26,8 +26,8 @@ are judgement, with the reason next to them. The engine has its own, more detail
 | Install recipes | 10% | recipes for thousands of applications | 1 recipe (Steam), any `.exe`/`.msi`, winetricks components | 15% | estimated |
 | Bottles | 10% | create, Windows version, settings, templates, archives | create, Windows version, Direct3D, msync, HUD, components, export and import; no templates | 85% | estimated |
 | Steam | 10% | works | works: black-window wrapper, saved login, games opened through Steam | 90% | measured |
-| Graphics and engine | 20% | the engine inside CrossOver 26.3 | engine revision 3 (`wine-11.0-r3`), the default; see the engine's own parity table | 71% | estimated (engine parity) |
-| Per-game rules | 10% | curated database, updated online | per-program Direct3D rules; the signed database channel works and has 1 rule | 20% | estimated |
+| Graphics and engine | 20% | the engine inside CrossOver 26.3 | engine revision 4 (`wine-11.0-r4`), the default; see the engine's own parity table | 71% | estimated (engine parity) |
+| Per-game rules | 10% | curated database, updated online | per-program Direct3D rules; the signed database channel works and has 2 rules | 20% | estimated |
 | Desktop integration | 5% | shortcuts for installed programs | `.app` shortcuts that open from the Finder, Spotlight and the Dock | 80% | estimated |
 | Updates | 5% | app, catalog and rules | app, catalog, manifests and signed rules | 95% | estimated |
 | Interface and languages | 10% | several languages | Brazilian Portuguese, English and Spanish | 75% | estimated |
@@ -50,4 +50,5 @@ are judgement, with the reason next to them. The engine has its own, more detail
 | 2026-10-12 | First assessment (~53%, engine revision 1 as the default). |
 | 2026-10-12 | Engine revision 2 becomes the default: graphics and engine 50% → 68%, total ~57%. |
 | 2026-10-13 | Bottles 85% (export and import), interface 40% → 70% (English), engine revision 3 the default (68% → 71%); total ~61%. |
+| 2026-10-15 | Engine revision 4 the default (`steam_game_id` rules reach games Steam starts); 2 signed rules; total ~61%. |
 | 2026-10-16 | Interface 70% → 75% (Spanish); total ~62%. |

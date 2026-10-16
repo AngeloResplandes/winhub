@@ -27,7 +27,7 @@ One-page summary. Detail: [parity with CrossOver](docs/crossover-parity.md) (wei
 - Direct3D per bottle and per program: Wine, DXVK, DXMT; with engine revision 2, also Automático and D3DMetal,
   chosen by the engine with nothing copied into bottles.
 - Signed per-game rule database from winhub-engine.
-- Engine revision 3 (`wine-11.0-r3`) is the default engine.
+- Engine revision 4 (`wine-11.0-r4`) is the default engine.
 - Program icons, read from each program's `.exe`, in the lists and on `.app` shortcuts.
 - English and Spanish interface (String Catalog), following the macOS language; English and Spanish summaries in
   the catalog.
@@ -49,4 +49,5 @@ One-page summary. Detail: [parity with CrossOver](docs/crossover-parity.md) (wei
 | 2026-10-12 | English interface done. |
 | 2026-10-12 | Bottle export and import done. |
 | 2026-10-13 | Engine revision 3 is the default; parity ~61%. |
+| 2026-10-15 | Engine revision 4 is the default. |
 | 2026-10-16 | Spanish interface done; parity ~62%. |

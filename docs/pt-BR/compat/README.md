@@ -62,7 +62,8 @@ O que aprendemos usando:
 - Um jogo rodado direto (fora da Steam) e depois encerrado pode continuar "rodando" para a Steam, que então ignora o
   `-applaunch` até ser reiniciada.
 - Regras que casam por `steam_game_id` não chegam aos jogos abertos pela Steam na revisão 3 do motor (o motor
-  registra `SteamGameId (null)`); case pelo caminho do executável (`path_suffix`). Veja o
+  registra `SteamGameId (null)`); a revisão 4 corrige isso. Em motores anteriores, case pelo caminho do executável
+  (`path_suffix`). Veja o
   [Skyrim Special Edition](skyrim-special-edition.md#regras-pelo-id-do-app-na-steam-não-chegam-ao-jogo).
 - Abra a Steam com `open -a <o WinHub.app em teste> "winhub://open?…"`; um `open` simples pode entregar o link a
   outro WinHub (por exemplo, o `/Applications/WinHub.app`).
