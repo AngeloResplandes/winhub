@@ -60,7 +60,8 @@ What we learned running it:
 - A game run directly (outside Steam) and then ended can stay "running" for Steam, which then ignores
   `-applaunch` until it restarts.
 - Rules that match `steam_game_id` do not reach games started by Steam on engine revision 3 (the engine logs
-  `SteamGameId (null)`); match the executable's path instead (`path_suffix`). See
+  `SteamGameId (null)`); revision 4 fixes it. On older engines, match the executable's path instead
+  (`path_suffix`). See
   [Skyrim Special Edition](skyrim-special-edition.md#rules-by-steam-app-id-do-not-reach-the-game).
 - Start Steam with `open -a <WinHub.app you are testing> "winhub://open?…"`; a bare `open` may hand the link to
   another WinHub (for example `/Applications/WinHub.app`).
