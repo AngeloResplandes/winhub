@@ -10,7 +10,7 @@ vêm destes relatórios.
 |---|---|---|---|
 | [BioShock Remastered](bioshock-remastered.md) | 11, 32 bits | abre com DXMT; jogabilidade ainda não medida | Automático (DXMT) |
 | [Dark Souls Remastered](dark-souls-remastered.md) | 11 | jogável com D3DMetal e DXVK; o DXMT trava | DXVK (regra) ou D3DMetal |
-| [Hollow Knight](hollow-knight.md) | 11 (Unity 6) | jogável; vídeo de abertura preto | Automático (DXMT na revisão 3), ou D3DMetal |
+| [Hollow Knight](hollow-knight.md) | 11 (Unity 6) | jogável; os vídeos são decodificados na revisão 5, mas ficam pretos | Automático (DXMT), ou D3DMetal |
 | [Lethal Company](lethal-company.md) | 11 (Unity 2022) | jogável (precisa da correção do microfone) | Automático |
 | [PEAK](peak.md) | 11 (Unity 6) | jogável (precisa da correção do microfone) | Automático |
 | [Persona 5 Royal](persona-5-royal.md) | 11 | instala, não abre (falha no jogo, com qualquer Direct3D) | — |

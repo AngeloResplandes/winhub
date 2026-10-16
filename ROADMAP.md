@@ -4,7 +4,7 @@
 
 **Stage: 0.2**, released on every push to `main`
 
-> **Last reviewed:** 2026-10-15 · **Target:** CrossOver 26.3.0 for macOS
+> **Last reviewed:** 2026-10-16 · **Target:** CrossOver 26.3.0 for macOS
 
 One-page summary. Detail: [parity with CrossOver](docs/crossover-parity.md) (weights and evidence),
 [gaps](docs/gaps.md) (the ranked work list), [decisions](docs/decisions.md).
@@ -13,7 +13,7 @@ One-page summary. Detail: [parity with CrossOver](docs/crossover-parity.md) (wei
 
 | | Value | Kind |
 |---|---|---|
-| **WinHub parity with CrossOver** | **~61%** | estimated, weighted by dimension |
+| **WinHub parity with CrossOver** | **~62%** | estimated, weighted by dimension |
 | Catalog search | same results as CrossOver in the cases compared | measured |
 | Steam | installs with one click; saved login kept across engines | measured |
 | Direct3D 11 game | Hollow Knight at 60 FPS through DXMT | measured |
@@ -27,7 +27,7 @@ One-page summary. Detail: [parity with CrossOver](docs/crossover-parity.md) (wei
 - Direct3D per bottle and per program: Wine, DXVK, DXMT; with engine revision 2, also Automático and D3DMetal,
   chosen by the engine with nothing copied into bottles.
 - Signed per-game rule database from winhub-engine.
-- Engine revision 4 (`wine-11.0-r4`) is the default engine.
+- Engine revision 5 (`wine-11.0-r5`) is the default engine: game videos (H.264/AAC MP4) through GStreamer.
 - Program icons, read from each program's `.exe`, in the lists and on `.app` shortcuts.
 - English interface (String Catalog), following the macOS language; English summaries in the catalog.
 - Bottle export and import (`.winhubbottle`).
@@ -50,3 +50,4 @@ One-page summary. Detail: [parity with CrossOver](docs/crossover-parity.md) (wei
 | 2026-10-12 | Bottle export and import done. |
 | 2026-10-13 | Engine revision 3 is the default; parity ~61%. |
 | 2026-10-15 | Engine revision 4 is the default. |
+| 2026-10-16 | Engine revision 5 is the default (game videos); parity ~62%. |
