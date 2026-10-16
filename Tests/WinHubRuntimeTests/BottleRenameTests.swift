@@ -90,6 +90,54 @@ import Testing
         #expect(try names(in: dir.appending(path: "Diversão")) == ["b.txt"])
     }
 
+    @Test func renameFolderRefusesATakenDestinationEvenWithoutShortcuts() throws {
+        let dir = try makeTempDirectory()
+        defer { try? FileManager.default.removeItem(at: dir) }
+        let builder = AppLauncherBuilder(root: dir)
+        try makeFolder(dir.appending(path: "Diversão"), file: "b.txt")
+
+        // "Jogos" has no shortcuts folder, but its next shortcuts would land among another folder's.
+        #expect(throws: AppLauncherError.folderExists("Diversão")) { try builder.renameFolder(from: "Jogos", to: "Diversão") }
+        #expect(try names(in: dir) == ["Diversão"])
+        #expect(try names(in: dir.appending(path: "Diversão")) == ["b.txt"])
+    }
+
+    @Test func renameFolderSaysWhetherItMoved() throws {
+        let dir = try makeTempDirectory()
+        defer { try? FileManager.default.removeItem(at: dir) }
+        let builder = AppLauncherBuilder(root: dir)
+        try makeFolder(dir.appending(path: "Jogos"))
+
+        #expect(try builder.renameFolder(from: "Jogos", to: "Diversão"))
+        #expect(try !builder.renameFolder(from: "Outra", to: "Nova"))
+        #expect(try !builder.renameFolder(from: "A/B", to: "A-B"))
+    }
+
+    @Test func failedSaveMovesTheShortcutsBack() throws {
+        let dir = try makeTempDirectory()
+        let store = BottleStore(root: dir.appending(path: "Bottles"))
+        let builder = AppLauncherBuilder(root: dir.appending(path: "Applications"))
+        let bottle = try store.create(name: "Jogos", runtimeID: "w")
+        try makeFolder(builder.folder(for: bottle), file: "Steam.app")
+        // A read-only bottle folder makes the atomic write of bottle.json fail.
+        let fm = FileManager.default
+        try fm.setAttributes([.posixPermissions: 0o555], ofItemAtPath: bottle.folder.path)
+        defer {
+            try? fm.setAttributes([.posixPermissions: 0o755], ofItemAtPath: bottle.folder.path)
+            try? fm.removeItem(at: dir)
+        }
+
+        #expect(throws: (any Error).self) { try store.rename(bottle, to: "Diversão", movingLaunchersWith: builder) }
+        #expect(store.list().map(\.name) == ["Jogos"])
+        #expect(try names(in: builder.root) == ["Jogos"])
+        #expect(try names(in: builder.root.appending(path: "Jogos")) == ["Steam.app"])
+
+        // Without shortcuts nothing moved, so nothing moves back either.
+        try fm.removeItem(at: builder.root.appending(path: "Jogos"))
+        #expect(throws: (any Error).self) { try store.rename(bottle, to: "Diversão", movingLaunchersWith: builder) }
+        #expect(try names(in: builder.root).isEmpty)
+    }
+
     @Test func renameWithLaunchersMovesThemAndKeepsTheBottleWhenTheMoveFails() throws {
         let dir = try makeTempDirectory()
         defer { try? FileManager.default.removeItem(at: dir) }

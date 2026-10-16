@@ -230,6 +230,13 @@ final class WineStore {
 
     func suggestedCopyName(for bottle: Bottle) -> String { bottleStore.uniqueName(bottle.name) }
 
+    /// Another bottle already has `name` (trimmed, without case), as `BottleStore` would refuse it. `excluding` is
+    /// the bottle being renamed.
+    func isNameTaken(_ name: String, excluding excluded: Bottle.ID? = nil) -> Bool {
+        let trimmed = name.trimmingCharacters(in: .whitespacesAndNewlines)
+        return bottles.contains { $0.id != excluded && $0.name.caseInsensitiveCompare(trimmed) == .orderedSame }
+    }
+
     /// Clones `bottle` under `name` (programs, settings and compat rules; not the `.app` shortcuts, which name the
     /// original's id). A running bottle is ended first: Wine may be writing its registry. `onCreated` gets the new
     /// bottle, also when the copy follows a conflict dialog's retry.

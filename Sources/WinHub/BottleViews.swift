@@ -107,6 +107,8 @@ struct BottleDetailView: View {
 
     var body: some View {
         let programs = wine.programs[bottle.id] ?? []
+        // A bottle task in progress (installing, duplicating…) must finish before these tools change or copy it.
+        let isBusy = wine.activity[bottle.id.uuidString] != nil
         Form {
             Section("Programas") {
                 if programs.isEmpty {
@@ -176,6 +178,7 @@ struct BottleDetailView: View {
                 ))
                 .help("Mostra o painel de desempenho do Metal (e o do DXVK, se ele estiver em uso).")
                 Button { isEditingAdvanced = true } label: { Label("Avançado…", systemImage: "slider.horizontal.3") }
+                    .disabled(isBusy)
                     .help("Edita as variáveis de ambiente e as substituições de DLL (WINEDLLOVERRIDES) desta garrafa.")
                 LabeledContent("Motor", value: wine.runtime?.manifest.version ?? bottle.runtimeID)
                 LabeledContent("Em execução", value: wine.activeBottles.contains(bottle.id) ? String(localized: "Sim") : String(localized: "Não"))
@@ -246,6 +249,7 @@ struct BottleDetailView: View {
                 }
                 .help("Abre os programas do próprio Wine (configuração, registro, painel de controle…) nesta garrafa.")
                 Button { isRunningCommand = true } label: { Label("Executar comando…", systemImage: "play.rectangle") }
+                    .disabled(isBusy)
                     .help("Roda uma vez qualquer programa do Windows nesta garrafa, com argumentos, pasta de trabalho e variáveis.")
                 Button { Task { await wine.shutdown(bottle) } } label: {
                     Label("Encerrar todos os programas", systemImage: "stop.circle")
@@ -257,10 +261,12 @@ struct BottleDetailView: View {
                 Button { isRenaming = true } label: {
                     Label("Renomear garrafa…", systemImage: "pencil")
                 }
+                .disabled(isBusy)
                 .help("Muda o nome da garrafa e da pasta dos atalhos .app. Os programas não precisam ser fechados.")
                 Button { isDuplicating = true } label: {
                     Label("Duplicar garrafa…", systemImage: "plus.square.on.square")
                 }
+                .disabled(isBusy)
                 .help("Cria uma cópia da garrafa com os programas e as configurações. Os atalhos .app não são copiados.")
                 Button(role: .destructive) { isConfirmingDelete = true } label: {
                     Label("Apagar garrafa…", systemImage: "trash")
@@ -379,16 +385,19 @@ struct BottleDetailView: View {
 
 /// New name for a bottle, starting from the current one.
 struct RenameBottleSheet: View {
+    @Environment(WineStore.self) private var wine
     @Environment(\.dismiss) private var dismiss
     let bottle: Bottle
     let onRename: (String) -> Void
     @State private var name = ""
 
     private var trimmed: String { name.trimmingCharacters(in: .whitespacesAndNewlines) }
+    private var isTaken: Bool { wine.isNameTaken(name, excluding: bottle.id) }
 
     var body: some View {
         Form {
             TextField("Nome", text: $name)
+            if isTaken { NameTakenCaption() }
         }
         .formStyle(.grouped)
         .safeAreaInset(edge: .top) { SheetHeader(title: "Renomear garrafa", systemImage: "pencil") }
@@ -402,7 +411,7 @@ struct RenameBottleSheet: View {
                     dismiss()
                     onRename(name)
                 }
-                .disabled(trimmed.isEmpty || trimmed == bottle.name)
+                .disabled(trimmed.isEmpty || trimmed == bottle.name || isTaken)
             }
         }
     }
@@ -416,9 +425,12 @@ struct DuplicateBottleSheet: View {
     let onDuplicate: (String) -> Void
     @State private var name = ""
 
+    private var isTaken: Bool { wine.isNameTaken(name) }
+
     var body: some View {
         Form {
             TextField("Nome", text: $name)
+            if isTaken { NameTakenCaption() }
         }
         .formStyle(.grouped)
         .safeAreaInset(edge: .top) { SheetHeader(title: "Duplicar garrafa", systemImage: "plus.square.on.square") }
@@ -432,9 +444,18 @@ struct DuplicateBottleSheet: View {
                     dismiss()
                     onDuplicate(name)
                 }
-                .disabled(name.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
+                .disabled(name.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty || isTaken)
             }
         }
+    }
+}
+
+/// Shown under a bottle name field when another bottle has that name, so nothing starts only to fail on it.
+struct NameTakenCaption: View {
+    var body: some View {
+        Text("Já existe uma garrafa com esse nome.")
+            .font(.caption)
+            .foregroundStyle(.red)
     }
 }
 

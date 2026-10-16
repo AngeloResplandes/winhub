@@ -2509,6 +2509,22 @@
         }
       }
     },
+    "Já existe uma garrafa com esse nome." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A bottle with this name already exists."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ya existe una botella con ese nombre."
+          }
+        }
+      }
+    },
     "Já existe uma garrafa “Steam”, então a importada se chama “%@”. O catálogo e os jogos da Steam usam só a garrafa “Steam”." : {
       "localizations" : {
         "en" : {

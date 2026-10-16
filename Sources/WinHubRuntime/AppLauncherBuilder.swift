@@ -82,22 +82,34 @@ public struct AppLauncherBuilder: Sendable {
     }
 
     /// Moves the shortcuts folder of a renamed bottle (`<root>/<old>` to `<root>/<new>`). The scripts hold the
-    /// bottle's id and the `.lnk` path, which do not change. Nothing to move: no-op. The destination is never
-    /// overwritten: another bottle's folder there throws `AppLauncherError.folderExists`.
-    public func renameFolder(from oldName: String, to newName: String) throws {
+    /// bottle's id and the `.lnk` path, which do not change. The destination is never overwritten or shared:
+    /// another folder there throws `AppLauncherError.folderExists`, even when the bottle has no shortcuts yet
+    /// (its next shortcuts would land among the other folder's). Returns whether something moved.
+    @discardableResult
+    public func renameFolder(from oldName: String, to newName: String) throws -> Bool {
         let oldFolder = root.appending(path: Self.safeName(oldName), directoryHint: .isDirectory)
         let newFolder = root.appending(path: Self.safeName(newName), directoryHint: .isDirectory)
         let fm = FileManager.default
-        guard oldFolder.lastPathComponent != newFolder.lastPathComponent, fm.fileExists(atPath: oldFolder.path) else { return }
-        if fm.fileExists(atPath: newFolder.path) {
-            // A case-only rename on a case-insensitive volume: the destination is the source itself.
-            guard Self.isSameItem(oldFolder, newFolder) else { throw AppLauncherError.folderExists(newFolder.lastPathComponent) }
+        guard oldFolder.lastPathComponent != newFolder.lastPathComponent else { return false }
+        // On a case-insensitive volume a case-only rename finds the source itself at the destination.
+        let caseOnly = fm.fileExists(atPath: newFolder.path) && Self.isSameItem(oldFolder, newFolder)
+        if fm.fileExists(atPath: newFolder.path), !caseOnly {
+            throw AppLauncherError.folderExists(newFolder.lastPathComponent)
+        }
+        guard fm.fileExists(atPath: oldFolder.path) else { return false }
+        if caseOnly {
             let hop = root.appending(path: ".rename-\(UUID().uuidString)", directoryHint: .isDirectory)
             try fm.moveItem(at: oldFolder, to: hop)
-            try fm.moveItem(at: hop, to: newFolder)
-            return
+            do {
+                try fm.moveItem(at: hop, to: newFolder)
+            } catch {
+                try? fm.moveItem(at: hop, to: oldFolder)
+                throw error
+            }
+            return true
         }
         try fm.moveItem(at: oldFolder, to: newFolder)
+        return true
     }
 
     private static func isSameItem(_ a: URL, _ b: URL) -> Bool {

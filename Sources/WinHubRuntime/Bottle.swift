@@ -237,11 +237,11 @@ public struct BottleStore: Sendable {
     /// move before `bottle.json` changes, so a failure leaves the bottle as it was.
     public func rename(_ bottle: Bottle, to name: String, movingLaunchersWith launchers: AppLauncherBuilder) throws -> Bottle {
         let trimmed = try validatedName(name, renaming: bottle)
-        try launchers.renameFolder(from: bottle.name, to: trimmed)
+        let moved = try launchers.renameFolder(from: bottle.name, to: trimmed)
         do {
             return try rename(bottle, to: trimmed)
         } catch {
-            try? launchers.renameFolder(from: trimmed, to: bottle.name)
+            if moved { _ = try? launchers.renameFolder(from: trimmed, to: bottle.name) }
             throw error
         }
     }
