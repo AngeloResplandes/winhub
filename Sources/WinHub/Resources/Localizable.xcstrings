@@ -519,6 +519,22 @@
         }
       }
     },
+    "Arquivos .msi ignoram a pasta de trabalho." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : ".msi files ignore the working folder."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Los archivos .msi ignoran la carpeta de trabajo."
+          }
+        }
+      }
+    },
     "Atualizar" : {
       "localizations" : {
         "en" : {

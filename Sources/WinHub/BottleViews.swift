@@ -473,6 +473,7 @@ struct AdvancedSettingsSheet: View {
             Section {
                 TextEditor(text: $variables)
                     .font(.system(.caption, design: .monospaced))
+                    .autocorrectionDisabled()
                     .frame(height: 110)
             } header: {
                 Text("Variáveis de ambiente")
@@ -482,6 +483,7 @@ struct AdvancedSettingsSheet: View {
             Section {
                 TextEditor(text: $overrides)
                     .font(.system(.caption, design: .monospaced))
+                    .autocorrectionDisabled()
                     .frame(height: 110)
             } header: {
                 Text("Substituições de DLL")
@@ -489,7 +491,7 @@ struct AdvancedSettingsSheet: View {
                 footer(for: parsedOverrides,
                        hint: "Uma por linha, como d3d11=n,b (n = a do Windows, b = a do Wine; vazio desliga a DLL).")
             }
-            if let parsed, wine.activeBottles.contains(bottle.id),
+            if hasChanges, let parsed, wine.activeBottles.contains(bottle.id),
                !wine.advancedChangeClosesPrograms(environment: parsed.environment, dllOverrides: parsed.overrides, for: bottle) {
                 Text("Vale para os programas abertos depois.")
                     .font(.caption)
@@ -561,9 +563,14 @@ struct RunCommandSheet: View {
             }
             TextField("Argumentos", text: $arguments, prompt: Text("ex.: -windowed \"C:\\Meus Jogos\""))
             TextField("Pasta de trabalho", text: $workingDirectory, prompt: Text(defaultFolder))
+                .help("Arquivos .msi ignoram a pasta de trabalho.")
+            Text("Arquivos .msi ignoram a pasta de trabalho.")
+                .font(.caption)
+                .foregroundStyle(.secondary)
             Section {
                 TextEditor(text: $variables)
                     .font(.system(.caption, design: .monospaced))
+                    .autocorrectionDisabled()
                     .frame(height: 70)
             } header: {
                 Text("Variáveis de ambiente")
