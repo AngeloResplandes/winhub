@@ -2,7 +2,7 @@
 
 # Lacunas
 
-> **Última revisão:** 2026-10-15
+> **Última revisão:** 2026-10-16
 
 Faltas conhecidas, em ordem de quantas pessoas e jogos elas bloqueiam. As lacunas só do motor estão detalhadas nas
 [lacunas do winhub-engine](https://angeloresplandes.github.io/winhub-engine/pt-BR/gaps.html). Números de paridade:
@@ -15,7 +15,7 @@ Faltas conhecidas, em ordem de quantas pessoas e jogos elas bloqueiam. As lacuna
 | 3 | **Banco de regras vazio** | jogos que precisam de um Direct3D, uma variável ou um argumento específico para abrir | uma regra por jogo testado no `data/compatdb.json` do winhub-engine |
 | 4 | **Vídeos dos jogos** | cenas e vídeos de abertura de muitos jogos | GStreamer e H.264 no motor |
 | 5 | **Modos de tela 16:9** | 1920×1080 e outros modos fora da proporção da tela do Mac | feito em parte: **Resoluções extras** liga os modos emulados do Wine (`EmulateModeset`), com 16:9 até o tamanho da tela em pontos (1280×720 num Mac de 1470×956); o 1920×1080 nele exige o `RetinaMode` (da garrafa toda) ou uma mudança no `win32u` do motor |
-| 6 | **Interface só em português do Brasil** | quem não lê português | feito para o inglês (String Catalog); outros idiomas podem entrar no mesmo catálogo |
+| 6 | **Interface só em português do Brasil** | quem não lê português | feito para o inglês e o espanhol (String Catalog); outros idiomas entram no mesmo catálogo |
 | 7 | **Exportar e importar garrafas** | levar uma garrafa para outro Mac, backups | feito: **Exportar garrafa…** e **Arquivo → Importar garrafa…** (`.winhubbottle`); ainda não testado entre dois Macs com nomes de usuário diferentes |
 | 8 | **Ícones dos programas** | reconhecer os programas nas listas e nos atalhos | feito: lido do `.exe` para onde o atalho aponta, nas listas e nos atalhos `.app` |
 | 9 | **Versões sem notarização** | uma primeira abertura sem atrito (o macOS pede "Abrir Mesmo Assim") | assinar e notarizar com um Developer ID (o workflow de versões já suporta) |

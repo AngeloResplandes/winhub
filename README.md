@@ -47,7 +47,7 @@ CrossOver code or data is used.
 | | |
 |---|---|
 | Version | 0.2 (a release on every push to `main`) |
-| Parity with CrossOver | **~61%** (estimated, [details](docs/crossover-parity.md)) |
+| Parity with CrossOver | **~62%** (estimated, [details](docs/crossover-parity.md)) |
 | Tested | Steam with saved login; Hollow Knight (Direct3D 11) at 60 FPS through DXMT ([reports](docs/compat/README.md)) |
 | Biggest gaps | Direct3D 12 without D3DMetal, small catalog, empty rule database ([all gaps](docs/gaps.md)) |
 
@@ -59,7 +59,7 @@ CrossOver code or data is used.
 - Games see the Mac screen's own display modes; **Resoluções extras** adds 16:9 and others up to the screen size in
   points, so 1920×1080 is still missing on most Macs.
 - The engine is x86_64: Apple silicon Macs need **Rosetta 2**, whose general support Apple keeps until macOS 27.
-- The interface is in Brazilian Portuguese and English (it follows the macOS language).
+- The interface is in Brazilian Portuguese, English and Spanish (it follows the macOS language).
 
 ## Install
 

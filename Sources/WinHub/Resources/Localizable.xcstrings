@@ -9,6 +9,12 @@
             "value" : "%1$@ %2$@"
           }
         },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ %2$@"
+          }
+        },
         "pt" : {
           "stringUnit" : {
             "state" : "new",
@@ -23,6 +29,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "%1$@ failed (code %2$d). See the log at %3$@."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ terminó con un error (código %2$d). Consulta el registro en %3$@."
           }
         },
         "pt" : {
@@ -48,6 +60,24 @@
                 "stringUnit" : {
                   "state" : "translated",
                   "value" : "%lld titles"
+                }
+              }
+            }
+          }
+        },
+        "es" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld título"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld títulos"
                 }
               }
             }
@@ -93,6 +123,24 @@
             }
           }
         },
+        "es" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld título en el catálogo"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld títulos en el catálogo"
+                }
+              }
+            }
+          }
+        },
         "pt" : {
           "variations" : {
             "plural" : {
@@ -120,6 +168,12 @@
             "state" : "translated",
             "value" : "Steam installs the game if it is not installed yet."
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Steam instala el juego si aún no está instalado."
+          }
         }
       }
     },
@@ -129,6 +183,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Steam is already open in the bottle “%@”. Two Steam instances at once can uninstall games."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Steam ya está abierto en la botella “%@”. Dos Steam abiertos a la vez pueden desinstalar juegos."
           }
         }
       }
@@ -140,6 +200,12 @@
             "state" : "translated",
             "value" : "This shortcut's bottle no longer exists."
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La botella de este acceso directo ya no existe."
+          }
         }
       }
     },
@@ -149,6 +215,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "The bottle “%1$@” is in use by another WinHub (%2$@)."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La botella “%1$@” está en uso por otro WinHub (%2$@)."
           }
         },
         "pt" : {
@@ -166,6 +238,12 @@
             "state" : "translated",
             "value" : "Version %@ is ready to install."
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La versión %@ está lista para instalarse."
+          }
         }
       }
     },
@@ -175,6 +253,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "The new version has no WinHub.zip with a SHA-256 to check."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La nueva versión no tiene un WinHub.zip con un SHA-256 que se pueda verificar."
           }
         }
       }
@@ -186,6 +270,12 @@
             "state" : "translated",
             "value" : "Open"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abrir"
+          }
         }
       }
     },
@@ -195,6 +285,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Open %@"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abrir %@"
           }
         }
       }
@@ -206,6 +302,12 @@
             "state" : "translated",
             "value" : "Open the Logs"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abrir los registros"
+          }
         }
       }
     },
@@ -215,6 +317,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Not Now"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ahora no"
           }
         }
       }
@@ -226,6 +334,12 @@
             "state" : "translated",
             "value" : "Wait for the running tasks to finish."
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Espera a que terminen las tareas en curso."
+          }
         }
       }
     },
@@ -235,6 +349,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Not checked yet."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aún no se ha comprobado."
           }
         }
       }
@@ -246,6 +366,12 @@
             "state" : "translated",
             "value" : "Something went wrong"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Algo salió mal"
+          }
         }
       }
     },
@@ -255,6 +381,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Delete the bottle “%@”?"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "¿Eliminar la botella “%@”?"
           }
         }
       }
@@ -266,6 +398,12 @@
             "state" : "translated",
             "value" : "Delete Bottle and Programs"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Eliminar botella y programas"
+          }
         }
       }
     },
@@ -275,6 +413,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Delete Bottle…"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Eliminar botella…"
           }
         }
       }
@@ -286,6 +430,12 @@
             "state" : "translated",
             "value" : "Applying %@…"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aplicando %@…"
+          }
         }
       }
     },
@@ -295,6 +445,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Applying the resolutions…"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aplicando las resoluciones…"
           }
         }
       }
@@ -306,6 +462,12 @@
             "state" : "translated",
             "value" : "Applying the program's graphics…"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aplicando los gráficos del programa…"
+          }
         }
       }
     },
@@ -315,6 +477,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Update"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Actualizar"
           }
         }
       }
@@ -326,6 +494,12 @@
             "state" : "translated",
             "value" : "Update Wine"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Actualizar Wine"
+          }
         }
       }
     },
@@ -335,6 +509,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Update Wine to %@…"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Actualizar Wine a %@…"
           }
         }
       }
@@ -346,6 +526,12 @@
             "state" : "translated",
             "value" : "Updates"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Actualizaciones"
+          }
         }
       }
     },
@@ -355,6 +541,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Automatic"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Automático"
           }
         }
       }
@@ -366,6 +558,12 @@
             "state" : "translated",
             "value" : "Automatic (the best that works)"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Automático (lo mejor que funcione)"
+          }
         }
       }
     },
@@ -375,6 +573,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Downloading %1$@ %2$@…"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Descargando %1$@ %2$@…"
           }
         },
         "pt" : {
@@ -392,6 +596,12 @@
             "state" : "translated",
             "value" : "Downloading version %@…"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Descargando la versión %@…"
+          }
         }
       }
     },
@@ -401,6 +611,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Downloading Wine…"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Descargando Wine…"
           }
         }
       }
@@ -412,6 +628,12 @@
             "state" : "translated",
             "value" : "Downloading the installer…"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Descargando el instalador…"
+          }
         }
       }
     },
@@ -421,6 +643,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Downloading… %lld%%"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Descargando… %lld%%"
           }
         }
       }
@@ -432,6 +660,12 @@
             "state" : "translated",
             "value" : "Download and Install"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Descargar e instalar"
+          }
         }
       }
     },
@@ -441,6 +675,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Download Wine"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Descargar Wine"
           }
         }
       }
@@ -452,6 +692,12 @@
             "state" : "translated",
             "value" : "Download Wine…"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Descargar Wine…"
+          }
         }
       }
     },
@@ -461,6 +707,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Good"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bueno"
           }
         }
       }
@@ -472,6 +724,12 @@
             "state" : "translated",
             "value" : "Search games and apps"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Buscar juegos y apps"
+          }
         }
       }
     },
@@ -481,6 +739,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Cancel"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cancelar"
           }
         }
       }
@@ -492,6 +756,12 @@
             "state" : "translated",
             "value" : "Loading catalog…"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cargando el catálogo…"
+          }
         }
       }
     },
@@ -501,6 +771,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Category"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Categoría"
           }
         }
       }
@@ -512,6 +788,12 @@
             "state" : "translated",
             "value" : "Catalog"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Catálogo"
+          }
         }
       }
     },
@@ -521,6 +803,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "WinHub catalog"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Catálogo de WinHub"
           }
         }
       }
@@ -532,6 +820,12 @@
             "state" : "translated",
             "value" : "With DXMT, games see an NVIDIA card and can use DLSS on top of MetalFX. Turn it off if a game starts to fail. Takes effect the next time a program opens."
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Con DXMT, los juegos ven una tarjeta NVIDIA y pueden usar DLSS sobre MetalFX. Desactívalo si un juego empieza a fallar. Se aplica la próxima vez que se abra un programa."
+          }
         }
       }
     },
@@ -541,6 +835,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Components"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Componentes"
           }
         }
       }
@@ -552,6 +852,12 @@
             "state" : "translated",
             "value" : "Windows Components"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Componentes de Windows"
+          }
         }
       }
     },
@@ -561,6 +867,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Checking and installing…"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verificando e instalando…"
           }
         }
       }
@@ -572,6 +884,12 @@
             "state" : "translated",
             "value" : "Settings"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Configuración"
+          }
         }
       }
     },
@@ -581,6 +899,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Creates the bottle “%@” and downloads the official installer."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Crea la botella “%@” y descarga el instalador oficial."
           }
         }
       }
@@ -592,6 +916,12 @@
             "state" : "translated",
             "value" : "Creates an app in Applications › WinHub that opens this program from the Finder, Spotlight or the Dock."
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Crea una app en Aplicaciones › WinHub que abre este programa desde el Finder, Spotlight o el Dock."
+          }
         }
       }
     },
@@ -601,6 +931,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Creating the bottle “%@”…"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Creando la botella “%@”…"
           }
         }
       }
@@ -612,6 +948,12 @@
             "state" : "translated",
             "value" : "Creating the bottle…"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Creando la botella…"
+          }
         }
       }
     },
@@ -621,6 +963,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Create"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Crear"
           }
         }
       }
@@ -632,6 +980,12 @@
             "state" : "translated",
             "value" : "Creating the bottle"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La creación de la botella"
+          }
         }
       }
     },
@@ -641,6 +995,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Create Shortcut"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Crear acceso directo"
           }
         }
       }
@@ -652,6 +1012,12 @@
             "state" : "translated",
             "value" : "Source Code"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Código fuente"
+          }
         }
       }
     },
@@ -661,6 +1027,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "D3DMetal (Direct3D 11/12, by Apple)"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "D3DMetal (Direct3D 11/12, de Apple)"
           }
         }
       }
@@ -672,6 +1044,12 @@
             "state" : "translated",
             "value" : "D3DMetal (Optional)"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "D3DMetal (opcional)"
+          }
         }
       }
     },
@@ -681,6 +1059,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "DXVK and DXMT are usually faster in Direct3D 10/11 games. DXVK is downloaded the first time (2.8 MB); DXMT comes with WinHub's engine."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "DXVK y DXMT suelen ser más rápidos en juegos Direct3D 10/11. DXVK se descarga la primera vez (2,8 MB); DXMT viene con el motor de WinHub."
           }
         }
       }
@@ -692,6 +1076,12 @@
             "state" : "translated",
             "value" : "Setting the Windows version"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La configuración de la versión de Windows"
+          }
         }
       }
     },
@@ -701,6 +1091,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Lets games pick resolutions the Mac does not have, such as 1280×720 (up to the screen size). Wine fakes the change instead of refusing it. If the bottle is running, its programs are closed to apply this."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Permite que los juegos elijan resoluciones que el Mac no tiene, como 1280×720 (hasta el tamaño de la pantalla). Wine simula el cambio en lugar de rechazarlo. Si la botella está abierta, sus programas se cierran para aplicarlo."
           }
         }
       }
@@ -712,6 +1108,12 @@
             "state" : "translated",
             "value" : "Featured"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Destacados"
+          }
         }
       }
     },
@@ -721,6 +1123,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Give the bottle a name."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ponle un nombre a la botella."
           }
         }
       }
@@ -732,6 +1140,12 @@
             "state" : "translated",
             "value" : "Featured"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Destacado"
+          }
         }
       }
     },
@@ -741,6 +1155,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Running"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "En ejecución"
           }
         }
       }
@@ -752,6 +1172,12 @@
             "state" : "translated",
             "value" : "Closing the bottle to apply…"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cerrando la botella para aplicar…"
+          }
         }
       }
     },
@@ -761,6 +1187,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Closing the programs…"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cerrando los programas…"
           }
         }
       }
@@ -772,6 +1204,12 @@
             "state" : "translated",
             "value" : "Close and open"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cerrar y abrir"
+          }
         }
       }
     },
@@ -781,6 +1219,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Close and Apply"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cerrar y aplicar"
           }
         }
       }
@@ -792,6 +1236,12 @@
             "state" : "translated",
             "value" : "Close and continue"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cerrar y continuar"
+          }
         }
       }
     },
@@ -801,6 +1251,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Close the programs before continuing?"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "¿Cerrar los programas antes de continuar?"
           }
         }
       }
@@ -812,6 +1268,12 @@
             "state" : "translated",
             "value" : "Quit All Programs"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cerrar todos los programas"
+          }
         }
       }
     },
@@ -821,6 +1283,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Quit the programs of the bottle “%@” before exporting it."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cierra los programas de la botella “%@” antes de exportarla."
           }
         }
       }
@@ -832,6 +1300,12 @@
             "state" : "translated",
             "value" : "Found"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Encontrado"
+          }
         }
       }
     },
@@ -841,6 +1315,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Could not load the catalog"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Error al cargar el catálogo"
           }
         }
       }
@@ -852,6 +1332,12 @@
             "state" : "translated",
             "value" : "Choose the folder of Apple's Game Porting Toolkit (or its redist/lib folder)"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Elige la carpeta del Game Porting Toolkit de Apple (o su carpeta redist/lib)"
+          }
         }
       }
     },
@@ -861,6 +1347,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Choose the program's or game's .exe"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Elige el .exe del programa o del juego"
           }
         }
       }
@@ -872,6 +1364,12 @@
             "state" : "translated",
             "value" : "Choose the Windows installer (.exe or .msi)"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Elige el instalador de Windows (.exe o .msi)"
+          }
         }
       }
     },
@@ -881,6 +1379,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Choose a WinHub catalog (.json)"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Elige un catálogo de WinHub (.json)"
           }
         }
       }
@@ -892,6 +1396,12 @@
             "state" : "translated",
             "value" : "Choose a program inside the C: drive of the bottle “%@”."
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Elige un programa que esté dentro del disco C: de la botella “%@”."
+          }
         }
       }
     },
@@ -901,6 +1411,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Choose a bottle exported by WinHub (.winhubbottle)"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Elige una botella exportada por WinHub (.winhubbottle)"
           }
         }
       }
@@ -912,6 +1428,12 @@
             "state" : "translated",
             "value" : "Choose Folder…"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Elegir carpeta…"
+          }
         }
       }
     },
@@ -921,6 +1443,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Choose Program…"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Elegir programa…"
           }
         }
       }
@@ -932,6 +1460,12 @@
             "state" : "translated",
             "value" : "This option only changes with the bottle closed. Save your open work before continuing."
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Esta opción solo cambia con la botella cerrada. Guarda lo que tengas abierto antes de continuar."
+          }
         }
       }
     },
@@ -941,6 +1475,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "This Mac needs Apple's Rosetta 2 to run Wine."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Este Mac necesita Rosetta 2, de Apple, para ejecutar Wine."
           }
         }
       }
@@ -952,6 +1492,12 @@
             "state" : "translated",
             "value" : "This Mac needs Rosetta 2. Install it with: softwareupdate --install-rosetta --agree-to-license"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Este Mac necesita Rosetta 2. Instálalo con: softwareupdate --install-rosetta --agree-to-license"
+          }
         }
       }
     },
@@ -961,6 +1507,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "E.g. Games"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ej.: Juegos"
           }
         }
       }
@@ -972,6 +1524,12 @@
             "state" : "translated",
             "value" : "Excellent"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Excelente"
+          }
         }
       }
     },
@@ -981,6 +1539,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Run Installer…"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ejecutar instalador…"
           }
         }
       }
@@ -992,6 +1556,12 @@
             "state" : "translated",
             "value" : "Only run installers from sources you trust."
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ejecuta solo instaladores de fuentes en las que confíes."
+          }
         }
       }
     },
@@ -1001,6 +1571,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Exporting the bottle…"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Exportando la botella…"
           }
         }
       }
@@ -1012,6 +1588,12 @@
             "state" : "translated",
             "value" : "Export the bottle “%@” to a file"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Exportar la botella “%@” a un archivo"
+          }
         }
       }
     },
@@ -1021,6 +1603,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Export Bottle…"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Exportar botella…"
           }
         }
       }
@@ -1032,6 +1620,12 @@
             "state" : "translated",
             "value" : "Close"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cerrar"
+          }
         }
       }
     },
@@ -1041,6 +1635,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Close this bottle's programs?"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "¿Cerrar los programas de esta botella?"
           }
         }
       }
@@ -1052,6 +1652,12 @@
             "state" : "translated",
             "value" : "Untrusted source"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fuente no fiable"
+          }
         }
       }
     },
@@ -1061,6 +1667,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Works with limitations"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Funciona con limitaciones"
           }
         }
       }
@@ -1072,6 +1684,12 @@
             "state" : "translated",
             "value" : "Bottle"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Botella"
+          }
         }
       }
     },
@@ -1081,6 +1699,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Bottle imported"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Botella importada"
           }
         }
       }
@@ -1092,6 +1716,12 @@
             "state" : "translated",
             "value" : "Bottle not found"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Botella no encontrada"
+          }
         }
       }
     },
@@ -1101,6 +1731,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Bottles"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Botellas"
           }
         }
       }
@@ -1112,6 +1748,12 @@
             "state" : "translated",
             "value" : "Graphics"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gráficos"
+          }
         }
       }
     },
@@ -1121,6 +1763,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Graphics (Direct3D)"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gráficos (Direct3D)"
           }
         }
       }
@@ -1132,6 +1780,12 @@
             "state" : "translated",
             "value" : "Graphics per Program"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gráficos por programa"
+          }
         }
       }
     },
@@ -1141,6 +1795,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Importing “%@”…"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Importando “%@”…"
           }
         }
       }
@@ -1152,6 +1812,12 @@
             "state" : "translated",
             "value" : "Import Catalog…"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Importar catálogo…"
+          }
         }
       }
     },
@@ -1161,6 +1827,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Import Bottle…"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Importar botella…"
           }
         }
       }
@@ -1172,6 +1844,12 @@
             "state" : "translated",
             "value" : "Includes titles without a rating or marked “Does not install”."
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Incluye títulos sin valoración o marcados como “No se instala”."
+          }
         }
       }
     },
@@ -1181,6 +1859,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "missing Info.plist"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "falta el Info.plist"
           }
         }
       }
@@ -1192,6 +1876,12 @@
             "state" : "translated",
             "value" : "Installs, but does not open"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Se instala, pero no se abre"
+          }
         }
       }
     },
@@ -1201,6 +1891,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Installed"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Instalado"
           }
         }
       }
@@ -1212,6 +1908,12 @@
             "state" : "translated",
             "value" : "Installer"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Instalador"
+          }
         }
       }
     },
@@ -1221,6 +1923,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Installed with winetricks (downloaded the first time). Some components need cabextract."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Se instalan con winetricks (que se descarga la primera vez). Algunos componentes necesitan cabextract."
           }
         }
       }
@@ -1232,6 +1940,12 @@
             "state" : "translated",
             "value" : "Installed with winetricks (downloaded the first time, with cabextract)."
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Se instalan con winetricks (que se descarga la primera vez, junto con cabextract)."
+          }
         }
       }
     },
@@ -1241,6 +1955,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Installing %@…"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Instalando %@…"
           }
         }
       }
@@ -1252,6 +1972,12 @@
             "state" : "translated",
             "value" : "Installing Rosetta…"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Instalando Rosetta…"
+          }
         }
       }
     },
@@ -1261,6 +1987,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Installing…"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Instalando…"
           }
         }
       }
@@ -1272,6 +2004,12 @@
             "state" : "translated",
             "value" : "Install"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Instalar"
+          }
         }
       }
     },
@@ -1281,6 +2019,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Install Unlisted App"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Instalar app no listada"
           }
         }
       }
@@ -1292,6 +2036,12 @@
             "state" : "translated",
             "value" : "Install Unlisted App…"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Instalar app no listada…"
+          }
         }
       }
     },
@@ -1301,6 +2051,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Install Rosetta"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Instalar Rosetta"
           }
         }
       }
@@ -1312,6 +2068,12 @@
             "state" : "translated",
             "value" : "Install a Windows program from an .exe or .msi file"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Instalar un programa de Windows a partir de un archivo .exe o .msi"
+          }
         }
       }
     },
@@ -1321,6 +2083,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Install Steam from the catalog to play this title."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Instala Steam desde el catálogo para jugar a este título."
           }
         }
       }
@@ -1332,6 +2100,12 @@
             "state" : "translated",
             "value" : "Install a title from the Catalog or use “Install Unlisted App”."
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Instala un título desde el Catálogo o usa “Instalar app no listada”."
+          }
         }
       }
     },
@@ -1341,6 +2115,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Play on Steam"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Jugar en Steam"
           }
         }
       }
@@ -1352,6 +2132,12 @@
             "state" : "translated",
             "value" : "There is already a bottle named “%@”."
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ya existe una botella llamada “%@”."
+          }
         }
       }
     },
@@ -1361,6 +2147,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "A “Steam” bottle already exists, so the imported one is named “%@”. The catalog and Steam games only use the bottle named “Steam”."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ya existe una botella “Steam”, así que la importada se llama “%@”. El catálogo y los juegos de Steam solo usan la botella “Steam”."
           }
         }
       }
@@ -1372,6 +2164,12 @@
             "state" : "translated",
             "value" : "License"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Licencia"
+          }
         }
       }
     },
@@ -1381,6 +2179,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Maintenance"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mantenimiento"
           }
         }
       }
@@ -1392,6 +2196,12 @@
             "state" : "translated",
             "value" : "Shows Metal's performance HUD (and DXVK's, when it is in use)."
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Muestra el panel de rendimiento de Metal (y el de DXVK, si está en uso)."
+          }
         }
       }
     },
@@ -1401,6 +2211,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Showing %1$lld of %2$lld — refine the search"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mostrando %1$lld de %2$lld — refina la búsqueda"
           }
         },
         "pt" : {
@@ -1418,6 +2234,12 @@
             "state" : "translated",
             "value" : "Show untested apps"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mostrar apps sin probar"
+          }
         }
       }
     },
@@ -1427,6 +2249,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Show Shortcut"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mostrar acceso directo"
           }
         }
       }
@@ -1438,6 +2266,12 @@
             "state" : "translated",
             "value" : "Show Performance (FPS) in Games"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mostrar el rendimiento (FPS) en los juegos"
+          }
         }
       }
     },
@@ -1447,6 +2281,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Show the shortcut in Applications › WinHub. Drag it to the Dock to open with one click."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mostrar el acceso directo en Aplicaciones › WinHub. Arrástralo al Dock para abrirlo con un clic."
           }
         }
       }
@@ -1458,6 +2298,12 @@
             "state" : "translated",
             "value" : "Show the C: Drive in the Finder"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mostrar el disco C: en el Finder"
+          }
         }
       }
     },
@@ -1467,6 +2313,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Engine"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Motor"
           }
         }
       }
@@ -1478,6 +2330,12 @@
             "state" : "translated",
             "value" : "Move WinHub to the Applications folder so it can update itself."
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mueve WinHub a la carpeta Aplicaciones para que se actualice solo."
+          }
         }
       }
     },
@@ -1487,6 +2345,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Changing the bottle's resolutions"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "El cambio de resoluciones de la botella"
           }
         }
       }
@@ -1498,6 +2362,12 @@
             "state" : "translated",
             "value" : "In the bottle “%@”."
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "En la botella “%@”."
+          }
         }
       }
     },
@@ -1507,6 +2377,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "No .app inside the archive."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No hay ninguna .app dentro del archivo."
           }
         }
       }
@@ -1518,6 +2394,12 @@
             "state" : "translated",
             "value" : "No shortcuts found in this bottle."
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No se encontraron accesos directos en esta botella."
+          }
         }
       }
     },
@@ -1527,6 +2409,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "No programs installed"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No hay programas instalados"
           }
         }
       }
@@ -1538,6 +2426,12 @@
             "state" : "translated",
             "value" : "No results for “%@”"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No hay resultados para “%@”"
+          }
         }
       }
     },
@@ -1547,6 +2441,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "On this Mac, Wine runs through Apple's Rosetta 2. Apple keeps Rosetta for all apps until macOS 27; from macOS 28 it is limited to older games, and WinHub will need a native Wine for Apple silicon."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "En este Mac, Wine se ejecuta mediante Rosetta 2 de Apple. Apple mantiene Rosetta para todas las apps hasta macOS 27; a partir de macOS 28 quedará limitado a juegos antiguos, y WinHub necesitará un Wine nativo para Apple silicon."
           }
         }
       }
@@ -1558,6 +2458,12 @@
             "state" : "translated",
             "value" : "Name"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nombre"
+          }
         }
       }
     },
@@ -1567,6 +2473,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Name of the new bottle"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nombre de la nueva botella"
           }
         }
       }
@@ -1578,6 +2490,12 @@
             "state" : "translated",
             "value" : "New Bottle"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nueva botella"
+          }
         }
       }
     },
@@ -1587,6 +2505,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "New Bottle…"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nueva botella…"
           }
         }
       }
@@ -1598,12 +2522,24 @@
             "state" : "translated",
             "value" : "What's New"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Novedades"
+          }
         }
       }
     },
     "Não" : {
       "localizations" : {
         "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No"
+          }
+        },
+        "es" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "No"
@@ -1618,6 +2554,12 @@
             "state" : "translated",
             "value" : "Not found"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No encontrado"
+          }
         }
       }
     },
@@ -1627,6 +2569,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Could not open the downloaded WinHub.zip. %@"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No se pudo abrir el WinHub.zip descargado. %@"
           }
         }
       }
@@ -1638,6 +2586,12 @@
             "state" : "translated",
             "value" : "Could not create the bottle's file. %@"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No se pudo crear el archivo de la botella. %@"
+          }
         }
       }
     },
@@ -1647,6 +2601,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Could not unpack the engine (code %1$d). %2$@"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No se pudo extraer el motor (código %1$d). %2$@"
           }
         },
         "pt" : {
@@ -1664,6 +2624,12 @@
             "state" : "translated",
             "value" : "Could not install Rosetta 2. %@"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No se pudo instalar Rosetta 2. %@"
+          }
         }
       }
     },
@@ -1673,6 +2639,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Could not read %1$@: %2$@"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No se pudo leer %1$@: %2$@"
           }
         },
         "pt" : {
@@ -1690,6 +2662,12 @@
             "state" : "translated",
             "value" : "Could not prepare Steam's window: %@"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No se pudo preparar la ventana de Steam: %@"
+          }
         }
       }
     },
@@ -1699,6 +2677,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Could not check for updates: %@"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No se pudieron buscar actualizaciones: %@"
           }
         }
       }
@@ -1710,6 +2694,12 @@
             "state" : "translated",
             "value" : "Could not tell whether %@ is 32- or 64-bit."
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No se pudo saber si %@ es de 32 o 64 bits."
+          }
         }
       }
     },
@@ -1719,6 +2709,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "There is no D3DMetal in “%@”. Choose the Game Porting Toolkit's folder or its redist/lib folder."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No hay D3DMetal en “%@”. Elige la carpeta del Game Porting Toolkit o su carpeta redist/lib."
           }
         }
       }
@@ -1730,6 +2726,12 @@
             "state" : "translated",
             "value" : "Does not install"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No se instala"
+          }
         }
       }
     },
@@ -1739,6 +2741,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "D3DMetal (Direct3D 11/12) is Apple's and does not come with WinHub. If you have the Game Porting Toolkit, point to its folder; WinHub's engine then offers “D3DMetal” in bottles."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "D3DMetal (Direct3D 11/12) es de Apple y no viene con WinHub. Si tienes el Game Porting Toolkit, indica su carpeta; el motor de WinHub pasará a ofrecer “D3DMetal” en las botellas."
           }
         }
       }
@@ -1750,6 +2758,12 @@
             "state" : "translated",
             "value" : "D3DMetal is on a disk (%@). It only works while that disk is mounted; copy the lib folder to the Mac to use it all the time."
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "D3DMetal está en un disco (%@). Solo funciona mientras ese disco esté conectado; copia la carpeta lib al Mac para usarlo siempre."
+          }
         }
       }
     },
@@ -1759,6 +2773,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "GitHub answered with code %lld."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "GitHub respondió con el código %lld."
           }
         }
       }
@@ -1770,6 +2790,12 @@
             "state" : "translated",
             "value" : "WinHub is up to date."
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "WinHub está actualizado."
+          }
         }
       }
     },
@@ -1779,6 +2805,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "The downloaded app was refused: %@."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Se rechazó la app descargada: %@."
           }
         }
       }
@@ -1790,6 +2822,12 @@
             "state" : "translated",
             "value" : "The app only updates itself when packaged (WinHub.app)."
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La app solo se actualiza sola cuando está empaquetada (WinHub.app)."
+          }
         }
       }
     },
@@ -1799,6 +2837,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "The downloaded file does not match (SHA-256 expected %1$@…, got %2$@…). Nothing was installed."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "El archivo descargado no coincide (SHA-256 esperado %1$@…, obtenido %2$@…). No se instaló nada."
           }
         },
         "pt" : {
@@ -1816,6 +2860,12 @@
             "state" : "translated",
             "value" : "The file is not a bottle exported by WinHub."
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "El archivo no es una botella exportada por WinHub."
+          }
         }
       }
     },
@@ -1825,6 +2875,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "The catalog and data follow the GitHub repository; new versions of the app are downloaded and installed on restart."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "El catálogo y los datos siguen el repositorio en GitHub; las nuevas versiones de la app se descargan e instalan al reiniciar."
           }
         }
       }
@@ -1836,6 +2892,12 @@
             "state" : "translated",
             "value" : "The installer"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "El instalador"
+          }
         }
       }
     },
@@ -1845,6 +2907,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "The installer finished, but the program was not found at %@."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "El instalador terminó, pero no se encontró el programa en %@."
           }
         }
       }
@@ -1856,6 +2924,12 @@
             "state" : "translated",
             "value" : "macOS asks for an administrator password."
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "macOS pide la contraseña de administrador."
+          }
         }
       }
     },
@@ -1865,6 +2939,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "The installed engine does not offer %@."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "El motor instalado no ofrece %@."
           }
         }
       }
@@ -1876,6 +2956,12 @@
             "state" : "translated",
             "value" : "The engine does not contain %@ where expected."
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "El motor no contiene %@ en el lugar esperado."
+          }
         }
       }
     },
@@ -1885,6 +2971,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "The program %@ was not found in the bottle."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No se encontró el programa %@ en la botella."
           }
         }
       }
@@ -1896,6 +2988,12 @@
             "state" : "translated",
             "value" : "This shortcut's program was not found in the bottle “%@”."
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No se encontró el programa de este acceso directo en la botella “%@”."
+          }
         }
       }
     },
@@ -1905,6 +3003,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "The program ships its own %@.dll; WinHub will not replace it."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "El programa ya trae su propio %@.dll; WinHub no lo reemplazará."
           }
         }
       }
@@ -1916,6 +3020,12 @@
             "state" : "translated",
             "value" : "OK"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aceptar"
+          }
         }
       }
     },
@@ -1925,6 +3035,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "The programs in the bottle “%@” are running with another engine."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Los programas de la botella “%@” se están ejecutando con otro motor."
           }
         }
       }
@@ -1936,6 +3052,12 @@
             "state" : "translated",
             "value" : "To run Windows programs, WinHub uses Wine, an open-source project. It is downloaded once, straight from the official source, and checked before it is installed."
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Para ejecutar programas de Windows, WinHub usa Wine, un proyecto de código abierto. Se descarga una sola vez, directamente de la fuente oficial, y se verifica antes de instalarse."
+          }
         }
       }
     },
@@ -1945,6 +3067,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Folder"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Carpeta"
           }
         }
       }
@@ -1956,6 +3084,12 @@
             "state" : "translated",
             "value" : "Invalid folder in the engine: %@"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Carpeta no válida en el motor: %@"
+          }
         }
       }
     },
@@ -1965,6 +3099,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Checking…"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Buscando…"
           }
         }
       }
@@ -1976,6 +3116,12 @@
             "state" : "translated",
             "value" : "Check for Updates…"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Buscar actualizaciones…"
+          }
         }
       }
     },
@@ -1985,6 +3131,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Check Now"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Buscar ahora"
           }
         }
       }
@@ -1996,6 +3148,12 @@
             "state" : "translated",
             "value" : "Check for Updates Automatically"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Buscar actualizaciones automáticamente"
+          }
         }
       }
     },
@@ -2005,6 +3163,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Program opened"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Programa abierto"
           }
         }
       }
@@ -2016,6 +3180,12 @@
             "state" : "translated",
             "value" : "Programs"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Programas"
+          }
         }
       }
     },
@@ -2025,6 +3195,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "NVIDIA Features (DLSS via MetalFX)"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Funciones de NVIDIA (DLSS mediante MetalFX)"
           }
         }
       }
@@ -2036,6 +3212,12 @@
             "state" : "translated",
             "value" : "Lowers the cost of Wine's synchronization in games. Takes effect the next time a program opens; if the bottle is running, its programs are closed to apply it."
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reduce la carga de sincronización de Wine en los juegos. Se aplica la próxima vez que se abra un programa; si la botella está abierta, sus programas se cierran para aplicarlo."
+          }
         }
       }
     },
@@ -2045,6 +3227,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Registering %1$@ for %2$@"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "El registro de %1$@ para %2$@"
           }
         },
         "pt" : {
@@ -2062,6 +3250,12 @@
             "state" : "translated",
             "value" : "Restart to Update"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reiniciar para actualizar"
+          }
         }
       }
     },
@@ -2071,6 +3265,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Extra Resolutions (16:9 and Others)"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Resoluciones adicionales (16:9 y otras)"
           }
         }
       }
@@ -2082,6 +3282,12 @@
             "state" : "translated",
             "value" : "Restore Official Catalog"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Restaurar el catálogo oficial"
+          }
         }
       }
     },
@@ -2091,6 +3297,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Results"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Resultados"
           }
         }
       }
@@ -2102,6 +3314,12 @@
             "state" : "translated",
             "value" : "Saves the whole bottle in a .winhubbottle file, as a backup or to take it to another Mac."
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Guarda la botella entera en un archivo .winhubbottle, como copia de seguridad o para llevarla a otro Mac."
+          }
         }
       }
     },
@@ -2111,6 +3329,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Untested"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sin probar"
           }
         }
       }
@@ -2122,6 +3346,12 @@
             "state" : "translated",
             "value" : "Yes"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sí"
+          }
         }
       }
     },
@@ -2131,6 +3361,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Fast Synchronization (MSync)"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sincronización rápida (MSync)"
           }
         }
       }
@@ -2142,6 +3378,12 @@
             "state" : "translated",
             "value" : "Status"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Estado"
+          }
         }
       }
     },
@@ -2151,6 +3393,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Size"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tamaño"
           }
         }
       }
@@ -2162,6 +3410,12 @@
             "state" : "translated",
             "value" : "Try other words or turn on “Show untested apps”."
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Prueba con otras palabras o activa “Mostrar apps sin probar”."
+          }
         }
       }
     },
@@ -2171,6 +3425,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Try other words."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Prueba con otras palabras."
           }
         }
       }
@@ -2182,6 +3442,12 @@
             "state" : "translated",
             "value" : "Tested by WinHub. Applies only to this game; Steam stays as it is."
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Probado por WinHub. Se aplica solo a este juego; Steam sigue como está."
+          }
         }
       }
     },
@@ -2191,6 +3457,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "All programs and files inside it will be deleted. This cannot be undone."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Se eliminarán todos los programas y archivos que contiene. Esta acción no se puede deshacer."
           }
         }
       }
@@ -2202,6 +3474,12 @@
             "state" : "translated",
             "value" : "Use %@ for This Game (Recommended)"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Usar %@ en este juego (recomendado)"
+          }
         }
       }
     },
@@ -2211,6 +3489,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Use the Default Folder"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Usar la carpeta predeterminada"
           }
         }
       }
@@ -2222,6 +3506,12 @@
             "state" : "translated",
             "value" : "Applies only to the chosen .exe, such as a Steam game. The rest of the bottle (Steam itself, for example) keeps the option above."
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Se aplica solo al .exe elegido, como un juego de Steam. El resto de la botella (el propio Steam, por ejemplo) sigue con la opción de arriba."
+          }
         }
       }
     },
@@ -2231,6 +3521,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "View on Steam"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ver en Steam"
           }
         }
       }
@@ -2242,6 +3538,12 @@
             "state" : "translated",
             "value" : "Version"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versión"
+          }
         }
       }
     },
@@ -2251,6 +3553,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Windows Version"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versión de Windows"
           }
         }
       }
@@ -2262,12 +3570,24 @@
             "state" : "translated",
             "value" : "Back to the bottle's graphics"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Volver a los gráficos de la botella"
+          }
         }
       }
     },
     "WinHub" : {
       "localizations" : {
         "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "WinHub"
+          }
+        },
+        "es" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "WinHub"
@@ -2282,12 +3602,24 @@
             "state" : "translated",
             "value" : "WinHub %@"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "WinHub %@"
+          }
         }
       }
     },
     "Wine" : {
       "localizations" : {
         "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wine"
+          }
+        },
+        "es" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Wine"
@@ -2302,6 +3634,12 @@
             "state" : "translated",
             "value" : "Wine (default)"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wine (predeterminado)"
+          }
         }
       }
     },
@@ -2311,6 +3649,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "signed by another developer"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "firmada por otro desarrollador"
           }
         }
       }
@@ -2322,6 +3666,12 @@
             "state" : "translated",
             "value" : "invalid signature"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "firma no válida"
+          }
         }
       }
     },
@@ -2331,6 +3681,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "e.g. vcrun2022 corefonts"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ej.: vcrun2022 corefonts"
           }
         }
       }
@@ -2342,6 +3698,12 @@
             "state" : "translated",
             "value" : "different identifier"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "identificador diferente"
+          }
         }
       }
     },
@@ -2352,6 +3714,12 @@
             "state" : "translated",
             "value" : "a version other than the announced one"
           }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "una versión distinta de la anunciada"
+          }
         }
       }
     },
@@ -2361,6 +3729,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Last check"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Última comprobación"
           }
         }
       }

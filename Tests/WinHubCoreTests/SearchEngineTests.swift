@@ -139,6 +139,14 @@ import Testing
         #expect(entry.displaySummary(preferredLanguages: ["fr"]) == "Resumo")
     }
 
+    /// Regional Spanish (Spain, Latin America) falls back to the catalog's plain "es".
+    @Test func displaySummaryFallsBackToBaseSpanish() {
+        let entry = CatalogEntry(id: "x", name: "X", summary: "Resumo", localizedSummaries: ["en": "Summary", "es": "Resumen"])
+        #expect(entry.displaySummary(preferredLanguages: ["es-419"]) == "Resumen")
+        #expect(entry.displaySummary(preferredLanguages: ["es-ES", "en"]) == "Resumen")
+        #expect(entry.displaySummary(preferredLanguages: ["es_MX"]) == "Resumen")
+    }
+
     @Test func decodesMinimalJSON() throws {
         let json = #"[{"id": "a", "name": "App"}]"#
         let entries = try JSONDecoder().decode([CatalogEntry].self, from: Data(json.utf8))

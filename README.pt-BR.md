@@ -48,7 +48,7 @@ código ou dado fechado do CrossOver é usado.
 | | |
 |---|---|
 | Versão | 0.2 (uma versão a cada push na `main`) |
-| Paridade com o CrossOver | **~61%** (estimado, [detalhes](docs/pt-BR/crossover-parity.md)) |
+| Paridade com o CrossOver | **~62%** (estimado, [detalhes](docs/pt-BR/crossover-parity.md)) |
 | Testado | Steam com login salvo; Hollow Knight (Direct3D 11) a 60 FPS pelo DXMT ([relatórios](docs/pt-BR/compat/README.md)) |
 | Maiores lacunas | Direct3D 12 sem D3DMetal, catálogo pequeno, banco de regras vazio ([todas as lacunas](docs/pt-BR/gaps.md)) |
 
@@ -62,7 +62,7 @@ código ou dado fechado do CrossOver é usado.
   da tela em pontos, então o 1920×1080 ainda falta na maioria dos Macs.
 - O motor é x86_64: Macs com Apple silicon precisam do **Rosetta 2**, que a Apple mantém de forma geral até o
   macOS 27.
-- A interface é em português do Brasil e em inglês (segue o idioma do macOS).
+- A interface é em português do Brasil, inglês e espanhol (segue o idioma do macOS).
 
 ## Instalar
 

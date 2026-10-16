@@ -20,22 +20,26 @@ import Testing
         return plural.values.compactMap { (($0 as? [String: Any])?["stringUnit"] as? [String: Any])?["value"] as? String }
     }
 
-    @Test func everyStringHasAnEnglishTranslationWithTheSameArguments() throws {
+    /// Languages every interface string must be translated into (the source, Brazilian Portuguese, needs none).
+    static let languages = ["en", "es"]
+
+    @Test(arguments: languages) func everyStringIsTranslatedWithTheSameArguments(language: String) throws {
         let json = try JSONSerialization.jsonObject(with: Data(contentsOf: Self.catalog)) as? [String: Any]
         #expect(json?["sourceLanguage"] as? String == "pt")
         let strings = try #require(json?["strings"] as? [String: [String: Any]])
         #expect(!strings.isEmpty)
         for (key, entry) in strings where entry["extractionState"] as? String != "stale" {
             let localizations = entry["localizations"] as? [String: Any] ?? [:]
-            let english = try #require(localizations["en"] as? [String: Any], "no English for “\(key)”")
-            let values = Self.values(english)
-            #expect(!values.isEmpty, "empty English for “\(key)”")
+            let translation = try #require(localizations[language] as? [String: Any], "no \(language) for “\(key)”")
+            let values = Self.values(translation)
+            #expect(!values.isEmpty, "empty \(language) for “\(key)”")
             for value in values {
                 // Plural forms may spell the number out ("one title"), so they only must not add arguments.
-                if english["variations"] != nil {
-                    #expect(Set(Self.specifiers(value)).isSubset(of: Set(Self.specifiers(key))), "“\(value)” for “\(key)”")
+                if translation["variations"] != nil {
+                    #expect(Set(Self.specifiers(value)).isSubset(of: Set(Self.specifiers(key))),
+                            "\(language) “\(value)” for “\(key)”")
                 } else {
-                    #expect(Self.specifiers(value) == Self.specifiers(key), "“\(value)” for “\(key)”")
+                    #expect(Self.specifiers(value) == Self.specifiers(key), "\(language) “\(value)” for “\(key)”")
                 }
             }
         }
