@@ -220,6 +220,33 @@ final class WineStore {
         refresh()
     }
 
+    func suggestedCopyName(for bottle: Bottle) -> String { bottleStore.uniqueName(bottle.name) }
+
+    /// Clones `bottle` under `name` (programs, settings and compat rules; not the `.app` shortcuts, which name the
+    /// original's id). A running bottle is ended first: Wine may be writing its registry. Returns the new bottle.
+    @discardableResult
+    func duplicate(_ bottle: Bottle, name: String) async -> Bottle? {
+        var copy: Bottle?
+        guard claim(bottle, opensProgram: false, retry: { await self.duplicate(bottle, name: name) }) else { return nil }
+        let store = bottleStore
+        do {
+            copy = try await perform(key: bottle.id.uuidString, String(localized: "Duplicando…")) {
+                if activeBottles.contains(bottle.id), let runtime {
+                    try await WineLauncher(runtime: runtime).shutdown(bottle)
+                    updateActiveBottles()
+                }
+                guard !WineServerStatus.isRunning(prefix: bottle.prefix) else {
+                    throw BottleArchiveError.failed(String(localized: "Encerre os programas da garrafa “\(bottle.name)” antes de duplicá-la."))
+                }
+                return try await store.duplicate(bottle, name: name)
+            }
+        } catch {
+            errorMessage = error.localizedDescription
+        }
+        refresh()
+        return copy
+    }
+
     func revealDriveC(_ bottle: Bottle) {
         NSWorkspace.shared.activateFileViewerSelecting([bottle.driveC])
     }

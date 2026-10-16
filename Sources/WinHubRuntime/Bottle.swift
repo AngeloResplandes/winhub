@@ -174,6 +174,37 @@ public struct BottleStore: Sendable {
         return "\(name) (\(number))"
     }
 
+    /// A copy of `bottle` under a new id and `name`: an APFS clone of the folder (instant, no extra space) off
+    /// the caller's thread, without the logs and the record of which WinHub used it. Close the bottle first.
+    public func duplicate(_ bottle: Bottle, name: String) async throws -> Bottle {
+        let trimmed = name.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !trimmed.isEmpty else { throw BottleError.invalidName }
+        guard !list().contains(where: { $0.name.caseInsensitiveCompare(trimmed) == .orderedSame }) else {
+            throw BottleError.nameTaken(trimmed)
+        }
+        var copy = bottle
+        copy.id = UUID()
+        copy.name = trimmed
+        copy.createdAt = .now
+        copy.folder = root.appending(path: Self.folderName(for: trimmed, id: copy.id), directoryHint: .isDirectory)
+        let fm = FileManager.default
+        try fm.createDirectory(at: root, withIntermediateDirectories: true)
+        let source = bottle.folder.path, destination = copy.folder.path
+        do {
+            let clone = try await Task.detached(priority: .userInitiated) {
+                try ProcessRunner.run(URL(fileURLWithPath: "/bin/cp"), arguments: ["-cR", source, destination])
+            }.value
+            guard clone.status == 0 else { throw BottleArchiveError.failed(clone.output) }
+            try? fm.removeItem(at: copy.logs)
+            try? fm.removeItem(at: BottleSession.url(for: copy))
+            try save(copy)
+        } catch {
+            try? fm.removeItem(at: copy.folder)
+            throw error
+        }
+        return copy
+    }
+
     public func delete(_ bottle: Bottle) throws {
         try FileManager.default.removeItem(at: bottle.folder)
     }

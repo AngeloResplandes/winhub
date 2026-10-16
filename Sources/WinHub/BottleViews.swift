@@ -91,7 +91,10 @@ struct BottleDetailView: View {
     @Environment(WineStore.self) private var wine
     let bottle: Bottle
     let onDeleted: () -> Void
+    /// Called with the new bottle's id after a successful duplicate (the sidebar selects it).
+    var onDuplicated: (Bottle.ID) -> Void = { _ in }
     @State private var isConfirmingDelete = false
+    @State private var isDuplicating = false
     /// A change that closes the bottle's programs, waiting for confirmation.
     @State private var pendingChange: PendingChange?
     @State private var verbs = ""
@@ -233,6 +236,10 @@ struct BottleDetailView: View {
                     Label("Exportar garrafa…", systemImage: "square.and.arrow.up")
                 }
                 .help("Salva a garrafa inteira num arquivo .winhubbottle, para backup ou para levar a outro Mac.")
+                Button { isDuplicating = true } label: {
+                    Label("Duplicar garrafa…", systemImage: "plus.square.on.square")
+                }
+                .help("Cria uma cópia da garrafa com os programas e as configurações. Os atalhos .app não são copiados.")
                 Button(role: .destructive) { isConfirmingDelete = true } label: {
                     Label("Apagar garrafa…", systemImage: "trash")
                 }
@@ -260,27 +267,84 @@ struct BottleDetailView: View {
         } message: {
             Text("Todos os programas e arquivos dentro dela serão apagados. Esta ação não pode ser desfeita.")
         }
+        .sheet(isPresented: $isDuplicating) {
+            DuplicateBottleSheet(bottle: bottle) { name in
+                if wine.activeBottles.contains(bottle.id) {
+                    pendingChange = .duplicate(name)
+                } else {
+                    duplicate(as: name)
+                }
+            }
+        }
         .confirmationDialog("Fechar os programas desta garrafa?", isPresented: Binding(
             get: { pendingChange != nil },
             set: { if !$0 { pendingChange = nil } }
         )) {
-            Button("Encerrar e aplicar") {
-                switch pendingChange {
-                case .msync(let enabled): Task { await wine.setMSync(enabled, for: bottle) }
-                case .displayModes(let enabled): Task { await wine.setExtraDisplayModes(enabled, for: bottle) }
-                case nil: break
+            if case .duplicate(let name) = pendingChange {
+                Button("Encerrar e continuar") {
+                    pendingChange = nil
+                    duplicate(as: name)
                 }
-                pendingChange = nil
+            } else {
+                Button("Encerrar e aplicar") {
+                    switch pendingChange {
+                    case .msync(let enabled): Task { await wine.setMSync(enabled, for: bottle) }
+                    case .displayModes(let enabled): Task { await wine.setExtraDisplayModes(enabled, for: bottle) }
+                    case .duplicate, nil: break
+                    }
+                    pendingChange = nil
+                }
             }
             Button("Cancelar", role: .cancel) { pendingChange = nil }
         } message: {
-            Text("Esta opção só muda com a garrafa encerrada. Salve o que estiver aberto antes de continuar.")
+            if case .duplicate = pendingChange {
+                Text("Para duplicar, a garrafa precisa estar encerrada. Salve o que estiver aberto antes de continuar.")
+            } else {
+                Text("Esta opção só muda com a garrafa encerrada. Salve o que estiver aberto antes de continuar.")
+            }
+        }
+    }
+
+    private func duplicate(as name: String) {
+        Task {
+            if let copy = await wine.duplicate(bottle, name: name) { onDuplicated(copy.id) }
         }
     }
 
     enum PendingChange {
         case msync(Bool)
         case displayModes(Bool)
+        case duplicate(String)
+    }
+}
+
+/// Name for the copy of a bottle; suggests a free one.
+struct DuplicateBottleSheet: View {
+    @Environment(WineStore.self) private var wine
+    @Environment(\.dismiss) private var dismiss
+    let bottle: Bottle
+    let onDuplicate: (String) -> Void
+    @State private var name = ""
+
+    var body: some View {
+        Form {
+            TextField("Nome", text: $name)
+        }
+        .formStyle(.grouped)
+        .safeAreaInset(edge: .top) { SheetHeader(title: "Duplicar garrafa", systemImage: "plus.square.on.square") }
+        .frame(width: 380)
+        .onAppear { name = wine.suggestedCopyName(for: bottle) }
+        .toolbar {
+            ToolbarItem(placement: .cancellationAction) { Button("Cancelar") { dismiss() } }
+            ToolbarItem(placement: .confirmationAction) {
+                Button("Duplicar") {
+                    let name = name
+                    dismiss()
+                    onDuplicate(name)
+                }
+                .disabled(name.trimmingCharacters(in: .whitespaces).isEmpty)
+            }
+        }
     }
 }
 
@@ -380,7 +444,7 @@ struct LauncherButton: View {
 }
 
 struct SheetHeader: View {
-    let title: String
+    let title: LocalizedStringKey
     let systemImage: String
 
     var body: some View {

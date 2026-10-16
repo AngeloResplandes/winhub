@@ -925,6 +925,22 @@
         }
       }
     },
+    "Cria uma cópia da garrafa com os programas e as configurações. Os atalhos .app não são copiados." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Creates a copy of the bottle with its programs and settings. The .app shortcuts are not copied."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Crea una copia de la botella con sus programas y configuraciones. Los accesos directos .app no se copian."
+          }
+        }
+      }
+    },
     "Criando a garrafa “%@”…" : {
       "localizations" : {
         "en" : {
@@ -1117,6 +1133,70 @@
         }
       }
     },
+    "Duplicando…" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Duplicating…"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Duplicando…"
+          }
+        }
+      }
+    },
+    "Duplicar" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Duplicate"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Duplicar"
+          }
+        }
+      }
+    },
+    "Duplicar garrafa" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Duplicate bottle"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Duplicar botella"
+          }
+        }
+      }
+    },
+    "Duplicar garrafa…" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Duplicate bottle…"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Duplicar botella…"
+          }
+        }
+      }
+    },
     "Dê um nome à garrafa." : {
       "localizations" : {
         "en" : {
@@ -1273,6 +1353,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Cerrar todos los programas"
+          }
+        }
+      }
+    },
+    "Encerre os programas da garrafa “%@” antes de duplicá-la." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Quit the programs of the bottle “%@” before duplicating it."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cierra los programas de la botella “%@” antes de duplicarla."
           }
         }
       }
@@ -3041,6 +3137,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Los programas de la botella “%@” se están ejecutando con otro motor."
+          }
+        }
+      }
+    },
+    "Para duplicar, a garrafa precisa estar encerrada. Salve o que estiver aberto antes de continuar." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The bottle must be closed to duplicate it. Save anything that is open before continuing."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La botella debe estar cerrada para duplicarla. Guarda lo que tengas abierto antes de continuar."
           }
         }
       }
