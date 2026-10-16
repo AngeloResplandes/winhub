@@ -99,10 +99,6 @@ struct BottleDetailView: View {
     var body: some View {
         let programs = wine.programs[bottle.id] ?? []
         Form {
-            if let status = wine.activity[bottle.id.uuidString] {
-                Section { ProgressView { Text(status) }.progressViewStyle(.linear) }
-            }
-
             Section("Programas") {
                 if programs.isEmpty {
                     Text("Nenhum atalho encontrado nesta garrafa.").foregroundStyle(.secondary)
@@ -243,6 +239,15 @@ struct BottleDetailView: View {
             }
         }
         .formStyle(.grouped)
+        // Pinned above the scrolling form so a long operation stays visible wherever the page is scrolled.
+        .safeAreaInset(edge: .top, spacing: 0) {
+            if let status = wine.activity[bottle.id.uuidString] {
+                ProgressView { Text(status) }
+                    .progressViewStyle(.linear)
+                    .padding()
+                    .background(.bar)
+            }
+        }
         .navigationTitle(bottle.name)
         .navigationSubtitle(bottle.windowsVersion.title)
         .confirmationDialog("Apagar a garrafa “\(bottle.name)”?", isPresented: $isConfirmingDelete) {
