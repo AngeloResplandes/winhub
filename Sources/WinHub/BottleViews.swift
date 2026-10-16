@@ -98,6 +98,7 @@ struct BottleDetailView: View {
     @State private var isDuplicating = false
     @State private var isRenaming = false
     @State private var isRunningCommand = false
+    @State private var isEditingAdvanced = false
     /// A new name that leaves the "Steam" bottle, waiting for confirmation.
     @State private var steamRename: String?
     /// A change that closes the bottle's programs, waiting for confirmation.
@@ -174,6 +175,8 @@ struct BottleDetailView: View {
                     set: { wine.setPerformanceHUD($0, for: bottle) }
                 ))
                 .help("Mostra o painel de desempenho do Metal (e o do DXVK, se ele estiver em uso).")
+                Button { isEditingAdvanced = true } label: { Label("Avançado…", systemImage: "slider.horizontal.3") }
+                    .help("Edita as variáveis de ambiente e as substituições de DLL (WINEDLLOVERRIDES) desta garrafa.")
                 LabeledContent("Motor", value: wine.runtime?.manifest.version ?? bottle.runtimeID)
                 LabeledContent("Em execução", value: wine.activeBottles.contains(bottle.id) ? String(localized: "Sim") : String(localized: "Não"))
             }
@@ -311,6 +314,15 @@ struct BottleDetailView: View {
         .sheet(isPresented: $isRunningCommand) {
             RunCommandSheet(bottle: bottle)
         }
+        .sheet(isPresented: $isEditingAdvanced) {
+            AdvancedSettingsSheet(bottle: bottle) { environment, overrides in
+                if wine.advancedChangeClosesPrograms(environment: environment, dllOverrides: overrides, for: bottle) {
+                    pendingChange = .advanced(environment, overrides)
+                } else {
+                    Task { await wine.setAdvanced(environment: environment, dllOverrides: overrides, for: bottle) }
+                }
+            }
+        }
         .sheet(isPresented: $isDuplicating) {
             DuplicateBottleSheet(bottle: bottle) { name in
                 if wine.activeBottles.contains(bottle.id) {
@@ -334,6 +346,8 @@ struct BottleDetailView: View {
                     switch pendingChange {
                     case .msync(let enabled): Task { await wine.setMSync(enabled, for: bottle) }
                     case .displayModes(let enabled): Task { await wine.setExtraDisplayModes(enabled, for: bottle) }
+                    case .advanced(let environment, let overrides):
+                        Task { await wine.setAdvanced(environment: environment, dllOverrides: overrides, for: bottle) }
                     case .duplicate, nil: break
                     }
                     pendingChange = nil
@@ -358,6 +372,7 @@ struct BottleDetailView: View {
     enum PendingChange {
         case msync(Bool)
         case displayModes(Bool)
+        case advanced([String: String], [String: String])
         case duplicate(String)
     }
 }
@@ -423,6 +438,98 @@ struct DuplicateBottleSheet: View {
     }
 }
 
+/// The bottle's own environment variables and DLL overrides, as text.
+struct AdvancedSettingsSheet: View {
+    @Environment(WineStore.self) private var wine
+    @Environment(\.dismiss) private var dismiss
+    let bottle: Bottle
+    let onSave: ([String: String], [String: String]) -> Void
+    @State private var variables = ""
+    @State private var overrides = ""
+
+    private var parsedVariables: Result<[String: String], AdvancedSettingsError> {
+        BottleAdvancedSettings.parseEnvironment(variables)
+    }
+
+    private var parsedOverrides: Result<[String: String], AdvancedSettingsError> {
+        BottleAdvancedSettings.parseOverrides(overrides)
+    }
+
+    /// Both texts as values, or `nil` while either has an error.
+    private var parsed: (environment: [String: String], overrides: [String: String])? {
+        guard case .success(let environment) = parsedVariables, case .success(let overrides) = parsedOverrides else { return nil }
+        return (environment, overrides)
+    }
+
+    private var hasChanges: Bool {
+        guard let parsed else { return false }
+        return parsed.environment != bottle.environment || parsed.overrides != bottle.dllOverrides
+    }
+
+    var body: some View {
+        Form {
+            Text("Para usuários avançados: valores errados podem impedir programas de abrir.")
+                .foregroundStyle(.orange)
+            Section {
+                TextEditor(text: $variables)
+                    .font(.system(.caption, design: .monospaced))
+                    .frame(height: 110)
+            } header: {
+                Text("Variáveis de ambiente")
+            } footer: {
+                footer(for: parsedVariables, hint: "Uma por linha, no formato NOME=valor. Linhas com # são ignoradas.")
+            }
+            Section {
+                TextEditor(text: $overrides)
+                    .font(.system(.caption, design: .monospaced))
+                    .frame(height: 110)
+            } header: {
+                Text("Substituições de DLL")
+            } footer: {
+                footer(for: parsedOverrides,
+                       hint: "Uma por linha, como d3d11=n,b (n = a do Windows, b = a do Wine; vazio desliga a DLL).")
+            }
+            if let parsed, wine.activeBottles.contains(bottle.id),
+               !wine.advancedChangeClosesPrograms(environment: parsed.environment, dllOverrides: parsed.overrides, for: bottle) {
+                Text("Vale para os programas abertos depois.")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
+        }
+        .formStyle(.grouped)
+        .safeAreaInset(edge: .top) { SheetHeader(title: "Avançado", systemImage: "slider.horizontal.3") }
+        .frame(width: 500)
+        .onAppear {
+            variables = BottleAdvancedSettings.formatEnvironment(bottle.environment)
+            overrides = BottleAdvancedSettings.formatOverrides(bottle.dllOverrides)
+        }
+        .toolbar {
+            ToolbarItem(placement: .cancellationAction) { Button("Cancelar") { dismiss() } }
+            ToolbarItem(placement: .confirmationAction) {
+                Button("Salvar") {
+                    guard let parsed else { return }
+                    dismiss()
+                    onSave(parsed.environment, parsed.overrides)
+                }
+                .disabled(!hasChanges)
+            }
+        }
+    }
+
+    @ViewBuilder
+    private func footer(for result: Result<[String: String], AdvancedSettingsError>, hint: LocalizedStringKey) -> some View {
+        if case .failure(let error) = result {
+            Text(error.localizedDescription)
+                .font(.caption)
+                .foregroundStyle(.red)
+        } else {
+            Text(hint)
+                .font(.caption)
+                .foregroundStyle(.secondary)
+        }
+    }
+}
+
 /// Runs any Windows program once in a bottle.
 struct RunCommandSheet: View {
     @Environment(WineStore.self) private var wine
@@ -433,8 +540,8 @@ struct RunCommandSheet: View {
     @State private var workingDirectory = ""
     @State private var variables = ""
 
-    private var parsedVariables: Result<[String: String], EnvironmentLines.InvalidLine> {
-        EnvironmentLines.parse(variables)
+    private var parsedVariables: Result<[String: String], AdvancedSettingsError> {
+        BottleAdvancedSettings.parseEnvironment(variables)
     }
 
     private var defaultFolder: String {
@@ -462,7 +569,7 @@ struct RunCommandSheet: View {
                 Text("Variáveis de ambiente")
             } footer: {
                 if case .failure(let invalid) = parsedVariables {
-                    Text("Linha inválida: \(invalid.line). Use NOME=valor, uma por linha.")
+                    Text(invalid.localizedDescription)
                         .font(.caption)
                         .foregroundStyle(.red)
                 } else {

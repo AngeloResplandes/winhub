@@ -615,6 +615,38 @@
         }
       }
     },
+    "Avançado" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Advanced"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Avanzado"
+          }
+        }
+      }
+    },
+    "Avançado…" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Advanced…"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Avanzado…"
+          }
+        }
+      }
+    },
     "Baixando %@ %@…" : {
       "localizations" : {
         "en" : {
@@ -1273,6 +1305,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Ponle un nombre a la botella."
+          }
+        }
+      }
+    },
+    "Edita as variáveis de ambiente e as substituições de DLL (WINEDLLOVERRIDES) desta garrafa." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Edits this bottle’s environment variables and DLL overrides (WINEDLLOVERRIDES)."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Edita las variables de entorno y las sustituciones de DLL (WINEDLLOVERRIDES) de esta botella."
           }
         }
       }
@@ -2493,7 +2541,30 @@
         }
       }
     },
+    "Linha %lld: %@." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Line %1$lld: %2$@."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Línea %1$lld: %2$@."
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Linha %1$lld: %2$@."
+          }
+        }
+      }
+    },
     "Linha inválida: %@. Use NOME=valor, uma por linha." : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -3509,6 +3580,22 @@
         }
       }
     },
+    "Para usuários avançados: valores errados podem impedir programas de abrir." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "For advanced users: wrong values can stop programs from opening."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Para usuarios avanzados: los valores incorrectos pueden impedir que los programas se abran."
+          }
+        }
+      }
+    },
     "Pasta" : {
       "localizations" : {
         "en" : {
@@ -3947,6 +4034,22 @@
         }
       }
     },
+    "Salvar" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Save"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Guardar"
+          }
+        }
+      }
+    },
     "Sem teste" : {
       "localizations" : {
         "en" : {
@@ -4007,6 +4110,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Estado"
+          }
+        }
+      }
+    },
+    "Substituições de DLL" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "DLL overrides"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sustituciones de DLL"
           }
         }
       }
@@ -4091,6 +4210,38 @@
         }
       }
     },
+    "Uma por linha, como d3d11=n,b (n = a do Windows, b = a do Wine; vazio desliga a DLL)." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "One per line, like d3d11=n,b (n = the Windows one, b = Wine’s own; empty turns the DLL off)."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Una por línea, como d3d11=n,b (n = la de Windows, b = la de Wine; vacío desactiva la DLL)."
+          }
+        }
+      }
+    },
+    "Uma por linha, no formato NOME=valor. Linhas com # são ignoradas." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "One per line, as NAME=value. Lines starting with # are ignored."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Una por línea, con el formato NOMBRE=valor. Las líneas que empiezan con # se ignoran."
+          }
+        }
+      }
+    },
     "Uma por linha, no formato NOME=valor. Valem só para esta execução e vencem as da garrafa." : {
       "localizations" : {
         "en" : {
@@ -4135,6 +4286,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Usar la carpeta predeterminada"
+          }
+        }
+      }
+    },
+    "Vale para os programas abertos depois." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Applies to programs opened afterwards."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Se aplica a los programas que se abran después."
           }
         }
       }
@@ -4411,6 +4578,22 @@
         }
       }
     },
+    "falta o sinal “=”" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "the “=” sign is missing"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "falta el signo “=”"
+          }
+        }
+      }
+    },
     "identificador diferente" : {
       "localizations" : {
         "en" : {
@@ -4423,6 +4606,54 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "identificador diferente"
+          }
+        }
+      }
+    },
+    "o modo “%@” não vale; use n, b, n,b ou b,n (vazio desliga a DLL)" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "the mode “%@” is not valid; use n, b, n,b or b,n (empty turns the DLL off)"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "el modo “%@” no es válido; usa n, b, n,b o b,n (vacío desactiva la DLL)"
+          }
+        }
+      }
+    },
+    "o nome está vazio" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "the name is empty"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "el nombre está vacío"
+          }
+        }
+      }
+    },
+    "o nome “%@” não pode ter espaços, vírgulas nem ponto e vírgula" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "the name “%@” cannot contain spaces, commas or semicolons"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "el nombre “%@” no puede tener espacios, comas ni punto y coma"
           }
         }
       }
@@ -4455,6 +4686,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Última comprobación"
+          }
+        }
+      }
+    },
+    "“%@” já aparece em outra linha" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "“%@” already appears on another line"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "“%@” ya aparece en otra línea"
           }
         }
       }

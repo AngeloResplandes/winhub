@@ -396,6 +396,31 @@ final class WineStore {
         save(updated)
     }
 
+    /// Whether saving these variables and overrides would need the running bottle's wineserver ended
+    /// (a variable such as `WINEMSYNC` that the server and its processes must agree on).
+    func advancedChangeClosesPrograms(environment: [String: String], dllOverrides: [String: String],
+                                      for bottle: Bottle) -> Bool {
+        var updated = bottle
+        updated.environment = environment
+        updated.dllOverrides = dllOverrides
+        guard let runtime, activeBottles.contains(bottle.id) else { return false }
+        return WineEnvironment.needsServerRestart(from: bottle, to: updated, runtime: runtime)
+    }
+
+    /// Saves the bottle's own variables and DLL overrides; they apply to programs opened afterwards.
+    func setAdvanced(environment: [String: String], dllOverrides: [String: String], for bottle: Bottle) async {
+        var updated = bottle
+        updated.environment = environment
+        updated.dllOverrides = dllOverrides
+        if advancedChangeClosesPrograms(environment: environment, dllOverrides: dllOverrides, for: bottle), let runtime {
+            try? await perform(key: bottle.id.uuidString, String(localized: "Encerrando a garrafa para aplicar…")) {
+                try await WineLauncher(runtime: runtime).shutdown(bottle)
+            }
+            updateActiveBottles()
+        }
+        save(updated)
+    }
+
     /// Display modes are cached by the bottle's running processes, so a running bottle is ended first.
     func setExtraDisplayModes(_ enabled: Bool, for bottle: Bottle) async {
         guard let runtime else { return }

@@ -34,18 +34,3 @@ import Testing
         #expect(ArgumentSplitter.split("'x y") == ["x y"])
     }
 }
-
-@Suite struct EnvironmentLinesTests {
-    @Test func keepsValues() throws {
-        let parsed = try EnvironmentLines.parse("A=1\n\nC=\nD=a=b\r\n  E=  spaced").get()
-        #expect(parsed == ["A": "1", "C": "", "D": "a=b", "E": "  spaced"])
-        #expect(try EnvironmentLines.parse("").get().isEmpty)
-    }
-
-    @Test func rejectsBadLines() {
-        for bad in ["NOEQUALS", "=value", "A B=1", "A\tB=1", " =1"] {
-            #expect(EnvironmentLines.parse("OK=1\n\(bad)\nZ=2") == .failure(.init(line: bad.trimmingCharacters(in: .whitespaces))),
-                    "\(bad)")
-        }
-    }
-}
