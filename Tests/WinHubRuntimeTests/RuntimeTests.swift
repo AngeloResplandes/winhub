@@ -810,3 +810,55 @@ struct EngineInstallTests {
         #expect(result.output.contains("cabextract version 1.11"))
     }
 }
+
+@Suite struct RunCommandTests {
+    let runtime = InstalledRuntime(
+        manifest: RuntimeManifest(id: "w", name: "W", version: "1", url: URL(string: "https://example.invalid")!,
+                                  sha256: "", size: 0, license: "", sourceURL: URL(string: "https://example.invalid")!,
+                                  binPath: "bin"),
+        root: URL(fileURLWithPath: "/R"))
+
+    func bottle() -> Bottle {
+        var bottle = Bottle(name: "B", runtimeID: "w", environment: ["CUSTOM": "bottle", "KEEP": "1"])
+        bottle.folder = URL(fileURLWithPath: "/Bottles/B")
+        return bottle
+    }
+
+    @Test func msiGoesThroughMsiexec() {
+        let file = URL(fileURLWithPath: "/D/setup.msi")
+        #expect(WineLauncher.commandArguments(file: file, arguments: ["/qn"], workingDirectory: nil)
+                == ["msiexec", "/i", "/D/setup.msi", "/qn"])
+        #expect(WineLauncher.commandArguments(file: URL(fileURLWithPath: "/D/SETUP.MSI"), arguments: [], workingDirectory: "C:\\x")
+                == ["msiexec", "/i", "/D/SETUP.MSI"])
+    }
+
+    @Test func otherProgramsUseStart() {
+        let exe = URL(fileURLWithPath: "/D/app.exe")
+        #expect(WineLauncher.commandArguments(file: exe, arguments: [], workingDirectory: nil)
+                == ["start", "/wait", "/unix", "/D/app.exe"])
+        #expect(WineLauncher.commandArguments(file: exe, arguments: ["-a", "b c"], workingDirectory: #"C:\Games"#)
+                == ["start", "/wait", "/d", #"C:\Games"#, "/unix", "/D/app.exe", "-a", "b c"])
+        #expect(WineLauncher.commandArguments(file: URL(fileURLWithPath: "/D/run.bat"), arguments: [], workingDirectory: nil)
+                == ["start", "/wait", "/unix", "/D/run.bat"])
+        #expect(WineLauncher.commandArguments(file: URL(fileURLWithPath: "/D/APP.EXE"), arguments: [], workingDirectory: nil)
+                == ["start", "/wait", "/unix", "/D/APP.EXE"])
+    }
+
+    @Test func extraEnvironmentWinsOverTheBottles() {
+        let launcher = WineLauncher(runtime: runtime)
+        let env = launcher.environment(for: bottle(), extraOverrides: [:], extraEnvironment: ["CUSTOM": "extra", "NEW": "n"])
+        #expect(env["CUSTOM"] == "extra")
+        #expect(env["NEW"] == "n")
+        #expect(env["KEEP"] == "1")
+        #expect(launcher.environment(for: bottle())["CUSTOM"] == "bottle")
+    }
+
+    @Test func defaultWorkingDirectory() {
+        let bottle = bottle()
+        #expect(bottle.defaultWorkingDirectory(forFile: bottle.driveC.appending(path: "Games/A/a.exe")) == #"C:\Games\A"#)
+        #expect(bottle.defaultWorkingDirectory(forFile: bottle.driveC.appending(path: "setup.exe")) == #"C:\"#)
+        // Outside the prefix Wine sees the Mac's root as Z:.
+        #expect(bottle.defaultWorkingDirectory(forFile: URL(fileURLWithPath: "/Users/me/Downloads/setup.exe"))
+                == #"Z:\Users\me\Downloads"#)
+    }
+}

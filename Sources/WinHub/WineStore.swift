@@ -168,11 +168,19 @@ final class WineStore {
     // MARK: Bottles
 
     @discardableResult
-    func createBottle(name: String, windowsVersion: Bottle.WindowsVersion = .win10) async -> Bottle? {
+    func createBottle(name: String, windowsVersion: Bottle.WindowsVersion = .win10,
+                      template: BottleTemplate? = nil) async -> Bottle? {
         guard let runtime = requireRuntime() else { return nil }
         do {
-            let bottle = try bottleStore.create(name: name, runtimeID: runtime.manifest.id, windowsVersion: windowsVersion,
+            var bottle = try bottleStore.create(name: name, runtimeID: runtime.manifest.id, windowsVersion: windowsVersion,
                                                 graphics: runtime.dispatchesGraphics ? .auto : .wined3d)
+            if let template {
+                // The picker's Windows version wins over the template's (the sheet pre-fills it from the template).
+                let chosenVersion = bottle.windowsVersion
+                bottle = template.apply(to: bottle, availableGraphics: graphicsBackends, supportsMSync: supportsMSync)
+                bottle.windowsVersion = chosenVersion
+                try bottleStore.save(bottle)
+            }
             refresh()
             try await perform(key: bottle.id.uuidString, String(localized: "Criando a garrafa…")) {
                 try await WineLauncher(runtime: runtime).initialize(bottle)
@@ -214,6 +222,54 @@ final class WineStore {
         do {
             try launchers.removeAll(for: bottle)
             try bottleStore.delete(bottle)
+        } catch {
+            errorMessage = error.localizedDescription
+        }
+        refresh()
+    }
+
+    func suggestedCopyName(for bottle: Bottle) -> String { bottleStore.uniqueName(bottle.name) }
+
+    /// Another bottle already has `name` (trimmed, without case), as `BottleStore` would refuse it. `excluding` is
+    /// the bottle being renamed.
+    func isNameTaken(_ name: String, excluding excluded: Bottle.ID? = nil) -> Bool {
+        let trimmed = name.trimmingCharacters(in: .whitespacesAndNewlines)
+        return bottles.contains { $0.id != excluded && $0.name.caseInsensitiveCompare(trimmed) == .orderedSame }
+    }
+
+    /// Clones `bottle` under `name` (programs, settings and compat rules; not the `.app` shortcuts, which name the
+    /// original's id). A running bottle is ended first: Wine may be writing its registry. `onCreated` gets the new
+    /// bottle, also when the copy follows a conflict dialog's retry.
+    func duplicate(_ bottle: Bottle, name: String, onCreated: @escaping @MainActor (Bottle) -> Void = { _ in }) async {
+        guard claim(bottle, opensProgram: false, retry: {
+            await self.duplicate(bottle, name: name, onCreated: onCreated)
+        }) else { return }
+        let store = bottleStore
+        do {
+            let copy: Bottle? = try await perform(key: bottle.id.uuidString, String(localized: "Duplicando…")) {
+                if activeBottles.contains(bottle.id), let runtime {
+                    try await WineLauncher(runtime: runtime).shutdown(bottle)
+                    updateActiveBottles()
+                }
+                guard !WineServerStatus.isRunning(prefix: bottle.prefix) else {
+                    errorMessage = String(localized: "Encerre os programas da garrafa “\(bottle.name)” antes de duplicá-la.")
+                    return nil
+                }
+                return try await store.duplicate(bottle, name: name)
+            }
+            refresh()
+            if let copy { onCreated(copy) }
+        } catch {
+            errorMessage = error.localizedDescription
+            refresh()
+        }
+    }
+
+    /// Renames `bottle` and moves its `.app` shortcuts folder along. Only metadata changes, so a running bottle
+    /// is left alone.
+    func rename(_ bottle: Bottle, to name: String) {
+        do {
+            _ = try bottleStore.rename(bottle, to: name, movingLaunchersWith: launchers)
         } catch {
             errorMessage = error.localizedDescription
         }
@@ -339,6 +395,31 @@ final class WineStore {
         var updated = bottle
         updated.msync = enabled
         if msyncChangeClosesPrograms(enabled, for: bottle), let runtime {
+            try? await perform(key: bottle.id.uuidString, String(localized: "Encerrando a garrafa para aplicar…")) {
+                try await WineLauncher(runtime: runtime).shutdown(bottle)
+            }
+            updateActiveBottles()
+        }
+        save(updated)
+    }
+
+    /// Whether saving these variables and overrides would need the running bottle's wineserver ended
+    /// (a variable such as `WINEMSYNC` that the server and its processes must agree on).
+    func advancedChangeClosesPrograms(environment: [String: String], dllOverrides: [String: String],
+                                      for bottle: Bottle) -> Bool {
+        var updated = bottle
+        updated.environment = environment
+        updated.dllOverrides = dllOverrides
+        guard let runtime, activeBottles.contains(bottle.id) else { return false }
+        return WineEnvironment.needsServerRestart(from: bottle, to: updated, runtime: runtime)
+    }
+
+    /// Saves the bottle's own variables and DLL overrides; they apply to programs opened afterwards.
+    func setAdvanced(environment: [String: String], dllOverrides: [String: String], for bottle: Bottle) async {
+        var updated = bottle
+        updated.environment = environment
+        updated.dllOverrides = dllOverrides
+        if advancedChangeClosesPrograms(environment: environment, dllOverrides: dllOverrides, for: bottle), let runtime {
             try? await perform(key: bottle.id.uuidString, String(localized: "Encerrando a garrafa para aplicar…")) {
                 try await WineLauncher(runtime: runtime).shutdown(bottle)
             }
@@ -686,6 +767,35 @@ final class WineStore {
             ? SteamClient.launchArguments(wrapperInstalled: wrapperInstalled) : []
         launch(in: bottle) { launcher in
             try await launcher.open(bottle, shortcut: program.shortcut, arguments: arguments)
+        }
+    }
+
+    /// Opens one of Wine's own programs (winecfg, regedit, ...) in the bottle.
+    func openTool(_ tool: WineTool, in bottle: Bottle) {
+        guard claim(bottle, opensProgram: true, retry: { self.openTool(tool, in: bottle) }) else { return }
+        launch(in: bottle) { launcher in
+            try await launcher.run(bottle, WineLauncher.toolArguments(tool), logName: tool.rawValue)
+        }
+    }
+
+    /// Asks for a Windows program to run once; starts in the bottle's C: drive.
+    func chooseCommandFile(in bottle: Bottle) -> URL? {
+        let panel = NSOpenPanel()
+        panel.allowedContentTypes = ["exe", "msi", "bat", "cmd", "com"].compactMap { UTType(filenameExtension: $0) }
+        panel.message = String(localized: "Escolha o programa a executar")
+        panel.directoryURL = bottle.driveC
+        return panel.runModal() == .OK ? panel.url : nil
+    }
+
+    /// Runs `file` once in the bottle, with extra arguments, a working folder (Windows path) and variables.
+    func runCommand(_ file: URL, arguments: [String], workingDirectory: String?, environment: [String: String],
+                    in bottle: Bottle) {
+        guard claim(bottle, opensProgram: true, retry: {
+            self.runCommand(file, arguments: arguments, workingDirectory: workingDirectory, environment: environment, in: bottle)
+        }) else { return }
+        launch(in: bottle) { launcher in
+            try await launcher.runCommand(bottle, file: file, arguments: arguments, workingDirectory: workingDirectory,
+                                          environment: environment)
         }
     }
 
