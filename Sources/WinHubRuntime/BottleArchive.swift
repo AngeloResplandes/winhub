@@ -24,16 +24,16 @@ public enum BottleArchive {
     public static func export(_ bottle: Bottle, to destination: URL) async throws {
         let fm = FileManager.default
         try? fm.removeItem(at: destination)
-        // An APFS clone (instant, no extra space) without the logs and the record of which WinHub used it.
         let staging = bottle.folder.deletingLastPathComponent()
             .appending(path: ".export-\(UUID().uuidString)", directoryHint: .isDirectory)
         try fm.createDirectory(at: staging, withIntermediateDirectories: true)
         defer { try? fm.removeItem(at: staging) }
         let copy = staging.appending(path: bottle.folder.lastPathComponent, directoryHint: .isDirectory)
-        let clone = try await run("/bin/cp", ["-cR", bottle.folder.path, copy.path])
-        guard clone.status == 0 else { throw BottleArchiveError.failed(clone.output) }
-        try? fm.removeItem(at: copy.appending(path: "logs"))
-        try? fm.removeItem(at: copy.appending(path: BottleSession.fileName))
+        do {
+            try await BottleStore.cloneBottleFolder(from: bottle.folder, to: copy)
+        } catch let failure as BottleCloneFailure {
+            throw BottleArchiveError.failed(failure.output)
+        }
 
         let result = try await ditto(["-c", "-k", "--sequesterRsrc", "--keepParent", copy.path, destination.path])
         guard result.status == 0 else { throw BottleArchiveError.failed(result.output) }

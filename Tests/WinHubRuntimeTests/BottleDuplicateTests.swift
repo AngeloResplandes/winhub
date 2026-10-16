@@ -81,4 +81,29 @@ import Testing
         #expect(store.list().map(\.name) == ["Jogos"])
         #expect(try FileManager.default.contentsOfDirectory(atPath: dir.path).count == 1)
     }
+
+    @Test func duplicateKeepsSymbolicLinksWithoutFollowingThem() async throws {
+        let dir = try makeTempDirectory()
+        let outside = try makeTempDirectory()
+        defer {
+            try? FileManager.default.removeItem(at: dir)
+            try? FileManager.default.removeItem(at: outside)
+        }
+        try write("secret", to: outside.appending(path: "secret.txt"))
+        let store = BottleStore(root: dir)
+        let original = try makeBottle(in: store)
+        let fm = FileManager.default
+        let link = original.prefix.appending(path: "dosdevices/z:")
+        try fm.createDirectory(at: link.deletingLastPathComponent(), withIntermediateDirectories: true)
+        try fm.createSymbolicLink(atPath: link.path, withDestinationPath: outside.path)
+
+        let copy = try await store.duplicate(original, name: "Jogos 2")
+        let copied = copy.prefix.appending(path: "dosdevices/z:")
+        #expect(try fm.destinationOfSymbolicLink(atPath: copied.path) == outside.path)
+        #expect(try (copied.resourceValues(forKeys: [.isSymbolicLinkKey])).isSymbolicLink == true)
+        // The target was not copied into the bottle.
+        let inside = try #require(fm.enumerator(atPath: copy.folder.path)).allObjects as? [String] ?? []
+        #expect(!inside.contains { $0.hasSuffix("secret.txt") })
+        #expect(fm.fileExists(atPath: outside.appending(path: "secret.txt").path))
+    }
 }

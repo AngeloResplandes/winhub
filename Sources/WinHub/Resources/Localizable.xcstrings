@@ -2691,6 +2691,22 @@
         }
       }
     },
+    "Não foi possível duplicar a garrafa. %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Couldn't duplicate the bottle. %@"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No se pudo duplicar la botella. %@"
+          }
+        }
+      }
+    },
     "Não foi possível extrair o motor (código %d). %@" : {
       "localizations" : {
         "en" : {

@@ -111,13 +111,20 @@ public struct Bottle: Codable, Sendable, Identifiable, Hashable {
 public enum BottleError: Error, LocalizedError, Equatable {
     case nameTaken(String)
     case invalidName
+    case duplicateFailed(String)
 
     public var errorDescription: String? {
         switch self {
         case .nameTaken(let name): String(localized: "Já existe uma garrafa chamada “\(name)”.")
         case .invalidName: String(localized: "Dê um nome à garrafa.")
+        case .duplicateFailed(let output): String(localized: "Não foi possível duplicar a garrafa. \(output)")
         }
     }
+}
+
+/// `cp` failed while cloning a bottle's folder; `output` is what it printed.
+struct BottleCloneFailure: Error {
+    let output: String
 }
 
 /// Creates, lists and deletes bottles under `root`.
@@ -189,20 +196,30 @@ public struct BottleStore: Sendable {
         copy.folder = root.appending(path: Self.folderName(for: trimmed, id: copy.id), directoryHint: .isDirectory)
         let fm = FileManager.default
         try fm.createDirectory(at: root, withIntermediateDirectories: true)
-        let source = bottle.folder.path, destination = copy.folder.path
         do {
-            let clone = try await Task.detached(priority: .userInitiated) {
-                try ProcessRunner.run(URL(fileURLWithPath: "/bin/cp"), arguments: ["-cR", source, destination])
-            }.value
-            guard clone.status == 0 else { throw BottleArchiveError.failed(clone.output) }
-            try? fm.removeItem(at: copy.logs)
-            try? fm.removeItem(at: BottleSession.url(for: copy))
+            do {
+                try await Self.cloneBottleFolder(from: bottle.folder, to: copy.folder)
+            } catch let failure as BottleCloneFailure {
+                throw BottleError.duplicateFailed(failure.output)
+            }
             try save(copy)
         } catch {
             try? fm.removeItem(at: copy.folder)
             throw error
         }
         return copy
+    }
+
+    /// An APFS clone (instant, no extra space) of a bottle's folder, off the caller's thread, without its logs and
+    /// the record of which WinHub used it. Throws `BottleCloneFailure` when `cp` fails; the caller picks the error.
+    static func cloneBottleFolder(from source: URL, to destination: URL) async throws {
+        let clone = try await Task.detached(priority: .userInitiated) {
+            try ProcessRunner.run(URL(fileURLWithPath: "/bin/cp"), arguments: ["-cR", source.path, destination.path])
+        }.value
+        guard clone.status == 0 else { throw BottleCloneFailure(output: clone.output) }
+        let fm = FileManager.default
+        try? fm.removeItem(at: destination.appending(path: "logs"))
+        try? fm.removeItem(at: destination.appending(path: BottleSession.fileName))
     }
 
     public func delete(_ bottle: Bottle) throws {

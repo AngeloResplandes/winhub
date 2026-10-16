@@ -223,28 +223,31 @@ final class WineStore {
     func suggestedCopyName(for bottle: Bottle) -> String { bottleStore.uniqueName(bottle.name) }
 
     /// Clones `bottle` under `name` (programs, settings and compat rules; not the `.app` shortcuts, which name the
-    /// original's id). A running bottle is ended first: Wine may be writing its registry. Returns the new bottle.
-    @discardableResult
-    func duplicate(_ bottle: Bottle, name: String) async -> Bottle? {
-        var copy: Bottle?
-        guard claim(bottle, opensProgram: false, retry: { await self.duplicate(bottle, name: name) }) else { return nil }
+    /// original's id). A running bottle is ended first: Wine may be writing its registry. `onCreated` gets the new
+    /// bottle, also when the copy follows a conflict dialog's retry.
+    func duplicate(_ bottle: Bottle, name: String, onCreated: @escaping @MainActor (Bottle) -> Void = { _ in }) async {
+        guard claim(bottle, opensProgram: false, retry: {
+            await self.duplicate(bottle, name: name, onCreated: onCreated)
+        }) else { return }
         let store = bottleStore
         do {
-            copy = try await perform(key: bottle.id.uuidString, String(localized: "Duplicando…")) {
+            let copy: Bottle? = try await perform(key: bottle.id.uuidString, String(localized: "Duplicando…")) {
                 if activeBottles.contains(bottle.id), let runtime {
                     try await WineLauncher(runtime: runtime).shutdown(bottle)
                     updateActiveBottles()
                 }
                 guard !WineServerStatus.isRunning(prefix: bottle.prefix) else {
-                    throw BottleArchiveError.failed(String(localized: "Encerre os programas da garrafa “\(bottle.name)” antes de duplicá-la."))
+                    errorMessage = String(localized: "Encerre os programas da garrafa “\(bottle.name)” antes de duplicá-la.")
+                    return nil
                 }
                 return try await store.duplicate(bottle, name: name)
             }
+            refresh()
+            if let copy { onCreated(copy) }
         } catch {
             errorMessage = error.localizedDescription
+            refresh()
         }
-        refresh()
-        return copy
     }
 
     func revealDriveC(_ bottle: Bottle) {

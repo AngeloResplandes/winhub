@@ -307,7 +307,7 @@ struct BottleDetailView: View {
 
     private func duplicate(as name: String) {
         Task {
-            if let copy = await wine.duplicate(bottle, name: name) { onDuplicated(copy.id) }
+            await wine.duplicate(bottle, name: name) { onDuplicated($0.id) }
         }
     }
 
@@ -342,7 +342,7 @@ struct DuplicateBottleSheet: View {
                     dismiss()
                     onDuplicate(name)
                 }
-                .disabled(name.trimmingCharacters(in: .whitespaces).isEmpty)
+                .disabled(name.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
             }
         }
     }
@@ -372,7 +372,7 @@ struct NewBottleSheet: View {
                     dismiss()
                     Task { await wine.createBottle(name: name, windowsVersion: version) }
                 }
-                .disabled(name.trimmingCharacters(in: .whitespaces).isEmpty)
+                .disabled(name.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
             }
         }
     }
