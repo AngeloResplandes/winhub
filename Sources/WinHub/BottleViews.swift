@@ -97,6 +97,7 @@ struct BottleDetailView: View {
     @State private var isConfirmingDelete = false
     @State private var isDuplicating = false
     @State private var isRenaming = false
+    @State private var isRunningCommand = false
     /// A new name that leaves the "Steam" bottle, waiting for confirmation.
     @State private var steamRename: String?
     /// A change that closes the bottle's programs, waiting for confirmation.
@@ -241,6 +242,8 @@ struct BottleDetailView: View {
                     Label("Ferramentas do Wine", systemImage: "wrench.and.screwdriver")
                 }
                 .help("Abre os programas do próprio Wine (configuração, registro, painel de controle…) nesta garrafa.")
+                Button { isRunningCommand = true } label: { Label("Executar comando…", systemImage: "play.rectangle") }
+                    .help("Roda uma vez qualquer programa do Windows nesta garrafa, com argumentos, pasta de trabalho e variáveis.")
                 Button { Task { await wine.shutdown(bottle) } } label: {
                     Label("Encerrar todos os programas", systemImage: "stop.circle")
                 }
@@ -304,6 +307,9 @@ struct BottleDetailView: View {
             Button("Cancelar", role: .cancel) { steamRename = nil }
         } message: {
             Text("O catálogo e os jogos da Steam usam só a garrafa “Steam”. Renomear mesmo assim?")
+        }
+        .sheet(isPresented: $isRunningCommand) {
+            RunCommandSheet(bottle: bottle)
         }
         .sheet(isPresented: $isDuplicating) {
             DuplicateBottleSheet(bottle: bottle) { name in
@@ -412,6 +418,75 @@ struct DuplicateBottleSheet: View {
                     onDuplicate(name)
                 }
                 .disabled(name.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
+            }
+        }
+    }
+}
+
+/// Runs any Windows program once in a bottle.
+struct RunCommandSheet: View {
+    @Environment(WineStore.self) private var wine
+    @Environment(\.dismiss) private var dismiss
+    let bottle: Bottle
+    @State private var file: URL?
+    @State private var arguments = ""
+    @State private var workingDirectory = ""
+    @State private var variables = ""
+
+    private var parsedVariables: Result<[String: String], EnvironmentLines.InvalidLine> {
+        EnvironmentLines.parse(variables)
+    }
+
+    private var defaultFolder: String {
+        file.map(bottle.defaultWorkingDirectory(forFile:)) ?? ""
+    }
+
+    var body: some View {
+        Form {
+            LabeledContent("Programa") {
+                HStack {
+                    Text(file?.lastPathComponent ?? String(localized: "Nenhum"))
+                        .foregroundStyle(file == nil ? .secondary : .primary)
+                        .lineLimit(1)
+                        .truncationMode(.middle)
+                    Button("Escolher…") { if let url = wine.chooseCommandFile(in: bottle) { file = url } }
+                }
+            }
+            TextField("Argumentos", text: $arguments, prompt: Text("ex.: -windowed \"C:\\Meus Jogos\""))
+            TextField("Pasta de trabalho", text: $workingDirectory, prompt: Text(defaultFolder))
+            Section {
+                TextEditor(text: $variables)
+                    .font(.system(.caption, design: .monospaced))
+                    .frame(height: 70)
+            } header: {
+                Text("Variáveis de ambiente")
+            } footer: {
+                if case .failure(let invalid) = parsedVariables {
+                    Text("Linha inválida: \(invalid.line). Use NOME=valor, uma por linha.")
+                        .font(.caption)
+                        .foregroundStyle(.red)
+                } else {
+                    Text("Uma por linha, no formato NOME=valor. Valem só para esta execução e vencem as da garrafa.")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
+            }
+        }
+        .formStyle(.grouped)
+        .safeAreaInset(edge: .top) { SheetHeader(title: "Executar comando", systemImage: "play.rectangle") }
+        .frame(width: 460)
+        .toolbar {
+            ToolbarItem(placement: .cancellationAction) { Button("Cancelar") { dismiss() } }
+            ToolbarItem(placement: .confirmationAction) {
+                Button("Executar") {
+                    guard let file, case .success(let environment) = parsedVariables else { return }
+                    let folder = workingDirectory.trimmingCharacters(in: .whitespaces)
+                    dismiss()
+                    wine.runCommand(file, arguments: ArgumentSplitter.split(arguments),
+                                    workingDirectory: folder.isEmpty ? defaultFolder : folder,
+                                    environment: environment, in: bottle)
+                }
+                .disabled(file == nil || (try? parsedVariables.get()) == nil)
             }
         }
     }

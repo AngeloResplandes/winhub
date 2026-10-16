@@ -83,6 +83,21 @@ public struct WineLauncher: Sendable {
         }
     }
 
+    /// Runs any program from the Mac file system once: `.msi` through msiexec, the rest through `start /unix`
+    /// (which also handles `.bat`, `.cmd` and `.com`). `workingDirectory` is a Windows path.
+    static func commandArguments(file: URL, arguments: [String], workingDirectory: String?) -> [String] {
+        if file.pathExtension.lowercased() == "msi" { return ["msiexec", "/i", file.path] + arguments }
+        return ["start", "/wait"] + (workingDirectory.map { ["/d", $0] } ?? []) + ["/unix", file.path] + arguments
+    }
+
+    /// Runs `file` with `arguments`, in `workingDirectory` and with `environment` on top of the bottle's.
+    @discardableResult
+    public func runCommand(_ bottle: Bottle, file: URL, arguments: [String] = [], workingDirectory: String? = nil,
+                           environment: [String: String] = [:]) async throws -> Int32 {
+        try await run(bottle, Self.commandArguments(file: file, arguments: arguments, workingDirectory: workingDirectory),
+                      logName: file.deletingPathExtension().lastPathComponent, extraEnvironment: environment)
+    }
+
     static func displayModesArguments(_ enabled: Bool) -> [String] {
         ["reg", "add", #"HKCU\Software\Wine\X11 Driver"#, "/v", "EmulateModeset", "/d", enabled ? "Y" : "N", "/f"]
     }
@@ -152,15 +167,19 @@ public struct WineLauncher: Sendable {
 
     /// Runs `wine <arguments>` and returns its exit status.
     public func run(_ bottle: Bottle, _ arguments: [String], logName: String,
-                    extraOverrides: [String: String] = [:]) async throws -> Int32 {
+                    extraOverrides: [String: String] = [:], extraEnvironment: [String: String] = [:]) async throws -> Int32 {
         try await ProcessRunner.run(runtime.wine, arguments: arguments,
-                                    environment: environment(for: bottle, extraOverrides: extraOverrides),
+                                    environment: environment(for: bottle, extraOverrides: extraOverrides,
+                                                             extraEnvironment: extraEnvironment),
                                     log: logURL(bottle, logName))
     }
 
-    public func environment(for bottle: Bottle, extraOverrides: [String: String] = [:]) -> [String: String] {
+    /// `extraEnvironment` is merged last, so it wins over the bottle's own variables.
+    public func environment(for bottle: Bottle, extraOverrides: [String: String] = [:],
+                            extraEnvironment: [String: String] = [:]) -> [String: String] {
         WineEnvironment.make(for: bottle, runtime: runtime, extraOverrides: extraOverrides,
                              d3dmetal: runtime.dispatchesGraphics ? D3DMetal.installed() : nil)
+            .merging(extraEnvironment) { _, extra in extra }
     }
 
     public func logURL(_ bottle: Bottle, _ name: String) -> URL {

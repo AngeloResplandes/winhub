@@ -738,6 +738,27 @@ final class WineStore {
         }
     }
 
+    /// Asks for a Windows program to run once; starts in the bottle's C: drive.
+    func chooseCommandFile(in bottle: Bottle) -> URL? {
+        let panel = NSOpenPanel()
+        panel.allowedContentTypes = ["exe", "msi", "bat", "cmd", "com"].compactMap { UTType(filenameExtension: $0) }
+        panel.message = String(localized: "Escolha o programa a executar")
+        panel.directoryURL = bottle.driveC
+        return panel.runModal() == .OK ? panel.url : nil
+    }
+
+    /// Runs `file` once in the bottle, with extra arguments, a working folder (Windows path) and variables.
+    func runCommand(_ file: URL, arguments: [String], workingDirectory: String?, environment: [String: String],
+                    in bottle: Bottle) {
+        guard claim(bottle, opensProgram: true, retry: {
+            self.runCommand(file, arguments: arguments, workingDirectory: workingDirectory, environment: environment, in: bottle)
+        }) else { return }
+        launch(in: bottle) { launcher in
+            try await launcher.runCommand(bottle, file: file, arguments: arguments, workingDirectory: workingDirectory,
+                                          environment: environment)
+        }
+    }
+
     /// Opens a Steam game through the Steam client bottle.
     func playOnSteam(appID: Int) {
         guard let bottle = bottle(named: SteamClient.bottleName),

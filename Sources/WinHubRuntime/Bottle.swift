@@ -99,6 +99,15 @@ public struct Bottle: Codable, Sendable, Identifiable, Hashable {
         return "C:\\" + path.dropFirst(root.count + 1).replacingOccurrences(of: "/", with: "\\")
     }
 
+    /// Windows folder to start `file` in: its own folder, as `C:\…` inside this bottle or as `Z:\…`
+    /// (Wine maps the Mac's root to Z:) anywhere else.
+    public func defaultWorkingDirectory(forFile file: URL) -> String {
+        let folder = file.deletingLastPathComponent()
+        if folder.standardizedFileURL.path == driveC.standardizedFileURL.path { return "C:\\" }
+        if let path = windowsPath(forUnixPath: folder) { return path }
+        return "Z:" + folder.standardizedFileURL.path.replacingOccurrences(of: "/", with: "\\")
+    }
+
     /// Mac location of a `C:\…` path inside this bottle, or `nil` for other drives.
     public func unixPath(forWindowsPath path: String) -> URL? {
         let normalized = path.replacingOccurrences(of: "\\", with: "/")
