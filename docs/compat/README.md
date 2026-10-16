@@ -10,7 +10,7 @@ from these reports.
 |---|---|---|---|
 | [BioShock Remastered](bioshock-remastered.md) | 11, 32-bit | starts with DXMT; gameplay not measured yet | Automático (DXMT) |
 | [Dark Souls Remastered](dark-souls-remastered.md) | 11 | playable with D3DMetal and DXVK; DXMT freezes | DXVK (rule) or D3DMetal |
-| [Hollow Knight](hollow-knight.md) | 11 (Unity 6) | playable; intro video black | Automático (DXMT on revision 3), or D3DMetal |
+| [Hollow Knight](hollow-knight.md) | 11 (Unity 6) | playable; videos decode on revision 5 but stay black | Automático (DXMT), or D3DMetal |
 | [Lethal Company](lethal-company.md) | 11 (Unity 2022) | playable (needs the microphone fix) | Automático |
 | [PEAK](peak.md) | 11 (Unity 6) | playable (needs the microphone fix) | Automático |
 | [Persona 5 Royal](persona-5-royal.md) | 11 | installs, does not start (crash in the game, any Direct3D) | — |

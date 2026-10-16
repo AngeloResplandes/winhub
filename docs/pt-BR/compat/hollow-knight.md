@@ -90,6 +90,23 @@ desligado, Metal HUD ligado), sem escolha por programa e sem regra. O "Automáti
 sozinho (`backend-of`: dxmt): a tela de idiomas a 60 FPS, GPU de cerca de 1 ms por quadro. Escolher o DXMT para o
 jogo à mão não é mais necessário.
 
+### 16/10/2026: revisão 5 do motor (vídeos dos jogos)
+
+Mesmo Mac, um build local do `winhub-wine-11.0-r5` (idêntico à versão publicada), um clone APFS da garrafa da Steam
+com ID próprio. O vídeo do prólogo (**New Game**) agora é **decodificado**: o antigo
+`WindowsVideoMedia error 0xc00d36bb` sumiu, o GStreamer escolhe o `vtdec_hw` (H.264) e o `atdec` (AAC), e cerca de
+1.260 quadros de 1920×1080 chegam ao jogo. Ele continua **preto**:
+
+| Backend | Log do Unity | O que acontece |
+|---|---|---|
+| DXMT (Automático) | sem erro; `D3D11Fence is not available, using ID3D11Query` | o Unity pega a textura de cada quadro do Media Foundation num segundo device Direct3D 11 e pede o handle compartilhado; o handle que recebe é nulo, então o device principal não tem o que desenhar |
+| DXVK | `WindowsVideoMedia error 0x80070057` a cada quadro | o DXVK-macOS não tem recursos compartilhados (o `GetSharedHandle` falha) |
+
+Um programa de teste pequeno reproduziu cada passo fora do jogo e achou, no caminho, um defeito do DXMT (o
+preenchimento de zeros adiado de uma textura compartilhada apaga o que outro device escreveu); corrigir isso não
+bastou para o jogo. O trabalho continua no motor ([lacunas do winhub-engine](https://angeloresplandes.github.io/winhub-engine/pt-BR/gaps.html)).
+O jogo continua jogável; só os vídeos ficam pretos.
+
 ## Como reproduzir
 
 - O jogo precisa ser aberto pela Steam. Aberto direto, ele encerra com "Application was not launched through

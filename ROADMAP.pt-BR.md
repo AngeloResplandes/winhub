@@ -4,7 +4,7 @@
 
 **Estágio: 0.2**, publicado a cada push na `main`
 
-> **Última revisão:** 2026-10-15 · **Alvo:** CrossOver 26.3.0 para macOS
+> **Última revisão:** 2026-10-16 · **Alvo:** CrossOver 26.3.0 para macOS
 
 Resumo em uma página. Detalhes: [paridade com o CrossOver](docs/pt-BR/crossover-parity.md) (pesos e evidências),
 [lacunas](docs/pt-BR/gaps.md) (a lista de trabalho em ordem), [decisões](docs/pt-BR/decisions.md).
@@ -13,7 +13,7 @@ Resumo em uma página. Detalhes: [paridade com o CrossOver](docs/pt-BR/crossover
 
 | | Valor | Tipo |
 |---|---|---|
-| **Paridade do WinHub com o CrossOver** | **~61%** | estimado, ponderado por dimensão |
+| **Paridade do WinHub com o CrossOver** | **~62%** | estimado, ponderado por dimensão |
 | Busca do catálogo | os mesmos resultados do CrossOver nos casos comparados | medido |
 | Steam | instala com um clique; login salvo mantido entre motores | medido |
 | Jogo Direct3D 11 | Hollow Knight a 60 FPS pelo DXMT | medido |
@@ -28,7 +28,7 @@ Resumo em uma página. Detalhes: [paridade com o CrossOver](docs/pt-BR/crossover
 - Direct3D por garrafa e por programa: Wine, DXVK, DXMT; com a revisão 2 do motor, também Automático e D3DMetal,
   escolhidos pelo motor sem nada copiado para as garrafas.
 - Banco de regras por jogo assinado, do winhub-engine.
-- A revisão 4 do motor (`wine-11.0-r4`) é o motor padrão.
+- A revisão 5 do motor (`wine-11.0-r5`) é o motor padrão: vídeos dos jogos (MP4 H.264/AAC) pelo GStreamer.
 - Ícones dos programas, lidos do `.exe` de cada um, nas listas e nos atalhos `.app`.
 - Interface em inglês (String Catalog), seguindo o idioma do macOS; resumos em inglês no catálogo.
 - Exportar e importar garrafas (`.winhubbottle`).
@@ -51,3 +51,4 @@ Resumo em uma página. Detalhes: [paridade com o CrossOver](docs/pt-BR/crossover
 | 2026-10-12 | Exportar e importar garrafas prontos. |
 | 2026-10-13 | A revisão 3 do motor é o padrão; paridade ~61%. |
 | 2026-10-15 | A revisão 4 do motor é o padrão. |
+| 2026-10-16 | A revisão 5 do motor é o padrão (vídeos dos jogos); paridade ~62%. |

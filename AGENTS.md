@@ -93,9 +93,10 @@ User data: `~/Library/Application Support/WinHub/{Runtimes,Components,Bottles,Re
 ## Main flows
 
 - **Engine:** `runtimes.json` → `RuntimeManager.install` (download → SHA-256 → `tar` → overlay, if any → marker
-  `.winhub-runtime.json` written last). Today the first entry is `winhub-wine-11.0-r4` (WineHQ
+  `.winhub-runtime.json` written last). Today the first entry is `winhub-wine-11.0-r5` (WineHQ
   `wine-devel-11.18-osx64` as the base + winhub-engine overlay with Wine 11.0 from CrossOver's sources; x86_64,
-  needs Rosetta 2); `winhub-wine-11.0-r3`, `winhub-wine-11.0-r2` and `winhub-wine-11.18-r1` stay listed for bottles
+  needs Rosetta 2); `winhub-wine-11.0-r4`, `winhub-wine-11.0-r3`, `winhub-wine-11.0-r2` and `winhub-wine-11.18-r1` stay
+  listed for bottles
   that use them.
 - **New bottle:** `BottleStore.create` → `WineLauncher.initialize` (`wineboot --init` with Mono/Gecko off →
   `winecfg /v <version>` → `wineserver -k`/`-w`).
@@ -199,8 +200,12 @@ Dated decisions are in `docs/decisions.md`. The pitfalls an agent must know:
   (`CompatRules`, `WINHUB_COMPAT_RULES`). Bottles from the time WinHub copied DLLs are migrated before a program
   opens (`migrateToDispatchedGraphics`): Wine's DLLs come back and the copies and overrides go away. Revision 3
   (release `wine-11.0-r3`) adds `replace_exe_path` rules and the `nvext` feature (DXMT's NVAPI, "Recursos da
-  NVIDIA"). Revision 4 (release `wine-11.0-r4`, the first engine in `runtimes.json`) reads `SteamGameId` from the
-  process's Windows environment, so `steam_game_id` rules match games Steam starts.
+  NVIDIA"). Revision 4 (release `wine-11.0-r4`) reads `SteamGameId` from the
+  process's Windows environment, so `steam_game_id` rules match games Steam starts. Revision 5 (release
+  `wine-11.0-r5`, the first engine in `runtimes.json`, feature `gstreamer`) plays game videos: GStreamer in the
+  overlay, H.264/AAC decoded by macOS; its `winhubcompat` sets `GST_PLUGIN_SYSTEM_PATH_1_0` and `GST_REGISTRY_1_0`,
+  so WinHub sets nothing. Unity games that pass video frames between Direct3D 11 devices (Hollow Knight) still
+  show black videos (shared textures in DXMT/DXVK; `docs/compat/hollow-knight.md`).
 - **The engine's rule database:** `CompatDatabaseSync` (in `UpdateStore`'s periodic check) downloads
   `data/compatdb.json` and `compatdb.json.sig` from winhub-engine's `main`, checks the Ed25519 signature with the
   built-in key (`CompatDatabaseSync.publicKey`) and only writes to `Application Support/WinHub/compat/compatdb.json`
