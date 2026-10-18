@@ -625,6 +625,13 @@ final class WineStore {
         return FileManager.default.fileExists(atPath: program.path)
     }
 
+    /// Hide Install when the catalog recipe needs a newer WinHub than this copy.
+    func recipeIsSupported(_ recipe: Recipe) -> Bool {
+        guard let version = (Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String)
+            .flatMap(AppVersion.init) else { return true }
+        return recipe.isSupported(by: version)
+    }
+
     /// Creates or reuses the recipe's bottle, downloads the installer, runs it, then opens the program.
     func install(_ recipe: Recipe, entryID: String) async {
         guard let runtime = requireRuntime() else { return }

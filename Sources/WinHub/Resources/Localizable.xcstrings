@@ -231,6 +231,22 @@
         }
       }
     },
+    "A receita zip precisa de uma pasta de destino (extractTo)." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zip recipes need a destination folder (extractTo)."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Las recetas zip necesitan una carpeta de destino (extractTo)."
+          }
+        }
+      }
+    },
     "A versão %@ está pronta para instalar." : {
       "localizations" : {
         "en" : {
@@ -825,6 +841,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Buscar juegos y apps"
+          }
+        }
+      }
+    },
+    "Caminho da receita não encontrado: %@." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Recipe path not found: %@."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No se encontró la ruta de la receta: %@."
           }
         }
       }
@@ -1773,6 +1805,22 @@
         }
       }
     },
+    "Este título precisa do WinHub %@ ou mais novo." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "This title needs WinHub %@ or newer."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Este título necesita WinHub %@ o más reciente."
+          }
+        }
+      }
+    },
     "Ex.: Jogos" : {
       "localizations" : {
         "en" : {
@@ -1929,6 +1977,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Exportar botella…"
+          }
+        }
+      }
+    },
+    "Extraindo…" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Extracting…"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Extrayendo…"
           }
         }
       }
@@ -3103,6 +3167,28 @@
         }
       }
     },
+    "Não foi possível extrair o pacote (código %d). %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Could not unpack the package (code %1$d). %2$@"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No se pudo extraer el paquete (código %1$d). %2$@"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Não foi possível extrair o pacote (código %1$d). %2$@"
+          }
+        }
+      }
+    },
     "Não foi possível instalar o Rosetta 2. %@" : {
       "localizations" : {
         "en" : {
@@ -3869,6 +3955,22 @@
           "stringUnit" : {
             "state" : "new",
             "value" : "Registrar %1$@ para %2$@"
+          }
+        }
+      }
+    },
+    "Registro" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Registry"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Registro"
           }
         }
       }

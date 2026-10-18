@@ -140,4 +140,10 @@ import Testing
         let recipe = try decode(json)
         #expect(recipe.installer.resolvedKind == .msi)
     }
+
+    @Test func launchTitleUsesNameOrFileName() {
+        #expect(Recipe.Launch(windowsPath: #"C:\Program Files\App\config.exe"#, name: "Configuração").title
+                == "Configuração")
+        #expect(Recipe.Launch(windowsPath: #"C:\Program Files\App\App.exe"#).title == "App.exe")
+    }
 }

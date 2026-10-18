@@ -78,6 +78,12 @@ public struct Recipe: Codable, Sendable, Hashable {
             windowsPath = try c.decode(String.self, forKey: .windowsPath)
             arguments = try c.decodeIfPresent([String].self, forKey: .arguments) ?? []
         }
+
+        /// Menu label: `name`, or the `.exe` file name.
+        public var title: String {
+            if let name, !name.isEmpty { return name }
+            return windowsPath.split(whereSeparator: { $0 == "\\" || $0 == "/" }).last.map(String.init) ?? windowsPath
+        }
     }
 
     public enum Step: Codable, Sendable, Hashable {
