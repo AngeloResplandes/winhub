@@ -35,7 +35,7 @@ código ou dado fechado do CrossOver é usado.
 | | |
 |---|---|
 | **Catálogo com busca** | palavras em ordem, sem diferenciar maiúsculas e acentos, nomes no seu idioma; as mesmas regras da busca do CrossOver |
-| **Receitas com um clique** | a Steam instala e abre com um clique; jogos da Steam ganham "Jogar pela Steam" |
+| **Receitas com um clique** | a Steam instala e abre com um clique; uma receita também pode descompactar um zip, rodar passos extras e abrir vários programas ([Receitas](docs/pt-BR/recipes.md)); jogos da Steam ganham "Jogar pela Steam" |
 | **Qualquer instalador** | escolha um `.exe` ou `.msi` e a garrafa (⌘I) |
 | **Garrafas** | cada uma com versão do Windows, Direct3D, msync, painel de desempenho e componentes do winetricks; duplicar, renomear, modelos, variáveis e substituições de DLL; exportar e importar (`.winhubbottle`) |
 | **Ferramentas da garrafa** | as ferramentas do próprio Wine (configuração, editor do registro, painel de controle, gerenciador de tarefas, prompt de comando) e "Executar comando" para qualquer `.exe`, `.msi` ou `.bat` com argumentos ([Arquitetura](docs/pt-BR/architecture.md#ferramentas-da-garrafa)) |

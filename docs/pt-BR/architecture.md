@@ -13,8 +13,8 @@ Support/                 wrapper do steamwebhelper (programa do Windows, compila
 Tests/                   testes unitários e de integração (Swift Testing)
 ```
 
-O `WinHub` depende do `WinHubCore` e do `WinHubRuntime`; as duas bibliotecas não dependem uma da outra nem da
-interface.
+O `WinHub` depende do `WinHubCore` e do `WinHubRuntime`. O `WinHubRuntime` depende do `WinHubCore` para executar
+as receitas do catálogo; o Core continua sem Runtime, sem processos e sem interface.
 
 ## Módulos
 
@@ -31,6 +31,7 @@ interface.
 | | `ShellLink`, `ProgramIcon` | Lê o alvo de um atalho e o ícone do programa no `.exe` (remontado como `.ico`) |
 | | `ComponentManager`, `GraphicsBackend` | DXVK e winetricks; o Direct3D da garrafa e de cada programa ([Gráficos](graphics.md)) |
 | | `CompatRules`, `D3DMetal`, `CompatDatabaseSync` | Regras da garrafa para o motor, o D3DMetal do usuário, o banco de regras assinado |
+| | `RecipeRunner` | Executa o instalador de uma receita do catálogo (exe, msi ou zip) e os passos extras, com um executor falso nos testes |
 | | `AppLauncherBuilder`, `SteamWebHelperWrapper` | Atalhos `.app`; a correção da janela preta da Steam |
 | | `AppUpdater`, `RemoteDataSync` | Atualizações do app; catálogo e manifestos da `main` |
 | **WinHub** | `WinHubApp`, `RootView`, `CatalogStore`, `WineStore`, `UpdateStore`, telas | Cenas, menus, ajustes, links `winhub://`; stores observáveis que as telas leem |
@@ -50,9 +51,10 @@ oferece "Atualizar o Wine".
 **Garrafa nova.** `BottleStore.create` → `WineLauncher.initialize`: `wineboot --init` com Mono e Gecko
 desligados, `winecfg /v <versão>`, depois `wineserver -k` e `-w`.
 
-**Receita.** Um título do catálogo com `recipe` instala com um clique: garrafa pelo nome (reaproveitada se
-existir) → dependências do winetricks → baixa o instalador → roda → confere que `launch.windowsPath` existe →
-abre.
+**Receita.** Um título do catálogo com `recipe` instala com um clique: garrafa pelo nome (criada com os `settings`
+da receita se for nova, senão reaproveitada) → dependências do winetricks → download → exe/msi ou extração do zip
+→ `steps` extras → grava `rules` → confere que `launch.windowsPath` existe → abre. Formato:
+[Receitas do catálogo](recipes.md).
 
 **Abrir um programa.** O `WineStore.launch` inicia o programa e não espera por ele; "em execução" vem do
 `WineServerStatus` (alguém segura o `lock` do `wineserver`), porque programas como a Steam se reiniciam sozinhos.
@@ -109,7 +111,7 @@ Os modelos ficam em "Nova garrafa"; as outras ferramentas ficam na página da ga
 
 O catálogo é o `Sources/WinHub/Resources/catalog.json`: uma lista de `CatalogEntry` (`id`, `name`,
 `localizedNames`, `category`, `summary`, `rating`, `isFeatured`, `steamID`, `steamGame`, `recipe`). Uma receita
-diz como instalar e abrir um título:
+diz como instalar e abrir um título ([Receitas do catálogo](recipes.md)):
 
 ```json
 "recipe": {
@@ -121,8 +123,10 @@ diz como instalar e abrir um título:
 }
 ```
 
-O `steamGame` (`installDir`, `executable`, `graphics`) diz onde um jogo da Steam fica na garrafa da Steam e qual
-Direct3D funcionou melhor nos nossos testes. Use só URLs oficiais de download e descreva só passos que você testou.
+Campos opcionais cobrem zip, passos extras, ajustes da garrafa, regras do compatdb, `minAppVersion` e `launches`
+extras. O `steamGame` (`installDir`, `executable`, `graphics`) diz onde um jogo da Steam fica na garrafa da Steam e
+qual Direct3D funcionou melhor nos nossos testes. Use só URLs oficiais de download e descreva só passos que você
+testou.
 
 ## Trabalhando com o motor
 

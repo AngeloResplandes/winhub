@@ -199,6 +199,13 @@ import Testing
         #expect(recipe.installer.fileName == "SteamSetup.exe")
         #expect(recipe.launch.windowsPath == #"C:\Program Files (x86)\Steam\steam.exe"#)
         #expect(recipe.launch.arguments.isEmpty)
+        #expect(recipe.installer.kind == nil)
+        #expect(recipe.installer.resolvedKind == .exe)
+        #expect(recipe.steps.isEmpty)
+        #expect(recipe.minAppVersion == nil)
+        #expect(recipe.allLaunches.count == 1)
+        #expect(recipe.settings == nil)
+        #expect(recipe.rules.isEmpty)
     }
 
     @Test func sampleCatalogHasSteamRecipe() throws {

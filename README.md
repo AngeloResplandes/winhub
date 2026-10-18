@@ -34,7 +34,7 @@ CrossOver code or data is used.
 | | |
 |---|---|
 | **Catalog with search** | words in order, ignoring case and accents, names in your language; the same rules as CrossOver's search |
-| **One-click recipes** | Steam installs and opens with one click; Steam games get "Jogar pela Steam" |
+| **One-click recipes** | Steam installs and opens with one click; recipes can also unpack a zip, run extra steps and open several programs ([Recipes](docs/recipes.md)); Steam games get "Jogar pela Steam" |
 | **Any installer** | pick an `.exe` or `.msi` and a bottle (⌘I) |
 | **Bottles** | each with its Windows version, Direct3D, msync, performance HUD and winetricks components; duplicate, rename, templates, variables and DLL overrides; export and import (`.winhubbottle`) |
 | **Bottle tools** | Wine's own tools (configuration, registry editor, control panel, task manager, command prompt) and "Executar comando" for any `.exe`, `.msi` or `.bat` with arguments ([Architecture](docs/architecture.md#bottle-tools)) |

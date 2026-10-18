@@ -169,7 +169,7 @@ final class WineStore {
 
     @discardableResult
     func createBottle(name: String, windowsVersion: Bottle.WindowsVersion = .win10,
-                      template: BottleTemplate? = nil) async -> Bottle? {
+                      template: BottleTemplate? = nil, configure: ((inout Bottle) -> Void)? = nil) async -> Bottle? {
         guard let runtime = requireRuntime() else { return nil }
         do {
             var bottle = try bottleStore.create(name: name, runtimeID: runtime.manifest.id, windowsVersion: windowsVersion,
@@ -179,6 +179,9 @@ final class WineStore {
                 let chosenVersion = bottle.windowsVersion
                 bottle = template.apply(to: bottle, availableGraphics: graphicsBackends, supportsMSync: supportsMSync)
                 bottle.windowsVersion = chosenVersion
+            }
+            configure?(&bottle)
+            if template != nil || configure != nil {
                 try bottleStore.save(bottle)
             }
             refresh()
@@ -622,6 +625,13 @@ final class WineStore {
         return FileManager.default.fileExists(atPath: program.path)
     }
 
+    /// Hide Install when the catalog recipe needs a newer WinHub than this copy.
+    func recipeIsSupported(_ recipe: Recipe) -> Bool {
+        guard let version = (Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String)
+            .flatMap(AppVersion.init) else { return true }
+        return recipe.isSupported(by: version)
+    }
+
     /// Creates or reuses the recipe's bottle, downloads the installer, runs it, then opens the program.
     func install(_ recipe: Recipe, entryID: String) async {
         guard let runtime = requireRuntime() else { return }
@@ -630,7 +640,9 @@ final class WineStore {
             var bottle = bottle(named: recipe.bottleName)
             if bottle == nil {
                 activity[entryID] = String(localized: "Criando a garrafa “\(recipe.bottleName)”…")
-                bottle = await createBottle(name: recipe.bottleName, windowsVersion: version)
+                bottle = await createBottle(name: recipe.bottleName, windowsVersion: version) {
+                    recipe.applySettingsIfCreating(&$0)
+                }
             }
             guard let bottle else { activity[entryID] = nil; return }
             guard claim(bottle, opensProgram: true, retry: { await self.install(recipe, entryID: entryID) }) else {
@@ -643,9 +655,13 @@ final class WineStore {
                 try await self.downloader.download(recipe.installer.url, fileName: recipe.installer.fileName,
                                                    sha256: recipe.installer.sha256)
             }
-            try await perform(key: entryID, String(localized: "Instalando…")) {
-                try await WineLauncher(runtime: runtime).runInstaller(bottle, file: installer,
-                                                                    arguments: recipe.installer.arguments)
+            let installing = recipe.installer.resolvedKind == .zip && recipe.steps.isEmpty
+                ? String(localized: "Extraindo…") : String(localized: "Instalando…")
+            try await perform(key: entryID, installing) {
+                let launcher = WineLauncher(runtime: runtime)
+                let runner = RecipeRunner(executor: WineRecipeExecutor(launcher: launcher, bottle: bottle))
+                try await runner.run(recipe, file: installer, in: bottle)
+                try runner.applyRules(recipe, in: bottle)
             }
             refresh()
             guard isInstalled(recipe) else {
@@ -751,12 +767,16 @@ final class WineStore {
     }
 
     func open(_ recipe: Recipe) {
+        open(recipe, launch: recipe.launch)
+    }
+
+    func open(_ recipe: Recipe, launch program: Recipe.Launch) {
         guard let bottle = bottle(named: recipe.bottleName),
-              claim(bottle, opensProgram: true, retry: { self.open(recipe) }) else { return }
-        let arguments = SteamClient.arguments(forOpening: recipe.launch.windowsPath, recipe.launch.arguments,
+              claim(bottle, opensProgram: true, retry: { self.open(recipe, launch: program) }) else { return }
+        let arguments = SteamClient.arguments(forOpening: program.windowsPath, program.arguments,
                                               wrapperInstalled: prepareSteam(in: bottle))
         launch(in: bottle) { launcher in
-            try await launcher.run(bottle, windowsPath: recipe.launch.windowsPath, arguments: arguments)
+            try await launcher.run(bottle, windowsPath: program.windowsPath, arguments: arguments)
         }
     }
 

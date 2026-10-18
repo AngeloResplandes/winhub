@@ -12,13 +12,13 @@ let package = Package(
     ],
     targets: [
         .target(name: "WinHubCore"),
-        .target(name: "WinHubRuntime"),
+        .target(name: "WinHubRuntime", dependencies: ["WinHubCore"]),
         .executableTarget(
             name: "WinHub",
             dependencies: ["WinHubCore", "WinHubRuntime"],
             resources: [.process("Resources")]
         ),
         .testTarget(name: "WinHubCoreTests", dependencies: ["WinHubCore"]),
-        .testTarget(name: "WinHubRuntimeTests", dependencies: ["WinHubRuntime"]),
+        .testTarget(name: "WinHubRuntimeTests", dependencies: ["WinHubRuntime", "WinHubCore"]),
     ]
 )

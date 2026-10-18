@@ -152,12 +152,27 @@ struct EntryActions: View {
                 ProgressView { Text(status).font(.callout) }
                     .progressViewStyle(.linear)
             } else if wine.isInstalled(recipe) {
-                Button { wine.open(recipe) } label: {
-                    Label("Abrir", systemImage: "play.fill").frame(maxWidth: .infinity)
+                if recipe.allLaunches.count > 1 {
+                    Menu {
+                        ForEach(recipe.allLaunches, id: \.self) { program in
+                            Button(program.title) { wine.open(recipe, launch: program) }
+                        }
+                    } label: {
+                        Label("Abrir", systemImage: "play.fill").frame(maxWidth: .infinity)
+                    }
+                    .buttonStyle(.borderedProminent)
+                    .controlSize(.large)
+                } else {
+                    Button { wine.open(recipe) } label: {
+                        Label("Abrir", systemImage: "play.fill").frame(maxWidth: .infinity)
+                    }
+                    .buttonStyle(.borderedProminent)
+                    .controlSize(.large)
                 }
-                .buttonStyle(.borderedProminent)
-                .controlSize(.large)
                 Text("Na garrafa “\(recipe.bottleName)”.").font(.caption).foregroundStyle(.secondary)
+            } else if !wine.recipeIsSupported(recipe) {
+                Text("Este título precisa do WinHub \(recipe.minAppVersion ?? "") ou mais novo.")
+                    .font(.caption).foregroundStyle(.secondary)
             } else {
                 Button { Task { await wine.install(recipe, entryID: entry.id) } } label: {
                     Label("Instalar", systemImage: "arrow.down.circle.fill").frame(maxWidth: .infinity)

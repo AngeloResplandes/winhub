@@ -13,7 +13,8 @@ Support/                 steamwebhelper wrapper (a Windows program, built at pac
 Tests/                   unit and integration tests (Swift Testing)
 ```
 
-`WinHub` depends on `WinHubCore` and `WinHubRuntime`; the two libraries depend on neither each other nor the UI.
+`WinHub` depends on `WinHubCore` and `WinHubRuntime`. `WinHubRuntime` depends on `WinHubCore` so it can run
+catalog recipes; Core stays free of Runtime, processes and the UI.
 
 ## Modules
 
@@ -30,6 +31,7 @@ Tests/                   unit and integration tests (Swift Testing)
 | | `ShellLink`, `ProgramIcon` | Reads a shortcut's target and the program's icon from its `.exe` (rebuilt as an `.ico`) |
 | | `ComponentManager`, `GraphicsBackend` | DXVK and winetricks; the bottle's and each program's Direct3D ([Graphics](graphics.md)) |
 | | `CompatRules`, `D3DMetal`, `CompatDatabaseSync` | Per-bottle rules for the engine, the user's D3DMetal, the signed rule database |
+| | `RecipeRunner` | Runs a catalog recipe's installer (exe, msi or zip) and extra steps, with a fake executor in tests |
 | | `AppLauncherBuilder`, `SteamWebHelperWrapper` | `.app` shortcuts; the fix for Steam's black window |
 | | `AppUpdater`, `RemoteDataSync` | App updates; catalog and manifests from `main` |
 | **WinHub** | `WinHubApp`, `RootView`, `CatalogStore`, `WineStore`, `UpdateStore`, views | Scenes, menus, settings, `winhub://` links; observable stores the views read |
@@ -49,8 +51,9 @@ sidebar offers "Atualizar o Wine".
 **New bottle.** `BottleStore.create` → `WineLauncher.initialize`: `wineboot --init` with Mono and Gecko off,
 `winecfg /v <version>`, then `wineserver -k` and `-w`.
 
-**Recipe.** A catalog title with a `recipe` installs with one click: a bottle by name (reused if it exists) →
-winetricks dependencies → download the installer → run it → check that `launch.windowsPath` exists → open.
+**Recipe.** A catalog title with a `recipe` installs with one click: a bottle by name (created with the recipe's
+`settings` if new, otherwise reused) → winetricks dependencies → download → exe/msi or zip extract → extra
+`steps` → write `rules` → check that `launch.windowsPath` exists → open. Format: [Catalog recipes](recipes.md).
 
 **Opening a program.** `WineStore.launch` starts the program and does not wait for it; "running" comes from
 `WineServerStatus` (someone holds the `wineserver` lock), because programs like Steam restart themselves.
@@ -105,7 +108,7 @@ The templates are in "Nova garrafa"; the other tools live in the bottle's page, 
 
 The catalog is `Sources/WinHub/Resources/catalog.json`: a list of `CatalogEntry` (`id`, `name`, `localizedNames`,
 `category`, `summary`, `rating`, `isFeatured`, `steamID`, `steamGame`, `recipe`). A recipe says how to install and
-open a title:
+open a title ([Catalog recipes](recipes.md)):
 
 ```json
 "recipe": {
@@ -117,8 +120,9 @@ open a title:
 }
 ```
 
-`steamGame` (`installDir`, `executable`, `graphics`) says where a Steam game lives in the Steam bottle and which
-Direct3D worked best in our tests. Use only official download URLs and describe only steps you tested.
+Optional fields cover zip payloads, extra steps, bottle settings, compatdb rules, `minAppVersion` and extra
+`launches`. `steamGame` (`installDir`, `executable`, `graphics`) says where a Steam game lives in the Steam bottle
+and which Direct3D worked best in our tests. Use only official download URLs and describe only steps you tested.
 
 ## Working with the engine
 
