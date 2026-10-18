@@ -51,9 +51,10 @@ oferece "Atualizar o Wine".
 **Garrafa nova.** `BottleStore.create` → `WineLauncher.initialize`: `wineboot --init` com Mono e Gecko
 desligados, `winecfg /v <versão>`, depois `wineserver -k` e `-w`.
 
-**Receita.** Um título do catálogo com `recipe` instala com um clique: garrafa pelo nome (reaproveitada se
-existir) → dependências do winetricks → baixa o instalador → roda → confere que `launch.windowsPath` existe →
-abre.
+**Receita.** Um título do catálogo com `recipe` instala com um clique: garrafa pelo nome (criada com os `settings`
+da receita se for nova, senão reaproveitada) → dependências do winetricks → download → exe/msi ou extração do zip
+→ `steps` extras → grava `rules` → confere que `launch.windowsPath` existe → abre. Formato:
+[Receitas do catálogo](recipes.md).
 
 **Abrir um programa.** O `WineStore.launch` inicia o programa e não espera por ele; "em execução" vem do
 `WineServerStatus` (alguém segura o `lock` do `wineserver`), porque programas como a Steam se reiniciam sozinhos.
@@ -110,7 +111,7 @@ Os modelos ficam em "Nova garrafa"; as outras ferramentas ficam na página da ga
 
 O catálogo é o `Sources/WinHub/Resources/catalog.json`: uma lista de `CatalogEntry` (`id`, `name`,
 `localizedNames`, `category`, `summary`, `rating`, `isFeatured`, `steamID`, `steamGame`, `recipe`). Uma receita
-diz como instalar e abrir um título:
+diz como instalar e abrir um título ([Receitas do catálogo](recipes.md)):
 
 ```json
 "recipe": {
@@ -122,8 +123,10 @@ diz como instalar e abrir um título:
 }
 ```
 
-O `steamGame` (`installDir`, `executable`, `graphics`) diz onde um jogo da Steam fica na garrafa da Steam e qual
-Direct3D funcionou melhor nos nossos testes. Use só URLs oficiais de download e descreva só passos que você testou.
+Campos opcionais cobrem zip, passos extras, ajustes da garrafa, regras do compatdb, `minAppVersion` e `launches`
+extras. O `steamGame` (`installDir`, `executable`, `graphics`) diz onde um jogo da Steam fica na garrafa da Steam e
+qual Direct3D funcionou melhor nos nossos testes. Use só URLs oficiais de download e descreva só passos que você
+testou.
 
 ## Trabalhando com o motor
 

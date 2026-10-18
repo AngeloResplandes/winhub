@@ -51,8 +51,9 @@ sidebar offers "Atualizar o Wine".
 **New bottle.** `BottleStore.create` → `WineLauncher.initialize`: `wineboot --init` with Mono and Gecko off,
 `winecfg /v <version>`, then `wineserver -k` and `-w`.
 
-**Recipe.** A catalog title with a `recipe` installs with one click: a bottle by name (reused if it exists) →
-winetricks dependencies → download the installer → run it → check that `launch.windowsPath` exists → open.
+**Recipe.** A catalog title with a `recipe` installs with one click: a bottle by name (created with the recipe's
+`settings` if new, otherwise reused) → winetricks dependencies → download → exe/msi or zip extract → extra
+`steps` → write `rules` → check that `launch.windowsPath` exists → open. Format: [Catalog recipes](recipes.md).
 
 **Opening a program.** `WineStore.launch` starts the program and does not wait for it; "running" comes from
 `WineServerStatus` (someone holds the `wineserver` lock), because programs like Steam restart themselves.
@@ -107,7 +108,7 @@ The templates are in "Nova garrafa"; the other tools live in the bottle's page, 
 
 The catalog is `Sources/WinHub/Resources/catalog.json`: a list of `CatalogEntry` (`id`, `name`, `localizedNames`,
 `category`, `summary`, `rating`, `isFeatured`, `steamID`, `steamGame`, `recipe`). A recipe says how to install and
-open a title:
+open a title ([Catalog recipes](recipes.md)):
 
 ```json
 "recipe": {
@@ -119,8 +120,9 @@ open a title:
 }
 ```
 
-`steamGame` (`installDir`, `executable`, `graphics`) says where a Steam game lives in the Steam bottle and which
-Direct3D worked best in our tests. Use only official download URLs and describe only steps you tested.
+Optional fields cover zip payloads, extra steps, bottle settings, compatdb rules, `minAppVersion` and extra
+`launches`. `steamGame` (`installDir`, `executable`, `graphics`) says where a Steam game lives in the Steam bottle
+and which Direct3D worked best in our tests. Use only official download URLs and describe only steps you tested.
 
 ## Working with the engine
 

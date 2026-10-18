@@ -4,7 +4,7 @@
 
 **Estágio: 0.2**, publicado a cada push na `main`
 
-> **Última revisão:** 2026-10-16 · **Alvo:** CrossOver 26.3.0 para macOS
+> **Última revisão:** 2026-10-18 · **Alvo:** CrossOver 26.3.0 para macOS
 
 Resumo em uma página. Detalhes: [paridade com o CrossOver](docs/pt-BR/crossover-parity.md) (pesos e evidências),
 [lacunas](docs/pt-BR/gaps.md) (a lista de trabalho em ordem), [decisões](docs/pt-BR/decisions.md).
@@ -13,7 +13,7 @@ Resumo em uma página. Detalhes: [paridade com o CrossOver](docs/pt-BR/crossover
 
 | | Valor | Tipo |
 |---|---|---|
-| **Paridade do WinHub com o CrossOver** | **~63%** | estimado, ponderado por dimensão |
+| **Paridade do WinHub com o CrossOver** | **~64%** | estimado, ponderado por dimensão |
 | Busca do catálogo | os mesmos resultados do CrossOver nos casos comparados | medido |
 | Steam | instala com um clique; login salvo mantido entre motores | medido |
 | Jogo Direct3D 11 | Hollow Knight a 60 FPS pelo DXMT | medido |
@@ -36,6 +36,8 @@ Resumo em uma página. Detalhes: [paridade com o CrossOver](docs/pt-BR/crossover
 - Resoluções extras: os modos de tela emulados do Wine (16:9 e outros até o tamanho da tela) por garrafa.
 - Ferramentas da garrafa: duplicar e renomear garrafas, modelos para garrafas novas, as ferramentas do próprio Wine,
   "Executar comando" e um editor das variáveis e das substituições de DLL da garrafa.
+- Formato ampliado de receita do catálogo: zip, passos extras, ajustes da garrafa, regras do compatdb,
+  minAppVersion e launches extras ([Receitas](docs/pt-BR/recipes.md)). Ainda uma receita no catálogo (Steam).
 
 ## Próximos passos
 
@@ -54,3 +56,4 @@ Resumo em uma página. Detalhes: [paridade com o CrossOver](docs/pt-BR/crossover
 | 2026-10-13 | A revisão 3 do motor é o padrão; paridade ~61%. |
 | 2026-10-16 | Interface em espanhol pronta; paridade ~62%. |
 | 2026-10-16 | Ferramentas da garrafa prontas (duplicar, renomear, ferramentas do Wine, executar comando, modelos, variáveis e DLLs); paridade ~63%. |
+| 2026-10-18 | Receitas ampliadas do catálogo; paridade ~64%. |
