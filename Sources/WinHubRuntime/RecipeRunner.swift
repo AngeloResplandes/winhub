@@ -116,3 +116,39 @@ public struct RecipeRunner: Sendable {
         return installerDirectory.appending(path: from)
     }
 }
+
+/// Production executor: Wine for installers, programs and the registry; `ditto` and `FileManager` for files.
+public struct WineRecipeExecutor: RecipeExecuting {
+    public let launcher: WineLauncher
+    public let bottle: Bottle
+
+    public init(launcher: WineLauncher, bottle: Bottle) {
+        self.launcher = launcher
+        self.bottle = bottle
+    }
+
+    public func runInstaller(file: URL, arguments: [String]) async throws {
+        try await launcher.runInstaller(bottle, file: file, arguments: arguments)
+    }
+
+    public func run(windowsPath: String, arguments: [String]) async throws {
+        _ = try await launcher.run(bottle, windowsPath: windowsPath, arguments: arguments)
+    }
+
+    public func addRegistry(key: String, value: String, data: String, type: String) async throws {
+        let status = try await launcher.run(
+            bottle, WineLauncher.registryArguments(key: key, value: value, data: data, type: type), logName: "reg")
+        guard status == 0 else {
+            throw WineLauncherError.failed(
+                step: String(localized: "Registro"), status: status, log: launcher.logURL(bottle, "reg"))
+        }
+    }
+
+    public func extractZip(_ archive: URL, to destination: URL) async throws {
+        try ZipExtractor.extract(archive, to: destination)
+    }
+
+    public func copyFile(from: URL, to: URL) throws {
+        try FileManager.default.copyItem(at: from, to: to)
+    }
+}
