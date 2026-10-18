@@ -13,15 +13,17 @@ Support/                 steamwebhelper wrapper (a Windows program, built at pac
 Tests/                   unit and integration tests (Swift Testing)
 ```
 
-`WinHub` depends on `WinHubCore` and `WinHubRuntime`; the two libraries depend on neither each other nor the UI.
+`WinHub` depends on `WinHubCore` and `WinHubRuntime`. `WinHubRuntime` depends on `WinHubCore` so it can run
+catalog recipes; Core stays free of Runtime, processes and the UI.
 
 ## Modules
 
 | Module | Main types | Role |
 |---|---|---|
-| **WinHubCore** | `CatalogEntry`, `Rating`, `Recipe`, `CatalogLoader`, `CatalogSearchEngine`, `WildcardPattern` | The catalog and its search ([Catalog search](catalog-search.md)), install recipes |
+| **WinHubCore** | `CatalogEntry`, `Rating`, `Recipe`, `CatalogLoader`, `CatalogSearchEngine`, `WildcardPattern`, `ArgumentSplitter` | The catalog and its search ([Catalog search](catalog-search.md)), install recipes |
 | **WinHubRuntime** | `RuntimeManifest`, `RuntimeManager` | Downloads, checks (SHA-256) and installs the Wine engine, including engine overlays |
-| | `Bottle`, `BottleStore` | A bottle is a folder with `bottle.json` and `prefix/` (the `WINEPREFIX`) |
+| | `Bottle`, `BottleStore` | A bottle is a folder with `bottle.json` and `prefix/` (the `WINEPREFIX`); the store creates, duplicates, renames and deletes them |
+| | `BottleTemplate`, `BottleAdvancedSettings`, `WineTool` | Templates for new bottles; reads and writes a bottle's variables and DLL overrides as text; Wine's own tools |
 | | `WineEnvironment` | Builds the environment of Wine processes (a pure function) |
 | | `WineLauncher`, `ProgramScanner`, `WineServerStatus`, `WineOrphanReaper` | Runs Wine, finds installed programs, knows whether a bottle is running, cleans up orphaned processes |
 | | `BottleSession`, `BottleGuard` | Records which WinHub runs Wine in a bottle; decides whether another WinHub, engine or Steam is in the way |
@@ -29,6 +31,7 @@ Tests/                   unit and integration tests (Swift Testing)
 | | `ShellLink`, `ProgramIcon` | Reads a shortcut's target and the program's icon from its `.exe` (rebuilt as an `.ico`) |
 | | `ComponentManager`, `GraphicsBackend` | DXVK and winetricks; the bottle's and each program's Direct3D ([Graphics](graphics.md)) |
 | | `CompatRules`, `D3DMetal`, `CompatDatabaseSync` | Per-bottle rules for the engine, the user's D3DMetal, the signed rule database |
+| | `RecipeRunner` | Runs a catalog recipe's installer (exe, msi or zip) and extra steps, with a fake executor in tests |
 | | `AppLauncherBuilder`, `SteamWebHelperWrapper` | `.app` shortcuts; the fix for Steam's black window |
 | | `AppUpdater`, `RemoteDataSync` | App updates; catalog and manifests from `main` |
 | **WinHub** | `WinHubApp`, `RootView`, `CatalogStore`, `WineStore`, `UpdateStore`, views | Scenes, menus, settings, `winhub://` links; observable stores the views read |
@@ -48,8 +51,9 @@ sidebar offers "Atualizar o Wine".
 **New bottle.** `BottleStore.create` → `WineLauncher.initialize`: `wineboot --init` with Mono and Gecko off,
 `winecfg /v <version>`, then `wineserver -k` and `-w`.
 
-**Recipe.** A catalog title with a `recipe` installs with one click: a bottle by name (reused if it exists) →
-winetricks dependencies → download the installer → run it → check that `launch.windowsPath` exists → open.
+**Recipe.** A catalog title with a `recipe` installs with one click: a bottle by name (created with the recipe's
+`settings` if new, otherwise reused) → winetricks dependencies → download → exe/msi or zip extract → extra
+`steps` → write `rules` → check that `launch.windowsPath` exists → open. Format: [Catalog recipes](recipes.md).
 
 **Opening a program.** `WineStore.launch` starts the program and does not wait for it; "running" comes from
 `WineServerStatus` (someone holds the `wineserver` lock), because programs like Steam restart themselves.
@@ -67,11 +71,44 @@ process (programs started that way hang).
 3. `AppUpdater` reads the latest GitHub release, downloads `WinHub.zip`, checks the SHA-256 GitHub computed,
    the bundle identifier, the version and `codesign --verify`, and swaps the app on "Reiniciar para atualizar".
 
+## Bottle tools
+
+The templates are in "Nova garrafa"; the other tools live in the bottle's page, under "Manutenção" and
+"Configuração".
+
+- **Duplicar garrafa…** clones the folder (`cp -cR`, an APFS clone) into a new bottle with its own id and name.
+  Logs and the session record are not copied, and neither are the `.app` shortcuts. A running bottle is closed
+  first, after a confirmation. While a task runs in the bottle, Duplicar, Renomear, Executar comando and Avançado
+  wait; a name another bottle already has (case aside) is refused in the sheet, before anything closes.
+- **Renomear garrafa…** changes only the name in `bottle.json`; the id and the folder stay. The shortcuts folder
+  moves with the name, and a shortcut `.app` that already exists keeps opening because it points to the bottle's id.
+  Renaming the Steam bottle to something else asks for a confirmation first.
+- **Ferramentas do Wine** opens Wine's configuration (`winecfg`), the registry editor (`regedit`), the control
+  panel (`control`), the task manager (`taskmgr`) and a command prompt (`cmd`) in the bottle.
+- **Executar comando…** runs one `.exe`, `.msi` or `.bat` from anywhere on the Mac, once, with arguments, a working
+  folder and extra variables (which win over the bottle's). Arguments are split by `ArgumentSplitter`: spaces and
+  tabs separate them, only double quotes group them (a single quote is an ordinary character, as in Windows), and a
+  backslash only escapes a double quote inside double quotes. So a quoted path that ends in a backslash, like
+  `"C:\Games\"`, reads as an escaped quote and swallows the rest of the line, the same as in Windows. An `.msi`
+  ignores the working folder.
+- **Modelo** (in "Nova garrafa"): Jogos (Windows 10, Direct3D Automático, msync), Aplicativos (Windows 10, Wine's
+  own Direct3D) and Programas antigos (Windows 7, Wine's own Direct3D); Personalizado is the plain bottle. If
+  the installed engine lacks the Direct3D or msync a template asks for, Wine's own Direct3D is used (or, without it,
+  the first available one) and msync stays off. The Windows version in the picker wins over the template's.
+- **Avançado…** edits the bottle's environment variables (`NAME=value`, one per line; the value is used as is,
+  without quotes; lines starting with `#` are ignored; `WINEPREFIX` is WinHub's and is refused) and DLL overrides
+  (`xinput1_3=n,b`; `n` is Windows' DLL, `b` is Wine's; an empty mode turns the DLL off). A wrong line is refused
+  with its number. `d3d10core`, `d3d11`, `dxgi` and `winemetal` are refused too: the "Gráficos (Direct3D)" choice
+  manages them, and an engine that picks the Direct3D would take such an override for a leftover of the old copied
+  DLLs and remove it. The overrides WinHub set for an older engine's Direct3D stay out of the editor and are kept.
+  Changes take effect for programs opened afterwards; if the bottle is running and the change needs a restart,
+  WinHub asks before closing its programs.
+
 ## The catalog and recipes
 
 The catalog is `Sources/WinHub/Resources/catalog.json`: a list of `CatalogEntry` (`id`, `name`, `localizedNames`,
 `category`, `summary`, `rating`, `isFeatured`, `steamID`, `steamGame`, `recipe`). A recipe says how to install and
-open a title:
+open a title ([Catalog recipes](recipes.md)):
 
 ```json
 "recipe": {
@@ -83,8 +120,9 @@ open a title:
 }
 ```
 
-`steamGame` (`installDir`, `executable`, `graphics`) says where a Steam game lives in the Steam bottle and which
-Direct3D worked best in our tests. Use only official download URLs and describe only steps you tested.
+Optional fields cover zip payloads, extra steps, bottle settings, compatdb rules, `minAppVersion` and extra
+`launches`. `steamGame` (`installDir`, `executable`, `graphics`) says where a Steam game lives in the Steam bottle
+and which Direct3D worked best in our tests. Use only official download URLs and describe only steps you tested.
 
 ## Working with the engine
 

@@ -8,6 +8,7 @@
 - [Desenvolvimento](development.md)
 - [Gráficos](graphics.md)
 - [Busca do catálogo](catalog-search.md)
+- [Receitas do catálogo](recipes.md)
 
 # CrossOver
 

@@ -231,6 +231,22 @@
         }
       }
     },
+    "A receita zip precisa de uma pasta de destino (extractTo)." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zip recipes need a destination folder (extractTo)."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Las recetas zip necesitan una carpeta de destino (extractTo)."
+          }
+        }
+      }
+    },
     "A versão %@ está pronta para instalar." : {
       "localizations" : {
         "en" : {
@@ -259,6 +275,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "La nueva versión no tiene un WinHub.zip con un SHA-256 que se pueda verificar."
+          }
+        }
+      }
+    },
+    "Abre os programas do próprio Wine (configuração, registro, painel de controle…) nesta garrafa." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Opens Wine's own programs (configuration, registry, control panel…) in this bottle."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abre los programas del propio Wine (configuración, registro, panel de control…) en esta botella."
           }
         }
       }
@@ -471,6 +503,54 @@
         }
       }
     },
+    "Aplicativos" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apps"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aplicaciones"
+          }
+        }
+      }
+    },
+    "Argumentos" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Arguments"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Argumentos"
+          }
+        }
+      }
+    },
+    "Arquivos .msi ignoram a pasta de trabalho." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : ".msi files ignore the working folder."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Los archivos .msi ignoran la carpeta de trabajo."
+          }
+        }
+      }
+    },
     "Atualizar" : {
       "localizations" : {
         "en" : {
@@ -563,6 +643,38 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Automático (lo mejor que funcione)"
+          }
+        }
+      }
+    },
+    "Avançado" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Advanced"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Avanzado"
+          }
+        }
+      }
+    },
+    "Avançado…" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Advanced…"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Avanzado…"
           }
         }
       }
@@ -733,6 +845,22 @@
         }
       }
     },
+    "Caminho da receita não encontrado: %@." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Recipe path not found: %@."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No se encontró la ruta de la receta: %@."
+          }
+        }
+      }
+    },
     "Cancelar" : {
       "localizations" : {
         "en" : {
@@ -893,6 +1021,22 @@
         }
       }
     },
+    "Configuração do Wine" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wine Configuration"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Configuración de Wine"
+          }
+        }
+      }
+    },
     "Cria a garrafa “%@” e baixa o instalador oficial." : {
       "localizations" : {
         "en" : {
@@ -921,6 +1065,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Crea una app en Aplicaciones › WinHub que abre este programa desde el Finder, Spotlight o el Dock."
+          }
+        }
+      }
+    },
+    "Cria uma cópia da garrafa com os programas e as configurações. Os atalhos .app não são copiados." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Creates a copy of the bottle with its programs and settings. The .app shortcuts are not copied."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Crea una copia de la botella con sus programas y configuraciones. Los accesos directos .app no se copian."
           }
         }
       }
@@ -1117,6 +1277,70 @@
         }
       }
     },
+    "Duplicando…" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Duplicating…"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Duplicando…"
+          }
+        }
+      }
+    },
+    "Duplicar" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Duplicate"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Duplicar"
+          }
+        }
+      }
+    },
+    "Duplicar garrafa" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Duplicate Bottle"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Duplicar botella"
+          }
+        }
+      }
+    },
+    "Duplicar garrafa…" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Duplicate Bottle…"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Duplicar botella…"
+          }
+        }
+      }
+    },
     "Dê um nome à garrafa." : {
       "localizations" : {
         "en" : {
@@ -1129,6 +1353,38 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Ponle un nombre a la botella."
+          }
+        }
+      }
+    },
+    "Edita as variáveis de ambiente e as substituições de DLL (WINEDLLOVERRIDES) desta garrafa." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Edits this bottle’s environment variables and DLL overrides (WINEDLLOVERRIDES)."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Edita las variables de entorno y las sustituciones de DLL (WINEDLLOVERRIDES) de esta botella."
+          }
+        }
+      }
+    },
+    "Editor do Registro" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Registry Editor"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Editor del Registro"
           }
         }
       }
@@ -1277,6 +1533,22 @@
         }
       }
     },
+    "Encerre os programas da garrafa “%@” antes de duplicá-la." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Quit the programs of the bottle “%@” before duplicating it."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cierra los programas de la botella “%@” antes de duplicarla."
+          }
+        }
+      }
+    },
     "Encerre os programas da garrafa “%@” antes de exportá-la." : {
       "localizations" : {
         "en" : {
@@ -1373,6 +1645,22 @@
         }
       }
     },
+    "Escolha o programa a executar" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Choose the program to run"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Elige el programa que quieres ejecutar"
+          }
+        }
+      }
+    },
     "Escolha um catálogo do WinHub (.json)" : {
       "localizations" : {
         "en" : {
@@ -1453,6 +1741,22 @@
         }
       }
     },
+    "Escolher…" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Choose…"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Elegir…"
+          }
+        }
+      }
+    },
     "Esta opção só muda com a garrafa encerrada. Salve o que estiver aberto antes de continuar." : {
       "localizations" : {
         "en" : {
@@ -1501,6 +1805,22 @@
         }
       }
     },
+    "Este título precisa do WinHub %@ ou mais novo." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "This title needs WinHub %@ or newer."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Este título necesita WinHub %@ o más reciente."
+          }
+        }
+      }
+    },
     "Ex.: Jogos" : {
       "localizations" : {
         "en" : {
@@ -1529,6 +1849,54 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Excelente"
+          }
+        }
+      }
+    },
+    "Executar" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Run"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ejecutar"
+          }
+        }
+      }
+    },
+    "Executar comando" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Run Command"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ejecutar comando"
+          }
+        }
+      }
+    },
+    "Executar comando…" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Run Command…"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ejecutar comando…"
           }
         }
       }
@@ -1613,6 +1981,22 @@
         }
       }
     },
+    "Extraindo…" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Extracting…"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Extrayendo…"
+          }
+        }
+      }
+    },
     "Fechar" : {
       "localizations" : {
         "en" : {
@@ -1641,6 +2025,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "¿Cerrar los programas de esta botella?"
+          }
+        }
+      }
+    },
+    "Ferramentas do Wine" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wine Tools"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Herramientas de Wine"
           }
         }
       }
@@ -1737,6 +2137,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Botellas"
+          }
+        }
+      }
+    },
+    "Gerenciador de Tarefas" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Task Manager"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Administrador de tareas"
           }
         }
       }
@@ -2125,6 +2541,22 @@
         }
       }
     },
+    "Jogos" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Games"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Juegos"
+          }
+        }
+      }
+    },
     "Já existe uma garrafa chamada “%@”." : {
       "localizations" : {
         "en" : {
@@ -2137,6 +2569,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Ya existe una botella llamada “%@”."
+          }
+        }
+      }
+    },
+    "Já existe uma garrafa com esse nome." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A bottle with this name already exists."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ya existe una botella con ese nombre."
           }
         }
       }
@@ -2157,6 +2605,22 @@
         }
       }
     },
+    "Já existe uma pasta de atalhos chamada “%@” em Aplicativos/WinHub. Mude ou remova essa pasta e tente de novo." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A shortcuts folder named “%@” already exists in Applications/WinHub. Change or remove that folder and try again."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ya existe una carpeta de accesos directos llamada “%@” en Aplicaciones/WinHub. Cambia o elimina esa carpeta e inténtalo de nuevo."
+          }
+        }
+      }
+    },
     "Licença" : {
       "localizations" : {
         "en" : {
@@ -2173,6 +2637,28 @@
         }
       }
     },
+    "Linha %lld: %@." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Line %1$lld: %2$@."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Línea %1$lld: %2$@."
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Linha %1$lld: %2$@."
+          }
+        }
+      }
+    },
     "Manutenção" : {
       "localizations" : {
         "en" : {
@@ -2185,6 +2671,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Mantenimiento"
+          }
+        }
+      }
+    },
+    "Modelo" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Template"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Plantilla"
           }
         }
       }
@@ -2339,6 +2841,22 @@
         }
       }
     },
+    "Muda o nome da garrafa e da pasta dos atalhos .app. Os programas não precisam ser fechados." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Changes the name of the bottle and of its .app shortcuts folder. Programs do not need to be closed."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cambia el nombre de la botella y de su carpeta de accesos directos .app. No hace falta cerrar los programas."
+          }
+        }
+      }
+    },
     "Mudar as resoluções da garrafa" : {
       "localizations" : {
         "en" : {
@@ -2367,6 +2885,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "En la botella “%@”."
+          }
+        }
+      }
+    },
+    "Nenhum" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "None"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ninguno"
           }
         }
       }
@@ -2595,6 +3129,22 @@
         }
       }
     },
+    "Não foi possível duplicar a garrafa. %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Couldn't duplicate the bottle. %@"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No se pudo duplicar la botella. %@"
+          }
+        }
+      }
+    },
     "Não foi possível extrair o motor (código %d). %@" : {
       "localizations" : {
         "en" : {
@@ -2613,6 +3163,28 @@
           "stringUnit" : {
             "state" : "new",
             "value" : "Não foi possível extrair o motor (código %1$d). %2$@"
+          }
+        }
+      }
+    },
+    "Não foi possível extrair o pacote (código %d). %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Could not unpack the package (code %1$d). %2$@"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No se pudo extraer el paquete (código %1$d). %2$@"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Não foi possível extrair o pacote (código %1$d). %2$@"
           }
         }
       }
@@ -2885,6 +3457,22 @@
         }
       }
     },
+    "O catálogo e os jogos da Steam usam só a garrafa “Steam”. Renomear mesmo assim?" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The catalog and Steam games only use the “Steam” bottle. Rename it anyway?"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "El catálogo y los juegos de Steam solo usan la botella “Steam”. ¿Quieres cambiarle el nombre de todos modos?"
+          }
+        }
+      }
+    },
     "O instalador" : {
       "localizations" : {
         "en" : {
@@ -3045,6 +3633,38 @@
         }
       }
     },
+    "Painel de Controle" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Control Panel"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Panel de control"
+          }
+        }
+      }
+    },
+    "Para duplicar, a garrafa precisa estar encerrada. Salve o que estiver aberto antes de continuar." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The bottle must be closed to duplicate it. Save anything that is open before continuing."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La botella debe estar cerrada para duplicarla. Guarda lo que tengas abierto antes de continuar."
+          }
+        }
+      }
+    },
     "Para rodar programas do Windows, o WinHub usa o Wine, um projeto de código aberto. Ele é baixado uma vez, direto da fonte oficial, e conferido antes de ser instalado." : {
       "localizations" : {
         "en" : {
@@ -3057,6 +3677,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Para ejecutar programas de Windows, WinHub usa Wine, un proyecto de código abierto. Se descarga una sola vez, directamente de la fuente oficial, y se verifica antes de instalarse."
+          }
+        }
+      }
+    },
+    "Para usuários avançados: valores errados podem impedir programas de abrir." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "For advanced users: wrong values can stop programs from opening."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Para usuarios avanzados: los valores incorrectos pueden impedir que los programas se abran."
           }
         }
       }
@@ -3077,6 +3713,22 @@
         }
       }
     },
+    "Pasta de trabalho" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Working folder"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Carpeta de trabajo"
+          }
+        }
+      }
+    },
     "Pasta inválida no motor: %@" : {
       "localizations" : {
         "en" : {
@@ -3089,6 +3741,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Carpeta no válida en el motor: %@"
+          }
+        }
+      }
+    },
+    "Personalizado" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Custom"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Personalizado"
           }
         }
       }
@@ -3157,6 +3825,22 @@
         }
       }
     },
+    "Programa" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Program"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Programa"
+          }
+        }
+      }
+    },
     "Programa aberto" : {
       "localizations" : {
         "en" : {
@@ -3185,6 +3869,38 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Programas"
+          }
+        }
+      }
+    },
+    "Programas antigos" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Older programs"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Programas antiguos"
+          }
+        }
+      }
+    },
+    "Prompt de Comando" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Command Prompt"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Símbolo del sistema"
           }
         }
       }
@@ -3243,6 +3959,22 @@
         }
       }
     },
+    "Registro" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Registry"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Registro"
+          }
+        }
+      }
+    },
     "Reiniciar para atualizar" : {
       "localizations" : {
         "en" : {
@@ -3255,6 +3987,86 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Reiniciar para actualizar"
+          }
+        }
+      }
+    },
+    "Renomear" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rename"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Renombrar"
+          }
+        }
+      }
+    },
+    "Renomear a garrafa “%@”?" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rename the bottle “%@”?"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "¿Renombrar la botella “%@”?"
+          }
+        }
+      }
+    },
+    "Renomear garrafa" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rename Bottle"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Renombrar botella"
+          }
+        }
+      }
+    },
+    "Renomear garrafa…" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rename Bottle…"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Renombrar botella…"
+          }
+        }
+      }
+    },
+    "Renomear mesmo assim" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rename anyway"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Renombrar de todos modos"
           }
         }
       }
@@ -3307,6 +4119,22 @@
         }
       }
     },
+    "Roda uma vez qualquer programa do Windows nesta garrafa, com argumentos, pasta de trabalho e variáveis." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Runs any Windows program once in this bottle, with arguments, a working folder and variables."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ejecuta una vez cualquier programa de Windows en esta botella, con argumentos, carpeta de trabajo y variables."
+          }
+        }
+      }
+    },
     "Salva a garrafa inteira num arquivo .winhubbottle, para backup ou para levar a outro Mac." : {
       "localizations" : {
         "en" : {
@@ -3319,6 +4147,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Guarda la botella entera en un archivo .winhubbottle, como copia de seguridad o para llevarla a otro Mac."
+          }
+        }
+      }
+    },
+    "Salvar" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Save"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Guardar"
           }
         }
       }
@@ -3383,6 +4227,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Estado"
+          }
+        }
+      }
+    },
+    "Substituições de DLL" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "DLL overrides"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sustituciones de DLL"
           }
         }
       }
@@ -3467,6 +4327,54 @@
         }
       }
     },
+    "Uma por linha, como xinput1_3=n,b (n = a do Windows, b = a do Wine; vazio desliga a DLL). O Direct3D se escolhe em “Gráficos (Direct3D)”." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "One per line, like xinput1_3=n,b (n = the Windows one, b = Wine’s own; empty turns the DLL off). Choose the Direct3D in “Graphics (Direct3D)”."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Una por línea, como xinput1_3=n,b (n = la de Windows, b = la de Wine; vacío desactiva la DLL). El Direct3D se elige en “Gráficos (Direct3D)”."
+          }
+        }
+      }
+    },
+    "Uma por linha, no formato NOME=valor. Valem só para esta execução e vencem as da garrafa." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "One per line, as NAME=value. They apply to this run only and override the bottle's."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Una por línea, con el formato NOMBRE=valor. Valen solo para esta ejecución y prevalecen sobre las de la botella."
+          }
+        }
+      }
+    },
+    "Uma por linha, no formato NOME=valor; o valor vale como está, sem aspas. Linhas que começam com # são ignoradas." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "One per line, as NAME=value; the value is used as is, without quotes. Lines starting with # are ignored."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Una por línea, con el formato NOMBRE=valor; el valor se usa tal cual, sin comillas. Las líneas que empiezan con # se ignoran."
+          }
+        }
+      }
+    },
     "Usar %@ neste jogo (recomendado)" : {
       "localizations" : {
         "en" : {
@@ -3499,6 +4407,22 @@
         }
       }
     },
+    "Vale para os programas abertos depois." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Applies to programs opened afterwards."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Se aplica a los programas que se abran después."
+          }
+        }
+      }
+    },
     "Vale só para o .exe escolhido, como um jogo da Steam. O resto da garrafa (a própria Steam, por exemplo) continua com a opção acima." : {
       "localizations" : {
         "en" : {
@@ -3511,6 +4435,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Se aplica solo al .exe elegido, como un juego de Steam. El resto de la botella (el propio Steam, por ejemplo) sigue con la opción de arriba."
+          }
+        }
+      }
+    },
+    "Variáveis de ambiente" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Environment variables"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Variables de entorno"
           }
         }
       }
@@ -3611,6 +4551,54 @@
         }
       }
     },
+    "Windows 10 e Direct3D do próprio Wine, o mais compatível para aplicativos." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Windows 10 and Wine's own Direct3D, the most compatible choice for applications."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Windows 10 y el Direct3D propio de Wine, la opción más compatible para aplicaciones."
+          }
+        }
+      }
+    },
+    "Windows 10, Direct3D automático e msync, para jogos." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Windows 10, automatic Direct3D and msync, for games."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Windows 10, Direct3D automático y msync, para juegos."
+          }
+        }
+      }
+    },
+    "Windows 7 e Direct3D do próprio Wine, para programas feitos para versões antigas do Windows." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Windows 7 and Wine's own Direct3D, for programs made for older versions of Windows."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Windows 7 y el Direct3D propio de Wine, para programas hechos para versiones antiguas de Windows."
+          }
+        }
+      }
+    },
     "Wine" : {
       "localizations" : {
         "en" : {
@@ -3675,6 +4663,22 @@
         }
       }
     },
+    "ex.: -windowed \"C:\\Meus Jogos\"" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "e.g. -windowed \"C:\\My Games\""
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "p. ej.: -windowed \"C:\\Mis Juegos\""
+          }
+        }
+      }
+    },
     "ex.: vcrun2022 corefonts" : {
       "localizations" : {
         "en" : {
@@ -3691,6 +4695,22 @@
         }
       }
     },
+    "falta o sinal “=”" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "the “=” sign is missing"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "falta el signo “=”"
+          }
+        }
+      }
+    },
     "identificador diferente" : {
       "localizations" : {
         "en" : {
@@ -3703,6 +4723,70 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "identificador diferente"
+          }
+        }
+      }
+    },
+    "o modo “%@” não vale; use n, b, n,b ou b,n (vazio desliga a DLL)" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "the mode “%@” is not valid; use n, b, n,b or b,n (empty turns the DLL off)"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "el modo “%@” no es válido; usa n, b, n,b o b,n (vacío desactiva la DLL)"
+          }
+        }
+      }
+    },
+    "o nome está vazio" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "the name is empty"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "el nombre está vacío"
+          }
+        }
+      }
+    },
+    "o nome “%@” não pode ter espaços nem “=”" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "the name “%@” cannot contain spaces or “=”"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "el nombre “%@” no puede tener espacios ni “=”"
+          }
+        }
+      }
+    },
+    "o nome “%@” não pode ter espaços, vírgulas nem ponto e vírgula" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "the name “%@” cannot contain spaces, commas or semicolons"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "el nombre “%@” no puede tener espacios, comas ni punto y coma"
           }
         }
       }
@@ -3735,6 +4819,54 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Última comprobación"
+          }
+        }
+      }
+    },
+    "“%@” já aparece em outra linha" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "“%@” already appears on another line"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "“%@” ya aparece en otra línea"
+          }
+        }
+      }
+    },
+    "“%@” é controlada pelo WinHub; escolha o Direct3D em “Gráficos (Direct3D)”" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "“%@” is managed by WinHub; choose the Direct3D in “Graphics (Direct3D)”"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "WinHub controla “%@”; elige el Direct3D en “Gráficos (Direct3D)”"
+          }
+        }
+      }
+    },
+    "“%@” é definida pelo WinHub e não pode ser mudada aqui" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "“%@” is set by WinHub and cannot be changed here"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "WinHub define “%@” y no se puede cambiar aquí"
           }
         }
       }

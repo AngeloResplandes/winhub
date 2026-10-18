@@ -145,4 +145,20 @@ import Testing
         #expect(WineLauncher.displayModesArguments(false)
                 == ["reg", "add", #"HKCU\Software\Wine\X11 Driver"#, "/v", "EmulateModeset", "/d", "N", "/f"])
     }
+
+    @Test func addsARegistryValue() {
+        #expect(WineLauncher.registryArguments(key: #"HKCU\Software\App"#, value: "Installed", data: "1", type: "REG_SZ")
+                == ["reg", "add", #"HKCU\Software\App"#, "/v", "Installed", "/d", "1", "/t", "REG_SZ", "/f"])
+    }
+
+    @Test func buildsArgumentsForWinesOwnTools() {
+        #expect(WineLauncher.toolArguments(.configuration) == ["winecfg"])
+        #expect(WineLauncher.toolArguments(.registryEditor) == ["regedit"])
+        #expect(WineLauncher.toolArguments(.controlPanel) == ["control"])
+        #expect(WineLauncher.toolArguments(.taskManager) == ["taskmgr"])
+        // `cmd` needs a console window of its own, and `start` opens one.
+        #expect(WineLauncher.toolArguments(.commandPrompt) == ["start", "cmd"])
+        #expect(WineTool.allCases.count == 5)
+        #expect(WineTool.allCases.allSatisfy { !$0.systemImage.isEmpty })
+    }
 }

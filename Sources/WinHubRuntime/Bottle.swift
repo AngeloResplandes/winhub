@@ -99,6 +99,15 @@ public struct Bottle: Codable, Sendable, Identifiable, Hashable {
         return "C:\\" + path.dropFirst(root.count + 1).replacingOccurrences(of: "/", with: "\\")
     }
 
+    /// Windows folder to start `file` in: its own folder, as `C:\…` inside this bottle or as `Z:\…`
+    /// (Wine maps the Mac's root to Z:) anywhere else.
+    public func defaultWorkingDirectory(forFile file: URL) -> String {
+        let folder = file.deletingLastPathComponent()
+        if folder.standardizedFileURL.path == driveC.standardizedFileURL.path { return "C:\\" }
+        if let path = windowsPath(forUnixPath: folder) { return path }
+        return "Z:" + folder.standardizedFileURL.path.replacingOccurrences(of: "/", with: "\\")
+    }
+
     /// Mac location of a `C:\…` path inside this bottle, or `nil` for other drives.
     public func unixPath(forWindowsPath path: String) -> URL? {
         let normalized = path.replacingOccurrences(of: "\\", with: "/")
@@ -108,16 +117,66 @@ public struct Bottle: Codable, Sendable, Identifiable, Hashable {
     }
 }
 
+/// Ready-made settings for a new bottle: Windows version, Direct3D and msync for the kind of program it will run.
+public struct BottleTemplate: Sendable, Hashable, Identifiable {
+    public let id: String
+    public let title: String
+    public let help: String
+    public let windowsVersion: Bottle.WindowsVersion
+    /// Wanted Direct3D; `apply` falls back when the installed runtime cannot use it.
+    public let graphics: GraphicsBackend
+    public let msync: Bool
+
+    public static let games = BottleTemplate(
+        id: "games", title: String(localized: "Jogos"),
+        help: String(localized: "Windows 10, Direct3D automático e msync, para jogos."),
+        windowsVersion: .win10, graphics: .auto, msync: true)
+    public static let applications = BottleTemplate(
+        id: "applications", title: String(localized: "Aplicativos"),
+        help: String(localized: "Windows 10 e Direct3D do próprio Wine, o mais compatível para aplicativos."),
+        windowsVersion: .win10, graphics: .wined3d, msync: false)
+    public static let olderPrograms = BottleTemplate(
+        id: "older-programs", title: String(localized: "Programas antigos"),
+        help: String(localized: "Windows 7 e Direct3D do próprio Wine, para programas feitos para versões antigas do Windows."),
+        windowsVersion: .win7, graphics: .wined3d, msync: false)
+
+    public static let all: [BottleTemplate] = [.games, .applications, .olderPrograms]
+
+    /// `bottle` with this template's settings. A Direct3D the runtime lacks falls back to Wine's own, the most
+    /// compatible, or else the first of `availableGraphics` (the bottle keeps its own when the list is empty);
+    /// msync only with `supportsMSync`.
+    public func apply(to bottle: Bottle, availableGraphics: [GraphicsBackend], supportsMSync: Bool) -> Bottle {
+        var result = bottle
+        result.windowsVersion = windowsVersion
+        if availableGraphics.contains(graphics) {
+            result.graphics = graphics
+        } else if availableGraphics.contains(.wined3d) {
+            result.graphics = .wined3d
+        } else if let first = availableGraphics.first {
+            result.graphics = first
+        }
+        result.msync = msync && supportsMSync
+        return result
+    }
+}
+
 public enum BottleError: Error, LocalizedError, Equatable {
     case nameTaken(String)
     case invalidName
+    case duplicateFailed(String)
 
     public var errorDescription: String? {
         switch self {
         case .nameTaken(let name): String(localized: "Já existe uma garrafa chamada “\(name)”.")
         case .invalidName: String(localized: "Dê um nome à garrafa.")
+        case .duplicateFailed(let output): String(localized: "Não foi possível duplicar a garrafa. \(output)")
         }
     }
+}
+
+/// `cp` failed while cloning a bottle's folder; `output` is what it printed.
+struct BottleCloneFailure: Error {
+    let output: String
 }
 
 /// Creates, lists and deletes bottles under `root`.
@@ -149,16 +208,45 @@ public struct BottleStore: Sendable {
     /// Writes the bottle's folder and `bottle.json`. The prefix is created later by `WineLauncher.initialize`.
     public func create(name: String, runtimeID: String, windowsVersion: Bottle.WindowsVersion = .win10,
                        graphics: GraphicsBackend = .wined3d) throws -> Bottle {
-        let trimmed = name.trimmingCharacters(in: .whitespacesAndNewlines)
-        guard !trimmed.isEmpty else { throw BottleError.invalidName }
-        guard !list().contains(where: { $0.name.caseInsensitiveCompare(trimmed) == .orderedSame }) else {
-            throw BottleError.nameTaken(trimmed)
-        }
+        let trimmed = try validatedName(name)
         var bottle = Bottle(name: trimmed, runtimeID: runtimeID, windowsVersion: windowsVersion, graphics: graphics)
         bottle.folder = root.appending(path: Self.folderName(for: trimmed, id: bottle.id), directoryHint: .isDirectory)
         try FileManager.default.createDirectory(at: bottle.folder, withIntermediateDirectories: true)
         try save(bottle)
         return bottle
+    }
+
+    /// `name` trimmed, if it is not empty and no other bottle has it (names compare without case). `bottle` is the
+    /// one being renamed: it may keep its own name, in another case.
+    func validatedName(_ name: String, renaming bottle: Bottle? = nil) throws -> String {
+        let trimmed = name.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !trimmed.isEmpty else { throw BottleError.invalidName }
+        guard !list().contains(where: { $0.id != bottle?.id && $0.name.caseInsensitiveCompare(trimmed) == .orderedSame }) else {
+            throw BottleError.nameTaken(trimmed)
+        }
+        return trimmed
+    }
+
+    /// Renames `bottle`: only `bottle.json` changes. The folder keeps its name, because the `.app` shortcuts store
+    /// the path of the `.lnk` inside it. Running programs are not affected.
+    public func rename(_ bottle: Bottle, to name: String) throws -> Bottle {
+        var renamed = bottle
+        renamed.name = try validatedName(name, renaming: bottle)
+        try save(renamed)
+        return renamed
+    }
+
+    /// `rename` plus the move of the bottle's `.app` shortcuts folder. The name is checked first and the shortcuts
+    /// move before `bottle.json` changes, so a failure leaves the bottle as it was.
+    public func rename(_ bottle: Bottle, to name: String, movingLaunchersWith launchers: AppLauncherBuilder) throws -> Bottle {
+        let trimmed = try validatedName(name, renaming: bottle)
+        let moved = try launchers.renameFolder(from: bottle.name, to: trimmed)
+        do {
+            return try rename(bottle, to: trimmed)
+        } catch {
+            if moved { _ = try? launchers.renameFolder(from: trimmed, to: bottle.name) }
+            throw error
+        }
     }
 
     public func save(_ bottle: Bottle) throws {
@@ -172,6 +260,43 @@ public struct BottleStore: Sendable {
         var number = 2
         while taken.contains("\(name) (\(number))".lowercased()) { number += 1 }
         return "\(name) (\(number))"
+    }
+
+    /// A copy of `bottle` under a new id and `name`: an APFS clone of the folder (instant, no extra space) off
+    /// the caller's thread, without the logs and the record of which WinHub used it. Close the bottle first.
+    public func duplicate(_ bottle: Bottle, name: String) async throws -> Bottle {
+        let trimmed = try validatedName(name)
+        var copy = bottle
+        copy.id = UUID()
+        copy.name = trimmed
+        copy.createdAt = .now
+        copy.folder = root.appending(path: Self.folderName(for: trimmed, id: copy.id), directoryHint: .isDirectory)
+        let fm = FileManager.default
+        try fm.createDirectory(at: root, withIntermediateDirectories: true)
+        do {
+            do {
+                try await Self.cloneBottleFolder(from: bottle.folder, to: copy.folder)
+            } catch let failure as BottleCloneFailure {
+                throw BottleError.duplicateFailed(failure.output)
+            }
+            try save(copy)
+        } catch {
+            try? fm.removeItem(at: copy.folder)
+            throw error
+        }
+        return copy
+    }
+
+    /// An APFS clone (instant, no extra space) of a bottle's folder, off the caller's thread, without its logs and
+    /// the record of which WinHub used it. Throws `BottleCloneFailure` when `cp` fails; the caller picks the error.
+    static func cloneBottleFolder(from source: URL, to destination: URL) async throws {
+        let clone = try await Task.detached(priority: .userInitiated) {
+            try ProcessRunner.run(URL(fileURLWithPath: "/bin/cp"), arguments: ["-cR", source.path, destination.path])
+        }.value
+        guard clone.status == 0 else { throw BottleCloneFailure(output: clone.output) }
+        let fm = FileManager.default
+        try? fm.removeItem(at: destination.appending(path: "logs"))
+        try? fm.removeItem(at: destination.appending(path: BottleSession.fileName))
     }
 
     public func delete(_ bottle: Bottle) throws {

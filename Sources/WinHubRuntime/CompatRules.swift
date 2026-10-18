@@ -1,4 +1,5 @@
 import Foundation
+import WinHubCore
 
 /// The bottle's own compatibility rules, read by engines that pick the Direct3D themselves
 /// (`WINHUB_COMPAT_RULES`; format in winhub-engine's `docs/compatdb.md`). WinHub writes one rule per
@@ -34,10 +35,54 @@ public enum CompatRules {
         try data.write(to: url(for: bottle), options: .atomic)
     }
 
-    private static func rules(in bottle: Bottle) -> [[String: Any]] {
+    static func rules(in bottle: Bottle) -> [[String: Any]] {
         guard let data = try? Data(contentsOf: url(for: bottle)),
               let root = try? JSONSerialization.jsonObject(with: data) as? [String: Any] else { return [] }
         return root["rules"] as? [[String: Any]] ?? []
+    }
+
+    /// Adds `rule` or replaces the one with the same `desc`. Other rules, including `winhub-program:`, stay.
+    public static func upsert(_ rule: [String: Any], in bottle: Bottle) throws {
+        var list = rules(in: bottle)
+        if let desc = rule["desc"] as? String {
+            list.removeAll { ($0["desc"] as? String) == desc }
+        }
+        list.append(rule)
+        try write(list, in: bottle)
+    }
+
+    public static func apply(_ recipeRules: [Recipe.Rule], to bottle: Bottle) throws {
+        for rule in recipeRules {
+            try upsert(try dictionary(from: rule), in: bottle)
+        }
+    }
+
+    public static func dictionary(from rule: Recipe.Rule) throws -> [String: Any] {
+        let data = try JSONEncoder().encode(rule)
+        guard let object = try JSONSerialization.jsonObject(with: data) as? [String: Any] else {
+            throw RecipeError.missingPath(rule.desc)
+        }
+        return stripNulls(object) as? [String: Any] ?? object
+    }
+
+    private static func write(_ list: [[String: Any]], in bottle: Bottle) throws {
+        let data = try JSONSerialization.data(withJSONObject: ["version": 1, "rules": list],
+                                              options: [.prettyPrinted, .sortedKeys, .withoutEscapingSlashes])
+        try data.write(to: url(for: bottle), options: .atomic)
+    }
+
+    private static func stripNulls(_ value: Any) -> Any? {
+        switch value {
+        case is NSNull: return nil
+        case let dict as [String: Any]:
+            return dict.reduce(into: [String: Any]()) { out, item in
+                if let kept = stripNulls(item.value) { out[item.key] = kept }
+            }
+        case let array as [Any]:
+            return array.compactMap(stripNulls)
+        default:
+            return value
+        }
     }
 }
 

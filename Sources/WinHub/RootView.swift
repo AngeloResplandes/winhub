@@ -65,7 +65,8 @@ struct RootView: View {
                 ProgramsView()
             case .bottle(let id):
                 if let bottle = wine.bottle(id: id) {
-                    BottleDetailView(bottle: bottle) { section = .catalog }
+                    BottleDetailView(bottle: bottle, onDeleted: { section = .catalog },
+                                     onDuplicated: { section = .bottle($0) })
                 } else {
                     ContentUnavailableView("Garrafa não encontrada", systemImage: "shippingbox")
                 }

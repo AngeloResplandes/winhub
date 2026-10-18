@@ -27,7 +27,7 @@ in [`docs/`](docs/) (English) and [`docs/pt-BR/`](docs/pt-BR/) (Brazilian Portug
 
 ```bash
 swift build                 # build
-swift test                  # 146 tests (unit; the ones with a real Wine stay off)
+swift test                  # 208 tests (unit; the ones with a real Wine stay off)
 swift run WinHub            # run without packaging (.app shortcuts and winhub:// links do not work this way)
 ./scripts/package-app.sh    # builds dist/WinHub.app (universal) and dist/WinHub.zip, ad-hoc signature;
                             # builds the Steam wrapper (needs: brew install mingw-w64)
@@ -54,13 +54,18 @@ Testing a local engine build before it is released: `docs/development.md`, "Test
 ```
 Sources/WinHubCore/      pure data, no UI and no processes (testable)
   CatalogEntry, Rating, Recipe(+SteamClient), CatalogLoader(JSONCatalog),
-  CatalogSearchEngine, WildcardMatcher
-Sources/WinHubRuntime/   everything that touches disk, network and Wine processes
+  CatalogSearchEngine, WildcardMatcher, ArgumentSplitter (run-command argument quoting)
+Sources/WinHubRuntime/   disk, network and Wine (depends on WinHubCore for Recipe)
   RuntimeManifest/RuntimeManager   downloads, checks and installs the Wine engine (and overlays)
-  Bottle/BottleStore                bottle = folder with bottle.json + prefix/ (WINEPREFIX)
+  Bottle/BottleStore                bottle = folder with bottle.json + prefix/ (WINEPREFIX); create, duplicate (APFS
+                                    clone), rename (bottle.json only; shortcuts folder follows), delete
+  BottleTemplate                    Jogos / Aplicativos / Programas antigos presets for a new bottle (pure apply)
+  BottleAdvancedSettings            parses/formats a bottle's variables (NAME=value) and DLL overrides (name=n,b)
   BottleArchive                     export/import .winhubbottle (ditto zip); import = new id, free name, profile adopted
   WineEnvironment                   builds the environment of Wine processes (pure function)
-  WineLauncher                      wineboot, winecfg, installers, start /unix, wineserver -k
+  WineLauncher, WineTool            wineboot, winecfg, installers, start /unix, wineserver -k; Wine's own tools
+                                    (winecfg, regedit, control, taskmgr, cmd) and run-command (msiexec for .msi)
+  RecipeRunner                      catalog recipe installer (exe/msi/zip) and extra steps; fake executor in tests
   ProgramScanner                    finds .lnk files in the bottle's Start Menu/Desktop
   ShellLink, ProgramIcon            reads a .lnk's target (MS-SHLLINK) and the .exe's icon (PE resources) as .ico
   WineServerStatus                  "bottle running" = someone holds the wineserver `lock`

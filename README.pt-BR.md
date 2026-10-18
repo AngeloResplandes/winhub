@@ -35,9 +35,10 @@ código ou dado fechado do CrossOver é usado.
 | | |
 |---|---|
 | **Catálogo com busca** | palavras em ordem, sem diferenciar maiúsculas e acentos, nomes no seu idioma; as mesmas regras da busca do CrossOver |
-| **Receitas com um clique** | a Steam instala e abre com um clique; jogos da Steam ganham "Jogar pela Steam" |
+| **Receitas com um clique** | a Steam instala e abre com um clique; uma receita também pode descompactar um zip, rodar passos extras e abrir vários programas ([Receitas](docs/pt-BR/recipes.md)); jogos da Steam ganham "Jogar pela Steam" |
 | **Qualquer instalador** | escolha um `.exe` ou `.msi` e a garrafa (⌘I) |
-| **Garrafas** | cada uma com versão do Windows, Direct3D, msync, painel de desempenho e componentes do winetricks; exportar e importar (`.winhubbottle`) |
+| **Garrafas** | cada uma com versão do Windows, Direct3D, msync, painel de desempenho e componentes do winetricks; duplicar, renomear, modelos, variáveis e substituições de DLL; exportar e importar (`.winhubbottle`) |
+| **Ferramentas da garrafa** | as ferramentas do próprio Wine (configuração, editor do registro, painel de controle, gerenciador de tarefas, prompt de comando) e "Executar comando" para qualquer `.exe`, `.msi` ou `.bat` com argumentos ([Arquitetura](docs/pt-BR/architecture.md#ferramentas-da-garrafa)) |
 | **Direct3D por garrafa ou por jogo** | Automático, Wine, DXMT (Metal), DXVK (Vulkan) ou o seu D3DMetal ([Gráficos](docs/pt-BR/graphics.md)) |
 | **Steam que funciona** | um pequeno wrapper corrige a janela preta da Steam no Wine 11 para macOS |
 | **Atalhos** | `~/Applications/WinHub/<garrafa>/<programa>.app`, para o Finder, o Spotlight e o Dock |
@@ -48,7 +49,7 @@ código ou dado fechado do CrossOver é usado.
 | | |
 |---|---|
 | Versão | 0.2 (uma versão a cada push na `main`) |
-| Paridade com o CrossOver | **~62%** (estimado, [detalhes](docs/pt-BR/crossover-parity.md)) |
+| Paridade com o CrossOver | **~63%** (estimado, [detalhes](docs/pt-BR/crossover-parity.md)) |
 | Testado | Steam com login salvo; Hollow Knight (Direct3D 11) a 60 FPS pelo DXMT ([relatórios](docs/pt-BR/compat/README.md)) |
 | Maiores lacunas | Direct3D 12 sem D3DMetal, catálogo pequeno, banco de regras vazio ([todas as lacunas](docs/pt-BR/gaps.md)) |
 
