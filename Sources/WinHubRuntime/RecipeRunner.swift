@@ -91,6 +91,10 @@ public struct RecipeRunner: Sendable {
         try await applySteps(recipe, installerDirectory: file.deletingLastPathComponent(), in: bottle)
     }
 
+    public func applyRules(_ recipe: Recipe, in bottle: Bottle) throws {
+        try CompatRules.apply(recipe.rules, to: bottle)
+    }
+
     /// `extractTo` is a folder under `drive_c`, or a `C:\…` path.
     static func unixDestination(extractTo: String, in bottle: Bottle) -> URL? {
         let trimmed = extractTo.trimmingCharacters(in: .whitespacesAndNewlines)
