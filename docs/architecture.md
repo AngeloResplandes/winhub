@@ -13,7 +13,8 @@ Support/                 steamwebhelper wrapper (a Windows program, built at pac
 Tests/                   unit and integration tests (Swift Testing)
 ```
 
-`WinHub` depends on `WinHubCore` and `WinHubRuntime`; the two libraries depend on neither each other nor the UI.
+`WinHub` depends on `WinHubCore` and `WinHubRuntime`. `WinHubRuntime` depends on `WinHubCore` so it can run
+catalog recipes; Core stays free of Runtime, processes and the UI.
 
 ## Modules
 
@@ -30,6 +31,7 @@ Tests/                   unit and integration tests (Swift Testing)
 | | `ShellLink`, `ProgramIcon` | Reads a shortcut's target and the program's icon from its `.exe` (rebuilt as an `.ico`) |
 | | `ComponentManager`, `GraphicsBackend` | DXVK and winetricks; the bottle's and each program's Direct3D ([Graphics](graphics.md)) |
 | | `CompatRules`, `D3DMetal`, `CompatDatabaseSync` | Per-bottle rules for the engine, the user's D3DMetal, the signed rule database |
+| | `RecipeRunner` | Runs a catalog recipe's installer (exe, msi or zip) and extra steps, with a fake executor in tests |
 | | `AppLauncherBuilder`, `SteamWebHelperWrapper` | `.app` shortcuts; the fix for Steam's black window |
 | | `AppUpdater`, `RemoteDataSync` | App updates; catalog and manifests from `main` |
 | **WinHub** | `WinHubApp`, `RootView`, `CatalogStore`, `WineStore`, `UpdateStore`, views | Scenes, menus, settings, `winhub://` links; observable stores the views read |

@@ -55,7 +55,7 @@ Testing a local engine build before it is released: `docs/development.md`, "Test
 Sources/WinHubCore/      pure data, no UI and no processes (testable)
   CatalogEntry, Rating, Recipe(+SteamClient), CatalogLoader(JSONCatalog),
   CatalogSearchEngine, WildcardMatcher, ArgumentSplitter (run-command argument quoting)
-Sources/WinHubRuntime/   everything that touches disk, network and Wine processes
+Sources/WinHubRuntime/   disk, network and Wine (depends on WinHubCore for Recipe)
   RuntimeManifest/RuntimeManager   downloads, checks and installs the Wine engine (and overlays)
   Bottle/BottleStore                bottle = folder with bottle.json + prefix/ (WINEPREFIX); create, duplicate (APFS
                                     clone), rename (bottle.json only; shortcuts folder follows), delete
@@ -65,6 +65,7 @@ Sources/WinHubRuntime/   everything that touches disk, network and Wine processe
   WineEnvironment                   builds the environment of Wine processes (pure function)
   WineLauncher, WineTool            wineboot, winecfg, installers, start /unix, wineserver -k; Wine's own tools
                                     (winecfg, regedit, control, taskmgr, cmd) and run-command (msiexec for .msi)
+  RecipeRunner                      catalog recipe installer (exe/msi/zip) and extra steps; fake executor in tests
   ProgramScanner                    finds .lnk files in the bottle's Start Menu/Desktop
   ShellLink, ProgramIcon            reads a .lnk's target (MS-SHLLINK) and the .exe's icon (PE resources) as .ico
   WineServerStatus                  "bottle running" = someone holds the wineserver `lock`

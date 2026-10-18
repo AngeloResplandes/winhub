@@ -13,8 +13,8 @@ Support/                 wrapper do steamwebhelper (programa do Windows, compila
 Tests/                   testes unitários e de integração (Swift Testing)
 ```
 
-O `WinHub` depende do `WinHubCore` e do `WinHubRuntime`; as duas bibliotecas não dependem uma da outra nem da
-interface.
+O `WinHub` depende do `WinHubCore` e do `WinHubRuntime`. O `WinHubRuntime` depende do `WinHubCore` para executar
+as receitas do catálogo; o Core continua sem Runtime, sem processos e sem interface.
 
 ## Módulos
 
@@ -31,6 +31,7 @@ interface.
 | | `ShellLink`, `ProgramIcon` | Lê o alvo de um atalho e o ícone do programa no `.exe` (remontado como `.ico`) |
 | | `ComponentManager`, `GraphicsBackend` | DXVK e winetricks; o Direct3D da garrafa e de cada programa ([Gráficos](graphics.md)) |
 | | `CompatRules`, `D3DMetal`, `CompatDatabaseSync` | Regras da garrafa para o motor, o D3DMetal do usuário, o banco de regras assinado |
+| | `RecipeRunner` | Executa o instalador de uma receita do catálogo (exe, msi ou zip) e os passos extras, com um executor falso nos testes |
 | | `AppLauncherBuilder`, `SteamWebHelperWrapper` | Atalhos `.app`; a correção da janela preta da Steam |
 | | `AppUpdater`, `RemoteDataSync` | Atualizações do app; catálogo e manifestos da `main` |
 | **WinHub** | `WinHubApp`, `RootView`, `CatalogStore`, `WineStore`, `UpdateStore`, telas | Cenas, menus, ajustes, links `winhub://`; stores observáveis que as telas leem |
