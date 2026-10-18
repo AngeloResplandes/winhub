@@ -62,10 +62,53 @@ public struct RecipeRunner: Sendable {
         }
     }
 
+    /// Extra steps after the installer, in JSON order.
+    public func applySteps(_ recipe: Recipe, installerDirectory: URL, in bottle: Bottle) async throws {
+        for step in recipe.steps {
+            switch step {
+            case .run(let windowsPath, let arguments):
+                try await executor.run(windowsPath: windowsPath, arguments: arguments)
+            case .registry(let key, let value, let data, let type):
+                try await executor.addRegistry(key: key, value: value, data: data, type: type)
+            case .copy(let from, let to):
+                let source = try Self.resolveSource(from, installerDirectory: installerDirectory, bottle: bottle)
+                guard let destination = bottle.unixPath(forWindowsPath: to) else {
+                    throw RecipeError.missingPath(to)
+                }
+                try FileManager.default.createDirectory(
+                    at: destination.deletingLastPathComponent(), withIntermediateDirectories: true)
+                if FileManager.default.fileExists(atPath: destination.path) {
+                    try FileManager.default.removeItem(at: destination)
+                }
+                try executor.copyFile(from: source, to: destination)
+            }
+        }
+    }
+
+    /// Installer then extra steps. `installerDirectory` is the folder of the downloaded file.
+    public func run(_ recipe: Recipe, file: URL, in bottle: Bottle) async throws {
+        try await applyInstaller(recipe, file: file, in: bottle)
+        try await applySteps(recipe, installerDirectory: file.deletingLastPathComponent(), in: bottle)
+    }
+
     /// `extractTo` is a folder under `drive_c`, or a `C:\…` path.
     static func unixDestination(extractTo: String, in bottle: Bottle) -> URL? {
         let trimmed = extractTo.trimmingCharacters(in: .whitespacesAndNewlines)
         let windows = trimmed.lowercased().hasPrefix("c:") ? trimmed : "C:\\" + trimmed
         return bottle.unixPath(forWindowsPath: windows)
+    }
+
+    static func isWindowsPath(_ path: String) -> Bool {
+        let trimmed = path.trimmingCharacters(in: .whitespacesAndNewlines)
+        if let drive = trimmed.first, drive.isLetter, trimmed.dropFirst().first == ":" { return true }
+        return trimmed.contains("\\")
+    }
+
+    static func resolveSource(_ from: String, installerDirectory: URL, bottle: Bottle) throws -> URL {
+        if isWindowsPath(from) {
+            guard let url = bottle.unixPath(forWindowsPath: from) else { throw RecipeError.missingPath(from) }
+            return url
+        }
+        return installerDirectory.appending(path: from)
     }
 }

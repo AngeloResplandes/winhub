@@ -146,6 +146,11 @@ import Testing
                 == ["reg", "add", #"HKCU\Software\Wine\X11 Driver"#, "/v", "EmulateModeset", "/d", "N", "/f"])
     }
 
+    @Test func addsARegistryValue() {
+        #expect(WineLauncher.registryArguments(key: #"HKCU\Software\App"#, value: "Installed", data: "1", type: "REG_SZ")
+                == ["reg", "add", #"HKCU\Software\App"#, "/v", "Installed", "/d", "1", "/t", "REG_SZ", "/f"])
+    }
+
     @Test func buildsArgumentsForWinesOwnTools() {
         #expect(WineLauncher.toolArguments(.configuration) == ["winecfg"])
         #expect(WineLauncher.toolArguments(.registryEditor) == ["regedit"])

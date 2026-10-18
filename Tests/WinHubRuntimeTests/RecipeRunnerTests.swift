@@ -33,6 +33,9 @@ import WinHubCore
 
         func copyFile(from: URL, to: URL) throws {
             events.append(.copyFile(from.lastPathComponent, to.path))
+            try FileManager.default.createDirectory(
+                at: to.deletingLastPathComponent(), withIntermediateDirectories: true)
+            try FileManager.default.copyItem(at: from, to: to)
         }
     }
 
@@ -91,5 +94,45 @@ import WinHubCore
         try ZipExtractor.extract(archive, to: dest)
         let text = try String(contentsOf: dest.appending(path: "a.txt"), encoding: .utf8)
         #expect(text == "hello")
+    }
+
+    @Test func runsStepsAfterTheInstallerInOrder() async throws {
+        let json = #"""
+        {"bottleName": "T", "installer": {"url": "https://example.invalid/setup.exe"},
+         "launch": {"windowsPath": "C:\\App\\a.exe"},
+         "steps": [
+           {"kind": "run", "windowsPath": "C:\\App\\setup.exe", "arguments": ["/S"]},
+           {"kind": "registry", "key": "HKCU\\Software\\App", "value": "Installed", "data": "1"},
+           {"kind": "copy", "from": "extra.dll", "to": "C:\\windows\\system32\\extra.dll"}
+         ]}
+        """#
+        let root = try makeTempDirectory()
+        defer { try? FileManager.default.removeItem(at: root) }
+        try "dll".write(to: root.appending(path: "extra.dll"), atomically: true, encoding: .utf8)
+        let executor = RecordingExecutor()
+        let b = bottle(in: root)
+        try await RecipeRunner(executor: executor).run(
+            try recipe(json), file: root.appending(path: "setup.exe"), in: b)
+        let copied = try #require(b.unixPath(forWindowsPath: #"C:\windows\system32\extra.dll"#))
+        #expect(executor.events == [
+            .runInstaller("setup.exe", []),
+            .run(#"C:\App\setup.exe"#, ["/S"]),
+            .addRegistry(#"HKCU\Software\App"#, "Installed", "1", "REG_SZ"),
+            .copyFile("extra.dll", copied.path),
+        ])
+        #expect(try String(contentsOf: copied, encoding: .utf8) == "dll")
+    }
+
+    @Test func recipeWithoutStepsOnlyRunsTheInstaller() async throws {
+        let json = #"""
+        {"bottleName": "T", "installer": {"url": "https://example.invalid/setup.exe"},
+         "launch": {"windowsPath": "C:\\a.exe"}}
+        """#
+        let executor = RecordingExecutor()
+        let root = try makeTempDirectory()
+        defer { try? FileManager.default.removeItem(at: root) }
+        try await RecipeRunner(executor: executor).run(
+            try recipe(json), file: root.appending(path: "setup.exe"), in: bottle(in: root))
+        #expect(executor.events == [.runInstaller("setup.exe", [])])
     }
 }

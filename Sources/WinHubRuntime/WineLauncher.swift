@@ -102,6 +102,10 @@ public struct WineLauncher: Sendable {
         ["reg", "add", #"HKCU\Software\Wine\X11 Driver"#, "/v", "EmulateModeset", "/d", enabled ? "Y" : "N", "/f"]
     }
 
+    static func registryArguments(key: String, value: String, data: String, type: String) -> [String] {
+        ["reg", "add", key, "/v", value, "/d", data, "/t", type, "/f"]
+    }
+
     /// Runs a `.exe` or `.msi` from the Mac file system and waits for it to finish.
     public func runInstaller(_ bottle: Bottle, file: URL, arguments: [String] = []) async throws {
         let isMSI = file.pathExtension.lowercased() == "msi"
