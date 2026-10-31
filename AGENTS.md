@@ -233,6 +233,10 @@ Dated decisions are in `docs/decisions.md`. The pitfalls an agent must know:
   WinHub itself now refuses (and offers to end) a bottle used by another open WinHub or another engine, and Steam
   in a second bottle (`BottleGuard`; only between WinHub copies that have this guard); the clone is still the
   rule.
+- **Packaged binary's SDK (Xcode 16.4 in CI).** On macOS 27 a binary linked as SDK 15.5 never ran the catalog's
+  "Instalar" action (no error, no crash); the same sources linked as SDK 14.0 work. `package-app.sh` records the
+  deployment target (14.0) as the SDK with `vtool` before signing. `swift run` and local packages were never
+  affected, so test a CI-built `WinHub.zip` (click "Instalar" on Steam in a fresh bottle) before trusting a release.
 - **Swift 6.1 compatibility (Xcode 16.4, used in CI):** `async` closures passed to methods of `@MainActor` classes
   must be marked `@MainActor` (or return a `Sendable` result). Local Swift may be newer and not complain; CI does.
 - `@State`, `#Preview` and `@Previewable` need Xcode (the macro plug-in is not in the Command Line Tools).

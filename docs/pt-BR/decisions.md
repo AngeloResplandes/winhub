@@ -4,6 +4,15 @@
 
 Registro datado das decisões que deram forma ao WinHub, das mais novas para as mais antigas.
 
+## 2026-10-31: Gravar o SDK 14.0 no binário empacotado
+
+O WinHub 0.2.19, compilado pelo CI com o Xcode 16.4, não reagia ao botão "Instalar" do catálogo no macOS 27: a ação
+do botão, a tarefa que ela inicia e o `WineStore.install` nunca rodavam, sem erro e sem falha. Os mesmos fontes
+compilados localmente (Swift 6.4, SDK 14.0) funcionavam, e também uma cópia do binário do CI cuja versão de build foi
+trocada do SDK 15.5 para o SDK 14.0 com o `vtool`. O `package-app.sh` agora grava o SDK igual ao alvo de implantação
+(14.0) antes de assinar. O detalhe do SwiftUI que quebra não é conhecido; tire esse passo quando o CI usar um Xcode
+mais novo e um app empacotado voltar a instalar pelo catálogo (clicar em "Instalar" na Steam numa garrafa nova).
+
 ## 2026-10-13: Proteger as garrafas de um segundo WinHub e de uma segunda Steam
 
 O WinHub instalado e um build de desenvolvimento usam as mesmas garrafas. Com os dois abertos na garrafa Steam, a
