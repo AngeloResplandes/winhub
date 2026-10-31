@@ -2,7 +2,7 @@
 
 # Paridade com o CrossOver
 
-> **Última revisão:** 2026-10-18 · **WinHub:** `main` (0.2) · **Alvo:** CrossOver 26.3.0 para macOS
+> **Última revisão:** 2026-10-31 · **WinHub:** `main` (0.2) · **Alvo:** CrossOver 26.3.0 para macOS
 
 O quanto o WinHub se aproxima do CrossOver, dimensão por dimensão. Números "medidos" vêm de testes; os "estimados"
 são avaliação, com o motivo ao lado. O motor tem a própria tabela, mais detalhada:
@@ -26,7 +26,7 @@ trabalho está em [Lacunas](gaps.md).
 | Receitas de instalação | 10% | receitas para milhares de aplicativos | 1 receita (Steam); o formato cobre zip, passos extras, ajustes da garrafa, regras do compatdb, minAppVersion e launches extras ([Receitas](recipes.md)); qualquer `.exe`/`.msi`, winetricks | 30% | estimado |
 | Garrafas | 10% | criar, versão do Windows, ajustes, modelos, arquivos | criar a partir de modelos, duplicar, renomear, versão do Windows, Direct3D, msync, HUD, componentes, variáveis e substituições de DLL, ferramentas do próprio Wine, executar comando, exportar e importar no formato próprio do WinHub, `.winhubbottle` | 95% | estimado |
 | Steam | 10% | funciona | funciona: wrapper da janela preta, login salvo, jogos abertos pela Steam | 90% | medido |
-| Gráficos e motor | 20% | o motor do CrossOver 26.3 | a revisão 4 do motor (`wine-11.0-r4`), o padrão; veja a tabela de paridade do próprio motor | 71% | estimado (paridade do motor) |
+| Gráficos e motor | 20% | o motor do CrossOver 26.3 | a revisão 5 do motor (`wine-11.0-r5`), o padrão; veja a tabela de paridade do próprio motor | 73% | estimado (paridade do motor) |
 | Regras por jogo | 10% | banco curado, atualizado online | regras de Direct3D por programa; o canal do banco assinado funciona e tem 2 regras | 20% | estimado |
 | Integração com o Mac | 5% | atalhos dos programas instalados | atalhos `.app` que abrem pelo Finder, pelo Spotlight e pelo Dock | 80% | estimado |
 | Atualizações | 5% | app, catálogo e regras | app, catálogo, manifestos e regras assinadas | 95% | estimado |
@@ -54,3 +54,4 @@ trabalho está em [Lacunas](gaps.md).
 | 2026-10-16 | Interface de 70% para 75% (espanhol); total ~62%. |
 | 2026-10-16 | Garrafas de 85% para 95% (duplicar, renomear, ferramentas do Wine, executar comando, modelos, variáveis e DLLs); total ~63%. |
 | 2026-10-18 | Receitas de instalação de 15% para 30% (formato ampliado; ainda 1 receita no catálogo); total ~64%. |
+| 2026-10-31 | A revisão 5 do motor vira o padrão (vídeos dos jogos; gráficos e motor de 71% para 73%); total ~64%. |
