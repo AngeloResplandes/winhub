@@ -4,7 +4,7 @@
 
 **Estágio: 0.2**, publicado a cada push na `main`
 
-> **Última revisão:** 2026-10-18 · **Alvo:** CrossOver 26.3.0 para macOS
+> **Última revisão:** 2026-10-31 · **Alvo:** CrossOver 26.3.0 para macOS
 
 Resumo em uma página. Detalhes: [paridade com o CrossOver](docs/pt-BR/crossover-parity.md) (pesos e evidências),
 [lacunas](docs/pt-BR/gaps.md) (a lista de trabalho em ordem), [decisões](docs/pt-BR/decisions.md).
@@ -28,7 +28,7 @@ Resumo em uma página. Detalhes: [paridade com o CrossOver](docs/pt-BR/crossover
 - Direct3D por garrafa e por programa: Wine, DXVK, DXMT; com a revisão 2 do motor, também Automático e D3DMetal,
   escolhidos pelo motor sem nada copiado para as garrafas.
 - Banco de regras por jogo assinado, do winhub-engine.
-- A revisão 4 do motor (`wine-11.0-r4`) é o motor padrão.
+- A revisão 5 do motor (`wine-11.0-r5`) é o motor padrão: vídeos dos jogos (MP4 H.264/AAC) pelo GStreamer.
 - Ícones dos programas, lidos do `.exe` de cada um, nas listas e nos atalhos `.app`.
 - Interface em inglês e em espanhol (String Catalog), seguindo o idioma do macOS; resumos em inglês e em espanhol
   no catálogo.
@@ -58,3 +58,4 @@ Resumo em uma página. Detalhes: [paridade com o CrossOver](docs/pt-BR/crossover
 | 2026-10-16 | Interface em espanhol pronta; paridade ~62%. |
 | 2026-10-16 | Ferramentas da garrafa prontas (duplicar, renomear, ferramentas do Wine, executar comando, modelos, variáveis e DLLs); paridade ~63%. |
 | 2026-10-18 | Receitas ampliadas do catálogo; paridade ~64%. |
+| 2026-10-31 | A revisão 5 do motor é o padrão (vídeos dos jogos); paridade ~64%. |

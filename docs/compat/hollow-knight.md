@@ -89,6 +89,23 @@ Metal HUD on), no per-program choice and no rule. "Automático" picked **DXMT** 
 (`backend-of`: dxmt): the language screen at 60 FPS, GPU about 1 ms per frame. Choosing DXMT for the game by hand is
 no longer needed.
 
+### 2026-10-16: engine revision 5 (game videos)
+
+Same Mac, a local build of `winhub-wine-11.0-r5` (identical to the release), an APFS clone of the Steam bottle with
+an id of its own. The prologue video (**New Game**) now **decodes**: the old `WindowsVideoMedia error 0xc00d36bb`
+is gone, GStreamer picks `vtdec_hw` (H.264) and `atdec` (AAC), and about 1,260 frames of 1920×1080 reach the game.
+It still shows **black**:
+
+| Backend | Unity's log | What happens |
+|---|---|---|
+| DXMT (Automático) | no error; `D3D11Fence is not available, using ID3D11Query` | Unity takes each frame's texture from Media Foundation on a second Direct3D 11 device and asks for its shared handle; the handle it gets is null, so its main device has nothing to draw |
+| DXVK | `WindowsVideoMedia error 0x80070057` per frame | DXVK-macOS has no shared resources (`GetSharedHandle` fails) |
+
+A small test program reproduced each step outside the game and found one DXMT bug on the way (a shared texture's
+deferred zero fill overwrites another device's writes); fixing it was not enough for the game. The work continues
+in the engine ([winhub-engine's gaps](https://angeloresplandes.github.io/winhub-engine/gaps.html)). The game is still
+playable; only its videos are black.
+
 ## How to reproduce
 
 - The game must be opened through Steam. Opened directly, it quits with "Application was not launched through

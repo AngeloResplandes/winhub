@@ -2,7 +2,7 @@
 
 # Parity with CrossOver
 
-> **Last reviewed:** 2026-10-18 · **WinHub:** `main` (0.2) · **Target:** CrossOver 26.3.0 for macOS
+> **Last reviewed:** 2026-10-31 · **WinHub:** `main` (0.2) · **Target:** CrossOver 26.3.0 for macOS
 
 How close WinHub is to CrossOver, dimension by dimension. "Measured" numbers come from tests; "estimated" ones
 are judgement, with the reason next to them. The engine has its own, more detailed table:
@@ -26,7 +26,7 @@ are judgement, with the reason next to them. The engine has its own, more detail
 | Install recipes | 10% | recipes for thousands of applications | 1 recipe (Steam); format covers zip, extra steps, bottle settings, compatdb rules, minAppVersion and extra launches ([Recipes](recipes.md)); any `.exe`/`.msi`, winetricks | 30% | estimated |
 | Bottles | 10% | create, Windows version, settings, templates, archives | create from templates, duplicate, rename, Windows version, Direct3D, msync, HUD, components, variables and DLL overrides, Wine's own tools, run command, export and import in WinHub's own `.winhubbottle` format | 95% | estimated |
 | Steam | 10% | works | works: black-window wrapper, saved login, games opened through Steam | 90% | measured |
-| Graphics and engine | 20% | the engine inside CrossOver 26.3 | engine revision 4 (`wine-11.0-r4`), the default; see the engine's own parity table | 71% | estimated (engine parity) |
+| Graphics and engine | 20% | the engine inside CrossOver 26.3 | engine revision 5 (`wine-11.0-r5`), the default; see the engine's own parity table | 73% | estimated (engine parity) |
 | Per-game rules | 10% | curated database, updated online | per-program Direct3D rules; the signed database channel works and has 2 rules | 20% | estimated |
 | Desktop integration | 5% | shortcuts for installed programs | `.app` shortcuts that open from the Finder, Spotlight and the Dock | 80% | estimated |
 | Updates | 5% | app, catalog and rules | app, catalog, manifests and signed rules | 95% | estimated |
@@ -54,3 +54,4 @@ are judgement, with the reason next to them. The engine has its own, more detail
 | 2026-10-16 | Interface 70% → 75% (Spanish); total ~62%. |
 | 2026-10-16 | Bottles 85% → 95% (duplicate, rename, Wine tools, run command, templates, variables and DLLs); total ~63%. |
 | 2026-10-18 | Install recipes 15% → 30% (expanded format; still 1 catalog recipe); total ~64%. |
+| 2026-10-31 | Engine revision 5 the default (game videos; graphics and engine 71% → 73%); total ~64%. |

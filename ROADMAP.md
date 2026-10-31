@@ -4,7 +4,7 @@
 
 **Stage: 0.2**, released on every push to `main`
 
-> **Last reviewed:** 2026-10-18 · **Target:** CrossOver 26.3.0 for macOS
+> **Last reviewed:** 2026-10-31 · **Target:** CrossOver 26.3.0 for macOS
 
 One-page summary. Detail: [parity with CrossOver](docs/crossover-parity.md) (weights and evidence),
 [gaps](docs/gaps.md) (the ranked work list), [decisions](docs/decisions.md).
@@ -27,7 +27,7 @@ One-page summary. Detail: [parity with CrossOver](docs/crossover-parity.md) (wei
 - Direct3D per bottle and per program: Wine, DXVK, DXMT; with engine revision 2, also Automático and D3DMetal,
   chosen by the engine with nothing copied into bottles.
 - Signed per-game rule database from winhub-engine.
-- Engine revision 4 (`wine-11.0-r4`) is the default engine.
+- Engine revision 5 (`wine-11.0-r5`) is the default engine: game videos (H.264/AAC MP4) through GStreamer.
 - Program icons, read from each program's `.exe`, in the lists and on `.app` shortcuts.
 - English and Spanish interface (String Catalog), following the macOS language; English and Spanish summaries in
   the catalog.
@@ -57,3 +57,4 @@ One-page summary. Detail: [parity with CrossOver](docs/crossover-parity.md) (wei
 | 2026-10-16 | Spanish interface done; parity ~62%. |
 | 2026-10-16 | Bottle tools done (duplicate, rename, Wine tools, run command, templates, variables and DLLs); parity ~63%. |
 | 2026-10-18 | Expanded catalog recipes; parity ~64%. |
+| 2026-10-31 | Engine revision 5 is the default (game videos); parity ~64%. |
