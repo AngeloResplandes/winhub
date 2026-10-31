@@ -22,6 +22,12 @@ BIN_DIR="$(swift build -c release --arch arm64 --arch x86_64 --show-bin-path)"
 rm -rf "$APP"
 mkdir -p "$APP/Contents/MacOS" "$APP/Contents/Resources"
 cp "$BIN_DIR/WinHub" "$APP/Contents/MacOS/WinHub"
+# Xcode 16.4 (CI) links against the macOS 15 SDK, and on macOS 27 the catalog's "Instalar" button then never runs its
+# action (a binary linked as SDK 14.0 works). Record the deployment target (Package.swift, .macOS(.v14)) as the SDK
+# too; the signature below replaces the one this invalidates.
+vtool -set-build-version macos 14.0 14.0 -replace -output "$APP/Contents/MacOS/WinHub.sdk" "$APP/Contents/MacOS/WinHub" 2>/dev/null
+mv "$APP/Contents/MacOS/WinHub.sdk" "$APP/Contents/MacOS/WinHub"
+chmod +x "$APP/Contents/MacOS/WinHub"
 cp -R "$BIN_DIR/WinHub_WinHub.bundle" "$APP/Contents/Resources/"
 # The interface's translations (Sources/WinHub/Resources/Localizable.xcstrings, compiled into the resource
 # bundle) go into the app's own bundle, where SwiftUI and String(localized:) look by default, from every module.
